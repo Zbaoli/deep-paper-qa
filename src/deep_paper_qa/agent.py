@@ -1,0 +1,42 @@
+"""ReAct Agent 构建"""
+
+from langchain_core.messages import trim_messages
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.prebuilt import create_react_agent
+
+from deep_paper_qa.config import settings
+from deep_paper_qa.prompts import SYSTEM_PROMPT
+from deep_paper_qa.tools.execute_sql import execute_sql
+from deep_paper_qa.tools.vector_search import vector_search
+
+
+def build_agent():
+    """构建并返回 ReAct Agent"""
+    model = ChatOpenAI(
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key,
+        model=settings.llm_model,
+    )
+
+    checkpointer = InMemorySaver()
+
+    # 消息裁剪：保留最近 N 轮对话
+    trimmer = trim_messages(
+        max_tokens=4000,
+        strategy="last",
+        token_counter=model,
+        include_system=True,
+        allow_partial=False,
+    )
+
+    tools = [execute_sql, vector_search]
+
+    agent = create_react_agent(
+        model,
+        tools=tools,
+        checkpointer=checkpointer,
+        prompt=SYSTEM_PROMPT,
+    )
+
+    return agent, trimmer, checkpointer
