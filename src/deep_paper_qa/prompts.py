@@ -81,6 +81,30 @@ SYSTEM_PROMPT = """你是一个 AI 科研论文问答助手。你有三个工具
    可选参数 where：SQL WHERE 条件片段，用法同 search_abstracts。
    可选参数 top_k：返回数量，默认 5，最大 20。
 
+关键词扩展规则（全文检索前必做）：
+用户提到的研究方向/方法/概念，在构造检索查询前必须扩展为多种英文表述，用 | (OR) 连接。
+学术论文中同一概念的表述方式差异很大，只用一种写法会严重漏检。
+
+扩展维度：
+- 缩写 ↔ 全称：RAG ↔ retrieval-augmented generation
+- 连字符变体：retrieval-augmented ↔ retrieval augmented
+- 近义表述：knowledge distillation ↔ model compression ↔ teacher-student
+- 旧称/别名：few-shot learning ↔ meta-learning ↔ learning to learn
+- 上下位概念：适当扩展，但不要过度泛化
+
+示例：
+- 用户说"RAG" →
+  to_tsquery('english', 'RAG | (retrieval <-> augment:*) | (retrieval <-> generat:*)')
+- 用户说"知识蒸馏" →
+  to_tsquery('english', '(knowledge <-> distill:*) | (model <-> compress:*) | (teacher <-> student)')
+- 用户说"RLHF" →
+  to_tsquery('english', 'RLHF | (reinforcement <-> learn:* <-> human) | (human <-> feedback)')
+- 用户说"思维链" →
+  to_tsquery('english', '(chain <-> thought:*) | COT | (step <-> reason:*)')
+
+search_abstracts 同理，用 OR 连接多种表述：
+- 用户说"RAG" → query="RAG OR retrieval-augmented OR retrieval augmented generation"
+
 工具选择规则：
 - 统计/计数/排名/趋势问题 → execute_sql（用全文检索做主题过滤）
 - 精确关键词/术语搜索 → search_abstracts（返回论文列表+摘要片段）
