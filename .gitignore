@@ -23,3 +23,6 @@ venv/
 
 # Chainlit
 .chainlit/
+
+# Logs
+logs/
