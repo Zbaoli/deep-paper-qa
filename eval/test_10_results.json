@@ -1,0 +1,295 @@
+[
+  {
+    "id": 1,
+    "question": "ACL 2025 收录了多少篇论文？",
+    "question_type": "sql",
+    "expected_tools": [
+      "execute_sql"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT COUNT(*) as paper_count FROM papers WHERE year=2025 AND conference='ACL'\"}",
+        "output": "content='1698' name='execute_sql' tool_call_id='call_00_gl7kCHSRUGIpjVJKlMksXhYH'",
+        "duration_s": 0.04
+      }
+    ],
+    "final_answer": "我来查询 ACL 2025 收录的论文数量。根据数据库查询结果，**ACL 2025 共收录了 1,698 篇论文**。\n\n这个数量包含了 ACL 2025 会议的所有论文，包括长文、短文等不同类型。ACL（计算语言学协会年会）是自然语言处理领域的顶级会议，每年都会收录大量高质量的研究论文。",
+    "total_duration_s": 7.47,
+    "tool_match": true
+  },
+  {
+    "id": 2,
+    "question": "哪个会议在 2024 年收录论文最多？",
+    "question_type": "sql",
+    "expected_tools": [
+      "execute_sql"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, COUNT(*) as paper_count FROM papers WHERE year = 2024 AND conference IS NOT NULL GROUP BY conference ORDER BY paper_count DESC LIMIT 10\"}",
+        "output": "content='conference | paper_count\\n------------------------\\nNeurIPS | 4035\\nAAAI | 2865\\nICML | 2610\\nICLR | 2260\\nEMNLP | 1268\\nIJCAI | 1048\\nACL | 939\\nNAACL | 561\\nWWW | 160\\nKDD | 151' name='execute_sql' tool_call_id='call_00_LzgRVMt3kYqDmRf5Dl2Aw7Us'",
+        "duration_s": 0.11
+      }
+    ],
+    "final_answer": "我来查询一下2024年各会议的论文收录情况。根据查询结果，**NeurIPS** 在2024年收录的论文最多，共有 **4,035篇**。\n\n以下是2024年各会议论文收录数量的完整排名：\n\n1. **NeurIPS** - 4,035篇\n2. **AAAI** - 2,865篇\n3. **ICML** - 2,610篇\n4. **ICLR** - 2,260篇\n5. **EMNLP** - 1,268篇\n6. **IJCAI** - 1,048篇\n7. **ACL** - 939篇\n8. **NAACL** - 561篇\n9. **WWW** - 160篇\n10. **KDD** - 151篇\n\nNeurIPS（神经信息处理系统大会）作为人工智能和机器学习领域的顶级会议，在2024年收录的论文数量遥遥领先，几乎是第二名AAAI的1.5倍。这反映了NeurIPS在AI研究社区中的重要地位和广泛影响力。",
+    "total_duration_s": 12.02,
+    "tool_match": true
+  },
+  {
+    "id": 3,
+    "question": "引用量最高的 5 篇论文分别是哪些？",
+    "question_type": "sql",
+    "expected_tools": [
+      "execute_sql"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT title, authors, year, conference, citations, id FROM papers ORDER BY citations DESC LIMIT 5\"}",
+        "output": "content=\"title | authors | year | conference | citations | id\\n----------------------------------------------------\\nAn Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | ['Alexey Dosovitskiy', 'Lucas Beyer', 'Alexander Kolesnikov', 'Dirk Weissenborn', 'Xiaohua Zhai', 'Thomas Unterthiner', 'Mostafa Dehghani', 'Matthias Minderer', 'Georg Heigold', 'Sylvain Gelly', 'Jakob Uszkoreit', 'Neil Houlsby'] | 2021 | ICLR | 21100 | iclr-2021-YicbFdNTTy\\nA Simple Framework for Contrastive Learning of Visual Representations | ['Ting Chen', 'Simon Kornblith', 'Mohammad Norouzi', 'Geoffrey Hinton'] | 2020 | ICML | 7301 | icml-2020-chen20j\\nDenoising Diffusion Probabilistic Models | ['Jonathan Ho'] | 2020 | NeurIPS | 5549 | neurips-2020-4c5bcfec8584af0d\\nLearning Transferable Visual",
+        "duration_s": 0.0
+      }
+    ],
+    "final_answer": "我来查询引用量最高的5篇论文。根据查询结果，引用量最高的5篇论文分别是：\n\n1. **《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》**\n   - 作者：Alexey Dosovitskiy 等\n   - 年份：2021年\n   - 会议：ICLR\n   - 引用量：21,100次\n   - ID：iclr-2021-YicbFdNTTy\n   - 简介：提出了Vision Transformer (ViT)，将Transformer架构应用于图像识别任务\n\n2. **《A Simple Framework for Contrastive Learning of Visual Representations》**\n   - 作者：Ting Chen, Simon Kornblith, Mohammad Norouzi, Geoffrey Hinton\n   - 年份：2020年\n   - 会议：ICML\n   - 引用量：7,301次\n   - ID：icml-2020-chen20j\n   - 简介：提出了SimCLR，一个简单的对比学习框架用于视觉表示学习\n\n3. **《Denoising Diffusion Probabilistic Models》**\n   - 作者：Jonathan Ho\n   - 年份：2020年\n   - 会议：NeurIPS\n   - 引用量：5,549次\n   - ID：neurips-2020-4c5bcfec8584af0d\n   - 简介：提出了DDPM，开创性的扩散模型用于图像生成\n\n4. **《Learning Transferable Visual Models From Natural Language Supervision》**\n   - 作者：Alec Radford 等\n   - 年份：2021年\n   - 会议：ICML\n   - 引用量：5,296次\n   - ID：icml-2021-radford21a\n   - 简介：提出了CLIP，通过自然语言监督学习可迁移的视觉模型\n\n5. **《Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting》**\n   - 作者：Haoyi Zhou 等\n   - 年份：2021年\n   - 会议：AAAI\n   - 引用量：5,203次\n   - ID：aaai-2021-17325\n   - 简介：提出了Informer模型，用于长序列时间序列预测\n\n**观察分析：**\n- 这5篇高引论文主要集中在2020-2021年，反映了AI领域近期的快速发展\n- 研究方向涵盖：视觉Transformer、对比学习、扩散模型、多模态学习、时间序列预测\n- 引用量最高的ViT论文引用量超过21,000次，显示出Transformer在计算机视觉领域的巨大影响力\n- 所有论文都发表在顶级AI会议上（ICLR、ICML、NeurIPS、AAAI）",
+    "total_duration_s": 23.96,
+    "tool_match": true
+  },
+  {
+    "id": 4,
+    "question": "有哪些关于 retrieval-augmented generation 的论文？",
+    "question_type": "search",
+    "expected_tools": [
+      "search_abstracts"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, year, COUNT(*) as paper_count FROM papers WHERE 'RAG' = ANY(directions) GROUP BY conference, year ORDER BY year DESC, paper_count DESC LIMIT 20\"}",
+        "output": "content='conference | year | paper_count\\n-------------------------------\\nNeurIPS | 2025 | 7\\nICLR | 2025 | 6' name='execute_sql' tool_call_id='call_00_WLOdWXRWwJXrBUZCqVhGVrY6'",
+        "duration_s": 0.05
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"retrieval-augmented generation OR RAG OR \\\"retrieval augmented\\\"\", \"limit\": 15}",
+        "output": "content=\"[1] Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection\\n    ID: iclr-2024-hSyW5go0v8 | ICLR 2024 | 引用: 82 | 相关度: 0.0905\\n    摘要片段: 【retrieval】-【augmented】 models on a diverse set of tasks. \\nSpecifically, Self-【RAG】 outperforms ChatGPT and 【retrieval】-【augmented】\\n\\n[2] Benchmarking Large Language Models in Retrieval-Augmented Generation\\n    ID: aaai-2024-29728 | AAAI 2024 | 引用: 264 | 相关度: 0.0893\\n    摘要片段: 【RAG】 for different LLMs. In this paper, we systematically investigate the impact of 【Retrieval】-【Augmented】 【Generation】 on large\\n\\n[3] C-RAG: Certified Generation Risks for Retrieval-Augmented Language Models\\n    ID: icml-2024-kang24a | ICML 2024 | 引用: 3 | 相关度: 0.0855\\n    摘要片段: 【Retrieval】-【augmented】 language models (【RAG】) have been proposed ",
+        "duration_s": 1.96
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT title, conference, year, citations, id FROM papers WHERE 'RAG' = ANY(directions) ORDER BY citations DESC LIMIT 20\"}",
+        "output": "content='title | conference | year | citations | id\\n------------------------------------------\\nAgentNet: Decentralized Evolutionary Coordination for LLM-based Multi-Agent Systems | NeurIPS | 2025 | 5 | neurips-2025-tXqLxHlb8Z\\nSufficient Context: A New Lens on Retrieval Augmented Generation Systems | ICLR | 2025 | 1 | iclr-2025-Jjr2Odj8DJ\\nStructRAG: Boosting Knowledge Intensive Reasoning of LLMs via Inference-time Hybrid Information Structurization | ICLR | 2025 | 0 | iclr-2025-GhexuBLxbO\\nTraining Large Language Models for Retrieval-Augmented Question Answering through Backtracking Correction | ICLR | 2025 | 0 | iclr-2025-IOg47mg74i\\nCooperative Retrieval-Augmented Generation for Question Answering: Mutual Information Exchange and Ranking by Contrasting Layers | NeurIPS | 2025 | 0 | ne",
+        "duration_s": 0.05
+      }
+    ],
+    "final_answer": "我来帮您查找关于 retrieval-augmented generation (RAG) 的论文。首先让我查询数据库中相关的论文统计信息。现在让我搜索更多关于 retrieval-augmented generation 的论文：让我再查询一下数据库中所有标记为 RAG 方向的论文：基于搜索结果，我为您整理了关于 retrieval-augmented generation (RAG) 的主要论文：\n\n## 高引用 RAG 论文\n\n1. **Benchmarking Large Language Models in Retrieval-Augmented Generation** (AAAI 2024)\n   - ID: `aaai-2024-29728`\n   - 引用：264次\n   - 系统性地研究了 RAG 对不同大语言模型的影响\n\n2. **Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection** (ICLR 2024)\n   - ID: `iclr-2024-hSyW5go0v8`\n   - 引用：82次\n   - 通过自我反思学习检索、生成和批判\n\n3. **Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks** (NeurIPS 2020)\n   - ID: `neurips-2020-6b493230205f780e`\n   - 引用：18次\n   - RAG 的经典论文，结合参数化和非参数化记忆\n\n## 2025年最新 RAG 研究\n\n### ICLR 2025\n- **VisRAG**: Vision-based Retrieval-augmented Generation on Multi-modality Documents\n- **A Theory for Token-Level Harmonization in Retrieval-Augmented Generation**\n- **RAG-DDR**: Optimizing Retrieval-Augmented Generation Using Differentiable Data Rewards\n- **Auto-GDA**: Automatic Domain Adaptation for Efficient Grounding Verification in RAG\n- **InstructRAG**: Instructing Retrieval-Augmented Generation via Self-Synthesized Rationales\n\n### NeurIPS 2025\n- **Retrieval is Not Enough**: Enhancing RAG through Test-Time Critique and Optimization\n- **Cooperative Retrieval-Augmented Generation for Question Answering**\n- **GFM-RAG**: Graph Foundation Model for Retrieval Augmented Generation\n- **HyperGraphRAG**: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation\n\n### ICML 2025\n- **RAGGED**: Towards Informed Design of Scalable and Stable RAG Systems\n- **On the Vulnerability of Applying RAG within Knowledge-Intensive Application Domains**\n\n## 研究方向趋势\n\n从搜索结果看，RAG 研究主要集中在：\n1. **性能优化**：提升检索效率和生成质量\n2. **多模态扩展**：视觉 RAG、视频 RAG\n3. **理论基础**：token-level 协调理论\n4. **系统稳定性**：可扩展和稳定的 RAG 系统设计\n5. **安全与验证**：领域自适应、基础验证\n\n## 建议\n如果您想深入了解特定方面，可以告诉我您对 RAG 的哪个方向感兴趣，比如：\n- 多模态 RAG（视觉、视频）\n- RAG 的理论基础\n- 实际应用和系统设计\n- 安全性和可靠性问题\n\n我可以为您提供更具体的论文推荐。",
+    "total_duration_s": 37.32,
+    "tool_match": true
+  },
+  {
+    "id": 5,
+    "question": "有哪些论文研究了 chain-of-thought prompting？",
+    "question_type": "search",
+    "expected_tools": [
+      "search_abstracts"
+    ],
+    "actual_tools": [
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"\\\"chain-of-thought\\\" prompting OR \\\"chain of thought\\\" prompting\", \"limit\": 20}",
+        "output": "content=\"[1] Causal Prompting: Debiasing Large Language Model Prompting Based on Front-Door Adjustment\\n    ID: aaai-2025-34777 | AAAI 2025 | 引用: 9 | 相关度: 0.0881\\n    摘要片段: 【prompting】 methods, such as In-Context Learning and 【Chain】-of-【Thought】 for Large Language Models (LLMs), they\\n\\n[2] Can Language Models Perform Robust Reasoning in Chain-of-thought Prompting with Noisy Rationales?\\n    ID: neurips-2024-dfaa29ed28dfa175 | NeurIPS 2024 | 引用: 1 | 相关度: 0.0857\\n    摘要片段: 【prompting】 with clean rationales, base LLM drops by 1.4%-19.8% in accuracy with irrelevant 【thoughts】 and more drastically by 2.2%-40.4% with inaccurate 【thoughts】. Addressing this challenge necessitates external supervision that should be accessible in practice. Here, we propose the method of contrastive denoising with",
+        "duration_s": 1.99
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"CoT prompting OR \\\"chain of thought\\\" OR \\\"chain-of-thought\\\" reasoning\", \"limit\": 20}",
+        "output": "content='[1] Cross-lingual Prompting: Improving Zero-shot Chain-of-Thought Reasoning across Languages\\n    ID: emnlp-2023-main-163 | EMNLP 2023 | 引用: 21 | 相关度: 0.0861\\n    摘要片段: 【Chain】-of-【thought】 (【CoT】) is capable of eliciting models to explicitly generate 【reasoning】 paths, thus promoting 【reasoning】 accuracy\\n\\n[2] Can Language Models Perform Robust Reasoning in Chain-of-thought Prompting with Noisy Rationales?\\n    ID: neurips-2024-dfaa29ed28dfa175 | NeurIPS 2024 | 引用: 1 | 相关度: 0.0846\\n    摘要片段: 【chain】-of-【thought】 【prompting】 with noisy rationales, which include irrelevant or inaccurate 【reasoning】 【thoughts】 within examples used\\n\\n[3] Chain-of-Thought Reasoning Without Prompting\\n    ID: neurips-2024-7a8e7fd295aa04ea | NeurIPS 2024 | 引用: 13 | 相关度: 0.0837\\n    摘要片段: 【chain】-of-【t",
+        "duration_s": 2.03
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, year, COUNT(*) as paper_count FROM papers WHERE 'chain-of-thought' = ANY(directions) OR 'CoT' = ANY(directions) GROUP BY conference, year ORDER BY year DESC, paper_count DESC\"}",
+        "output": "content='conference | year | paper_count\\n-------------------------------\\nNeurIPS | 2025 | 6\\nICLR | 2025 | 5\\nICLR | 2024 | 1\\nICLR | 2023 | 2' name='execute_sql' tool_call_id='call_00_ZrpzE7DfhuUIzah7kzuO5P2a'",
+        "duration_s": 0.02
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT title, conference, year, citations, directions FROM papers WHERE 'chain-of-thought' = ANY(directions) OR 'CoT' = ANY(directions) ORDER BY citations DESC LIMIT 15\"}",
+        "output": "content=\"title | conference | year | citations | directions\\n--------------------------------------------------\\nLanguage Models Are Greedy Reasoners: A Systematic Formal Analysis of Chain-of-Thought | ICLR | 2023 | 38 | ['large language models', 'reasoning', 'question answering', 'chain-of-thought', 'in-context learning']\\nBadChain: Backdoor Chain-of-Thought Prompting for Large Language Models | ICLR | 2024 | 8 | ['large language model', 'chain-of-thought', 'backdoor attack', 'reasoning task']\\nChain-of-Action: Faithful and Multimodal Question Answering through Large Language Models | ICLR | 2025 | 2 | ['large language model', 'question answering', 'chain-of-thought']\\nTraining Large Language Models for Retrieval-Augmented Question Answering through Backtracking Correction | ICLR | 2025 |",
+        "duration_s": 0.04
+      }
+    ],
+    "final_answer": "我来帮您查找研究 chain-of-thought prompting 的论文。首先让我搜索相关的论文。让我再搜索一些相关的变体，以确保覆盖更多相关论文：现在让我查看数据库中关于 chain-of-thought 研究的统计信息：让我再查看一些高引用的 chain-of-thought 相关论文：基于搜索结果，我为您整理了研究 chain-of-thought prompting 的主要论文：\n\n## 高影响力论文\n\n### 1. **Self-Consistency Improves Chain of Thought Reasoning in Language Models** (ICLR 2023, 667引用)\n- **ID**: iclr-2023-1PL1NIMMrw\n- 提出自洽性方法，通过采样多个推理路径并投票选择最一致的答案来改进 CoT\n\n### 2. **Least-to-Most Prompting Enables Complex Reasoning in Large Language Models** (ICLR 2023, 317引用)\n- **ID**: iclr-2023-WZH7099tgfM\n- 提出从简到难的提示方法，将复杂问题分解为更简单的子问题\n\n### 3. **Automatic Chain of Thought Prompting in Large Language Models** (ICLR 2023, 233引用)\n- **ID**: iclr-2023-5NTt8GFjUHkr\n- 研究自动生成 CoT 提示的方法\n\n### 4. **Language Models Are Greedy Reasoners: A Systematic Formal Analysis of Chain-of-Thought** (ICLR 2023, 38引用)\n- **ID**: iclr-2023-qFVVBzXxR2V\n- 对 CoT 进行形式化分析，揭示其局限性\n\n## 近期重要研究\n\n### 5. **Chain-of-Thought Reasoning Without Prompting** (NeurIPS 2024, 13引用)\n- **ID**: neurips-2024-7a8e7fd295aa04ea\n- 研究无需显式提示的链式思维推理能力\n\n### 6. **BadChain: Backdoor Chain-of-Thought Prompting for Large Language Models** (ICLR 2024, 8引用)\n- **ID**: iclr-2024-c93SBwz1Ma\n- 研究 CoT 提示中的后门攻击问题\n\n### 7. **Can Language Models Perform Robust Reasoning in Chain-of-thought Prompting with Noisy Rationales?** (NeurIPS 2024, 1引用)\n- **ID**: neurips-2024-dfaa29ed28dfa175\n- 研究在噪声推理情况下的鲁棒性\n\n### 8. **Cross-lingual Prompting: Improving Zero-shot Chain-of-Thought Reasoning across Languages** (EMNLP 2023, 21引用)\n- **ID**: emnlp-2023-main-163\n- 研究跨语言的零样本 CoT 推理\n\n## 应用与扩展研究\n\n### 9. **Synthetic Prompting: Generating Chain-of-Thought Demonstrations for Large Language Models** (ICML 2023, 10引用)\n- **ID**: icml-2023-shao23a\n- 研究自动生成 CoT 演示的方法\n\n### 10. **Prompting Large Language Models with Chain-of-Thought for Few-Shot Knowledge Base Question Generation** (EMNLP 2023, 21引用)\n- **ID**: emnlp-2023-main-263\n- 将 CoT 应用于知识库问答生成\n\n### 11. **CoF-CoT: Enhancing Large Language Models with Coarse-to-Fine Chain-of-Thought Prompting for Multi-domain NLU Tasks** (EMNLP 2023, 7引用)\n- **ID**: emnlp-2023-main-743\n- 提出从粗到细的 CoT 提示方法\n\n### 12. **Chain-of-Thought Tuning: Masked Language Models can also Think Step By Step in Natural Language Understanding** (EMNLP 2023, 3引用)\n- **ID**: emnlp-2023-main-913\n- 研究掩码语言模型的 CoT 调优\n\n## 2025年最新研究\n\n### 13. **To CoT or not to CoT? Chain-of-thought helps mainly on math and symbolic reasoning** (ICLR 2025, 9引用)\n- **ID**: iclr-2025-w6nlcS8Kkn\n- 分析 CoT 在数学和符号推理中的有效性\n\n### 14. **Causal Prompting: Debiasing Large Language Model Prompting Based on Front-Door Adjustment** (AAAI 2025, 9引用)\n- **ID**: aaai-2025-34777\n- 研究基于因果推理的提示去偏方法\n\n### 15. **CDW-CoT: Clustered Distance-Weighted Chain-of-Thoughts Reasoning** (AAAI 2025, 1引用)\n- **ID**: aaai-2025-34560\n- 提出聚类距离加权的 CoT 推理方法\n\n## 研究方向趋势\n\n从搜索结果看，chain-of-thought prompting 的研究主要集中在以下几个方向：\n\n1. **基础理论研究**：分析 CoT 的工作原理、形式化分析和理论边界\n2. **方法改进**：自洽性、从简到难、自动生成提示等改进策略\n3. **鲁棒性研究**：处理噪声推理、后门攻击等安全问题\n4. **跨领域应用**：多语言、多模态、特定任务（如知识库问答）的应用\n5. **最新趋势**：无需提示的推理、因果推理、聚类方法等创新\n\n这些论文覆盖了从 2023 年到 2025 年的重要研究成果，反映了 CoT 提示技术从基础研究到实际应用的快速发展。",
+    "total_duration_s": 59.89,
+    "tool_match": true
+  },
+  {
+    "id": 6,
+    "question": "有哪些论文讨论了如何减少大语言模型的幻觉问题？",
+    "question_type": "content",
+    "expected_tools": [
+      "search_abstracts"
+    ],
+    "actual_tools": [
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"hallucination reduction OR hallucination mitigation large language models\", \"limit\": 15}",
+        "output": "content=\"[1] Understanding and Mitigating Hallucination in Large Vision-Language Models via Modular Attribution and Intervention\\n    ID: iclr-2025-Bjq4W7P2Us | ICLR 2025 | 引用: 0 | 相关度: 0.0813\\n    摘要片段: 【Large】 Vision-【Language】 【Models】 (LVLMs) exhibit impressive capabilities in complex visual tasks but are prone to 【hallucination】, especially in open-ended generation tasks. This paper explores why LVLMs tend to 【hallucinate】 and how to 【mitigate】\\n\\n[2] Hallucination Reduction in Video-Language Models via Hierarchical Multimodal Consistency\\n    ID: ijcai-2025-1019 | IJCAI 2025 | 引用: 0 | 相关度: 0.0744\\n    摘要片段: 【large】 【language】 【models】 (LLMs) has led to the widespread adoption of video-【language】 【models】 (VLMs) across various domains. However, VLMs are often hindered by their limited",
+        "duration_s": 2.25
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"\\\"reduce hallucination\\\" OR \\\"hallucination detection\\\" OR \\\"factuality\\\" LLM\", \"limit\": 10}",
+        "output": "content='[1] Alleviating Hallucinations in Large Language Models through Multi-Model Contrastive Decoding and Dynamic Hallucination Detection\\n    ID: neurips-2025-QH2xGLgObM | NeurIPS 2025 | 引用: 0 | 相关度: 0.0645\\n    摘要片段: 【hallucination】 【detection】 mechanism that facilitates token-by-token identification of 【hallucinations】 during generation and a tree-based revision\\n\\n[2] SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models\\n    ID: emnlp-2023-main-557 | EMNLP 2023 | 引用: 249 | 相关度: 0.0641\\n    摘要片段: 【LLM】 has knowledge of a given concept, sampled responses are likely to be similar and contain consistent facts. However, for 【hallucinated】 facts, stochastically sampled responses are likely to diverge and contradict one another. We investigate",
+        "duration_s": 2.0
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"contrastive decoding OR self-consistency OR retrieval augmentation hallucination\", \"limit\": 10}",
+        "output": "content=\"[1] INSIDE: LLMs' Internal States Retain the Power of Hallucination Detection\\n    ID: iclr-2024-Zj12nzlQbz | ICLR 2024 | 引用: 3 | 相关度: 0.0498\\n    摘要片段: 【self】-【consistency】 evaluation, where the semantic information is inevitably lost during the token-【decoding】 procedure. Thus, we propose to explore\\n\\n[2] CODE: Contrasting Self-generated Description to Combat Hallucination in Large Multi-modal Models\\n    ID: neurips-2024-f1592b0d4ab737e1 | NeurIPS 2024 | 引用: 2 | 相关度: 0.0496\\n    摘要片段: 【contrastive】-based 【decoding】 method, COuntering DEscription 【Contrastive】 【Decoding】 (CODE), which leverages 【self】-generated descriptions as 【contrasting】 references during the 【decoding】\\n\\n[3] RealRAG: Retrieval-augmented Realistic Image Generation via Self-reflective Contrastive Learning\\n ",
+        "duration_s": 1.92
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, year, COUNT(*) as paper_count \\nFROM papers \\nWHERE 'Hallucination' = ANY(directions) OR 'Factuality' = ANY(directions)\\nGROUP BY conference, year \\nORDER BY year DESC, paper_count DESC\"}",
+        "output": "content='conference | year | paper_count\\n-------------------------------\\nNeurIPS | 2025 | 11\\nICLR | 2025 | 10\\nICLR | 2024 | 3\\nICLR | 2023 | 1\\nICLR | 2020 | 1' name='execute_sql' tool_call_id='call_00_bTCS0S6Q90DaD1ODqlY2Vuc5'",
+        "duration_s": 0.04
+      }
+    ],
+    "final_answer": "我来帮您查找讨论减少大语言模型幻觉问题的论文。首先，让我搜索相关的论文。现在让我再搜索一些更具体的幻觉减少技术：让我再搜索一些关于幻觉减少的具体方法：现在让我查看一下数据库中关于幻觉问题的论文统计信息：基于搜索结果，我为您整理了一些讨论如何减少大语言模型幻觉问题的论文：\n\n## 幻觉减少方法概览\n\n### 1. **幻觉检测与缓解框架**\n- **HaDeMiF: Hallucination Detection and Mitigation in Large Language Models** (ICLR 2025)\n  提出一个先进的检测和缓解框架，通过校准模型预测来提高检测准确性。\n\n- **SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models** (EMNLP 2023, 引用249)\n  基于随机采样响应的相似性来检测幻觉事实，无需外部资源。\n\n- **INSIDE: LLMs' Internal States Retain the Power of Hallucination Detection** (ICLR 2024)\n  探索LLM内部状态中编码的真实性信息，用于幻觉检测。\n\n### 2. **解码策略优化**\n- **DoLa: Decoding by Contrasting Layers Improves Factuality in Large Language Models** (ICLR 2024, 引用17)\n  通过对比不同层的激活来改进事实性，无需外部知识检索或额外微调。\n\n- **Alleviating Hallucinations in Large Language Models through Multi-Model Contrastive Decoding and Dynamic Hallucination Detection** (NeurIPS 2025)\n  结合多模型对比解码和动态幻觉检测机制。\n\n- **CODE: Contrasting Self-generated Description to Combat Hallucination in Large Multi-modal Models** (NeurIPS 2024)\n  利用自生成描述作为对比参考的对比解码方法。\n\n### 3. **检索增强生成(RAG)方法**\n- **Mitigating Large Language Model Hallucinations via Autonomous Knowledge Graph-Based Retrofitting** (AAAI 2024, 引用50)\n  基于知识图谱的自主改造来缓解LLM幻觉。\n\n- **ReDeEP: Detecting Hallucination in Retrieval-Augmented Generation via Mechanistic Interpretability** (ICLR 2025)\n  通过机制可解释性检测RAG中的幻觉。\n\n- **Benchmarking Multimodal Retrieval Augmented Generation with Dynamic VQA Dataset and Self-adaptive Planning Agent** (ICLR 2025)\n  多模态检索增强生成在缓解幻觉中的作用。\n\n### 4. **多模态模型中的幻觉缓解**\n- **Understanding and Mitigating Hallucination in Large Vision-Language Models via Modular Attribution and Intervention** (ICLR 2025)\n  通过模块化归因和干预来理解和缓解大型视觉语言模型中的幻觉。\n\n- **Detecting and Mitigating Hallucination in Large Vision Language Models via Fine-Grained AI Feedback** (AAAI 2025, 引用11)\n  通过细粒度AI反馈检测和缓解LVLM中的幻觉。\n\n- **Self-Correcting Decoding with Generative Feedback for Mitigating Hallucinations in Large Vision-Language Models** (ICLR 2025)\n  利用生成反馈进行自校正解码来缓解幻觉。\n\n### 5. **特定类型的幻觉处理**\n- **Whispers that Shake Foundations: Analyzing and Mitigating False Premise Hallucinations in Large Language Models** (EMNLP 2024, 引用5)\n  分析和缓解错误前提幻觉。\n\n- **ANAH-v2: Scaling Analytical Hallucination Annotation of Large Language Models** (NeurIPS 2024)\n  扩展LLM幻觉的分析性标注。\n\n### 6. **事实性验证方法**\n- **FactTest: Factuality Testing in Large Language Models with Finite-Sample and Distribution-Free Guarantees** (ICML 2025)\n  具有有限样本和无分布保证的事实性测试。\n\n- **KCTS: Knowledge-Constrained Tree Search Decoding with Token-Level Hallucination Detection** (EMNLP 2023, 引用6)\n  结合知识约束树搜索和令牌级幻觉检测。\n\n## 主要技术趋势\n\n1. **检测优先**：大多数方法首先关注准确检测幻觉，然后进行缓解\n2. **内部状态利用**：越来越多的研究关注LLM内部状态中编码的真实性信息\n3. **对比学习**：对比解码成为减少幻觉的有效策略\n4. **多模态扩展**：幻觉问题在多模态场景中更加复杂，需要专门的解决方案\n5. **RAG集成**：检索增强生成成为缓解幻觉的重要技术路径\n\n这些论文涵盖了从基础检测方法到高级缓解策略的各个方面，反映了当前研究界对减少LLM幻觉问题的广泛关注。",
+    "total_duration_s": 54.16,
+    "tool_match": true
+  },
+  {
+    "id": 7,
+    "question": "NeurIPS 2023 中引用量前 3 的论文讨论了什么主题？",
+    "question_type": "mixed",
+    "expected_tools": [
+      "execute_sql",
+      "search_abstracts"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT id, title, citations, directions FROM papers WHERE year=2023 AND conference='NeurIPS' ORDER BY citations DESC LIMIT 3\"}",
+        "output": "content=\"id | title | citations | directions\\n-----------------------------------\\nneurips-2023-6dcf277ea32ce328 | Visual Instruction Tuning | 667 | ['Encoder', 'Code (set theory)', 'Field (mathematics)', 'Language model', 'Artificial intelligence', 'Natural language processing', 'Programming language']\\nneurips-2023-271db9922b8d1f4d | Tree of Thoughts: Deliberate Problem Solving with Large Language Models | 557 | ['Backtracking', 'Security token', 'Inference', 'Tree (set theory)', 'Artificial intelligence', 'Code (set theory)', 'Range (aeronautics)', 'Action (physics)', 'Language model', 'Cognitive science']\\nneurips-2023-1feb87871436031b | QLoRA: Efficient Finetuning of Quantized LLMs | 484 | ['Benchmark (surveying)', 'Memory footprint', 'Quantization (signal processing)', 'Language mode",
+        "duration_s": 0.01
+      },
+      {
+        "name": "vector_search",
+        "input": "{\"query\": \"Visual Instruction Tuning 论文的主要内容和主题是什么？\"}",
+        "output": "content='内容检索服务返回错误（HTTP 404），请稍后重试。' name='vector_search' tool_call_id='call_00_YIxsO8dgSb0oh29UtAvgNWVF'",
+        "duration_s": 0.04
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"\\\"Visual Instruction Tuning\\\" LLaVA\", \"limit\": 5}",
+        "output": "content='[1] Visual Instruction Tuning\\n    ID: neurips-2023-6dcf277ea32ce328 | NeurIPS 2023 | 引用: 667 | 相关度: 0.8405\\n    摘要片段: 【LLaVA】 and GPT-4 achieves a new state-of-the-art accuracy of 92.53%. We make GPT-4 generated 【visual】 【instruction】 【tuning】\\n\\n[2] MAVIS: Mathematical Visual Instruction Tuning with an Automatic Data Engine\\n    ID: iclr-2025-MnJzJ2gvuf | ICLR 2025 | 引用: 1 | 相关度: 0.6184\\n    摘要片段: 【VISual】 【instruction】 【tuning】 pipeline for MLLMs, featuring an automatic data engine to efficiently create mathematical 【visual】 datasets.\\nWe design the data generation process to be entirely independent of human intervention or GPT API usage, while ensuring the diagram-caption correspondence, question-answer correctness, and CoT reasoning quality. With this approach, we curate two ",
+        "duration_s": 1.95
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"\\\"Tree of Thoughts\\\" deliberate problem solving large language models\", \"limit\": 5}",
+        "output": "content='[1] Tree of Thoughts: Deliberate Problem Solving with Large Language Models\\n    ID: neurips-2023-271db9922b8d1f4d | NeurIPS 2023 | 引用: 557 | 相关度: 0.9989\\n    摘要片段: 【Language】 【models】 are increasingly being deployed for general 【problem】 【solving】 across a wide range of tasks, but are still confined\\n\\n[2] Chain of Preference Optimization: Improving Chain-of-Thought Reasoning in LLMs\\n    ID: neurips-2024-00d80722b756de01 | NeurIPS 2024 | 引用: 6 | 相关度: 0.7588\\n    摘要片段: 【large】 【language】 【models】 (LLMs) to generate explicit logical reasoning paths for complex 【problem】-【solving】. However, research indicates that these paths are not always 【deliberate】 and optimal. The 【tree】-of-【thought】\\n\\n共找到 2 篇相关论文（按相关度排序）。' name='search_abstracts' tool_call_id='call_00_7ZiSaWdi3wF6Lgo2zbyuDo",
+        "duration_s": 1.91
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"QLoRA efficient finetuning quantized large language models\", \"limit\": 5}",
+        "output": "content='[1] From PEFT to DEFT: Parameter Efficient Finetuning for Reducing Activation Density in Transformers\\n    ID: aaai-2025-34227 | AAAI 2025 | 引用: 0 | 相关度: 0.6289\\n    摘要片段: Pretrained 【Language】 【Models】 (PLMs) have become the de facto starting point for fine-tuning on downstream tasks. However, as 【model】\\n\\n共找到 1 篇相关论文（按相关度排序）。' name='search_abstracts' tool_call_id='call_00_qG40HqGpqSt6cv85gb3qNy8Q'",
+        "duration_s": 1.99
+      },
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"QLoRA quantization low-rank adaptation\", \"limit\": 5}",
+        "output": "content='[1] LQ-LoRA: Low-rank plus Quantized Matrix Decomposition for Efficient Language Model Finetuning\\n    ID: iclr-2024-xw29VvOMmU | ICLR 2024 | 引用: 2 | 相关度: 0.9453\\n    摘要片段: 【adaptation】 of pretrained language models. Our approach uses an iterative  algorithm  to decompose each  pretrained  matrix into a high-precision 【low】-【rank】 component  and a memory-efficient 【quantized】 component. During finetuning, the 【quantized】 component remains fixed and only the  【low】-【rank】 component is updated. We present an integer linear programming formulation of the 【quantization】 component which enables dynamic  configuration\\n\\n共找到 1 篇相关论文（按相关度排序）。' name='search_abstracts' tool_call_id='call_00_6rCS1ZZyts8LBMy9TGGRlzYg'",
+        "duration_s": 2.15
+      }
+    ],
+    "final_answer": "我来帮您查询 NeurIPS 2023 中引用量最高的前 3 篇论文，然后了解它们的主题。\n\n首先，让我查询 NeurIPS 2023 中引用量最高的论文：现在让我使用向量搜索来了解这些论文的具体主题和内容：让我改用关键词搜索来了解这些论文的主题：让我再尝试搜索 QLoRA 的更多信息：基于查询结果，我来为您总结 NeurIPS 2023 中引用量前 3 的论文主题：\n\n## NeurIPS 2023 引用量前 3 的论文主题分析\n\n### 1. **Visual Instruction Tuning** (引用量：667)\n- **论文ID**: neurips-2023-6dcf277ea32ce328\n- **主题**: 视觉指令调优\n- **主要内容**: 这篇论文提出了 LLaVA（Large Language and Vision Assistant），通过视觉指令调优来对齐视觉和语言能力。论文展示了如何利用 GPT-4 生成视觉指令调优数据，使模型在视觉问答任务上达到 92.53% 的准确率，创造了新的最先进水平。\n- **研究方向**: 多模态学习、视觉语言模型、指令调优\n\n### 2. **Tree of Thoughts: Deliberate Problem Solving with Large Language Models** (引用量：557)\n- **论文ID**: neurips-2023-271db9922b8d1f4d\n- **主题**: 思维树框架\n- **主要内容**: 提出了 \"Tree of Thoughts\"（ToT）框架，使大型语言模型能够进行深思熟虑的问题解决。该框架扩展了传统的链式思维推理，允许模型探索多种推理路径，进行回溯，并在解决问题时做出有意识的决策。\n- **研究方向**: 推理增强、问题解决、思维链扩展\n\n### 3. **QLoRA: Efficient Finetuning of Quantized LLMs** (引用量：484)\n- **论文ID**: neurips-2023-1feb87871436031b\n- **主题**: 量化大语言模型的高效微调\n- **主要内容**: 提出了 QLoRA（Quantized Low-Rank Adaptation）方法，用于在量化的大语言模型上进行高效微调。该方法通过低秩适配技术，在保持模型性能的同时显著减少内存占用，使得在有限资源下微调大型模型成为可能。\n- **研究方向**: 模型压缩、高效微调、量化技术\n\n## 总结\n这三篇高引论文代表了 NeurIPS 2023 的重要研究方向：\n1. **多模态学习**：视觉与语言的融合（Visual Instruction Tuning）\n2. **推理增强**：提升 LLM 的复杂问题解决能力（Tree of Thoughts）\n3. **高效训练**：降低大模型微调的资源需求（QLoRA）\n\n这些论文都聚焦于提升大型语言模型的实际应用能力，分别从多模态理解、推理能力和训练效率三个关键维度推进了 AI 技术的发展。",
+    "total_duration_s": 51.55,
+    "tool_match": true
+  },
+  {
+    "id": 8,
+    "question": "2024 年关于 diffusion model 的论文主要发表在哪些会议？",
+    "question_type": "mixed",
+    "expected_tools": [
+      "execute_sql"
+    ],
+    "actual_tools": [
+      {
+        "name": "search_abstracts",
+        "input": "{\"query\": \"diffusion model OR diffusion models 2024\", \"limit\": 20}",
+        "output": "content=\"[1] Critical windows: non-asymptotic theory for feature emergence in diffusion models\\n    ID: icml-2024-li24g | ICML 2024 | 引用: 0 | 相关度: 0.0844\\n    摘要片段: 【diffusion】 【models】 for image generation that we term critical windows. Empirically, it has been observed that there are narrow\\n\\n[2] Improved Convergence Rate for Diffusion Probabilistic Models\\n    ID: iclr-2025-SOd07Qxkw4 | ICLR 2025 | 引用: 0 | 相关度: 0.0788\\n    摘要片段: 【diffusion】 【models】, including mainly convergence analysis for such 【models】, has attracted a lot of interests. Despite a lot of theoretical\\n\\n[3] Consistency Models Made Easy\\n    ID: iclr-2025-xQVxo9dSID | ICLR 2025 | 引用: 0 | 相关度: 0.0785\\n    摘要片段: 【models】 (CMs) offer faster sampling than traditional 【diffusion】 【models】, but their training is resource-int",
+        "duration_s": 1.96
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, COUNT(*) as paper_count FROM papers WHERE year = 2024 GROUP BY conference ORDER BY paper_count DESC\"}",
+        "output": "content='conference | paper_count\\n------------------------\\nNeurIPS | 4035\\nAAAI | 2865\\nICML | 2610\\nICLR | 2260\\nEMNLP | 1268\\nIJCAI | 1048\\nACL | 939\\nNAACL | 561\\nWWW | 160\\nKDD | 151' name='execute_sql' tool_call_id='call_00_MLJ33V5BuI3iE6fQmI4oGLuw'",
+        "duration_s": 0.05
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, COUNT(*) as diffusion_paper_count FROM papers WHERE year = 2024 AND ('diffusion' = ANY(directions) OR title ILIKE '%diffusion%' OR abstract ILIKE '%diffusion%') GROUP BY conference ORDER BY diffusion_paper_count DESC\"}",
+        "output": "content='conference | diffusion_paper_count\\n----------------------------------\\nNeurIPS | 412\\nICLR | 258\\nICML | 183\\nAAAI | 178\\nIJCAI | 67\\nNAACL | 8\\nKDD | 6\\nACL | 6\\nWWW | 3\\nEMNLP | 2' name='execute_sql' tool_call_id='call_00_L3D63tJIG09JUwBNKvYTmMbh'",
+        "duration_s": 0.11
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT \\n    p.conference,\\n    COUNT(*) as total_papers,\\n    COUNT(CASE WHEN 'diffusion' = ANY(p.directions) OR p.title ILIKE '%diffusion%' OR p.abstract ILIKE '%diffusion%' THEN 1 END) as diffusion_papers,\\n    ROUND(COUNT(CASE WHEN 'diffusion' = ANY(p.directions) OR p.title ILIKE '%diffusion%' OR p.abstract ILIKE '%diffusion%' THEN 1 END) * 100.0 / COUNT(*), 2) as percentage\\nFROM papers p\\nWHERE p.year = 2024\\nGROUP BY p.conference\\nHAVING COUNT(*) > 0\\nORDER BY diffusion_papers DE",
+        "output": "content='conference | total_papers | diffusion_papers | percentage\\n---------------------------------------------------------\\nNeurIPS | 4035 | 412 | 10.21\\nICLR | 2260 | 258 | 11.42\\nICML | 2610 | 183 | 7.01\\nAAAI | 2865 | 178 | 6.21\\nIJCAI | 1048 | 67 | 6.39\\nNAACL | 561 | 8 | 1.43\\nKDD | 151 | 6 | 3.97\\nACL | 939 | 6 | 0.64\\nWWW | 160 | 3 | 1.88\\nEMNLP | 1268 | 2 | 0.16' name='execute_sql' tool_call_id='call_00_o7lmZyz5OtIIQSFG6DmWLyL6'",
+        "duration_s": 0.13
+      }
+    ],
+    "final_answer": "我来帮您查询2024年关于扩散模型（diffusion model）的论文发表情况。首先，让我搜索相关论文，然后分析它们的会议分布。现在让我查询数据库中2024年所有论文的会议分布，以便了解扩散模型论文在整体中的占比：现在让我专门查询2024年关于扩散模型的论文在各会议中的分布情况：让我再查询一下2024年扩散模型论文在各会议中的占比情况：根据查询结果，我可以为您详细分析2024年关于扩散模型（Diffusion Model）的论文发表情况：\n\n## 2024年扩散模型论文会议分布\n\n### 主要发表会议（按论文数量排序）：\n\n1. **NeurIPS** - 412篇（占比10.21%）\n   - 2024年发表扩散模型论文最多的会议\n   - 在4035篇总论文中，有412篇涉及扩散模型\n\n2. **ICLR** - 258篇（占比11.42%）\n   - 扩散模型论文占比最高的会议\n   - 在2260篇总论文中，有258篇涉及扩散模型，占比达11.42%\n\n3. **ICML** - 183篇（占比7.01%）\n   - 机器学习领域的顶级会议\n   - 在2610篇总论文中，有183篇涉及扩散模型\n\n4. **AAAI** - 178篇（占比6.21%）\n   - 人工智能综合会议\n   - 在2865篇总论文中，有178篇涉及扩散模型\n\n5. **IJCAI** - 67篇（占比6.39%）\n   - 国际人工智能联合会议\n   - 在1048篇总论文中，有67篇涉及扩散模型\n\n### 其他会议（论文数量较少）：\n- **NAACL**：8篇（占比1.43%）\n- **KDD**：6篇（占比3.97%）\n- **ACL**：6篇（占比0.64%）\n- **WWW**：3篇（占比1.88%）\n- **EMNLP**：2篇（占比0.16%）\n\n### 关键发现：\n\n1. **顶级机器学习会议是扩散模型研究的主要阵地**：NeurIPS、ICLR、ICML三个会议合计发表了853篇扩散模型相关论文，占总数的绝大部分。\n\n2. **ICLR扩散模型研究密度最高**：虽然NeurIPS发表数量最多，但ICLR的扩散模型论文占比最高（11.42%），显示该会议对生成模型研究的重视程度。\n\n3. **自然语言处理会议相对较少**：ACL、EMNLP、NAACL等NLP会议的扩散模型论文数量较少，这可能是因为扩散模型在NLP领域的应用相对较新。\n\n4. **扩散模型已成为主流研究方向**：在顶级会议中，扩散模型相关论文占比普遍在6-11%之间，表明这是一个活跃且重要的研究领域。\n\n### 代表性论文示例（来自搜索结果）：\n- **ICML 2024**：《Critical windows: non-asymptotic theory for feature emergence in diffusion models》\n- **NeurIPS 2024**：《Constrained Diffusion Models via Dual Training》\n- **ICLR 2024**：《Diffusion Models for Multi-Task Generative Modeling》\n\n这些数据表明，2024年扩散模型的研究主要集中在机器学习领域的顶级会议上，特别是NeurIPS、ICLR和ICML。",
+    "total_duration_s": 50.36,
+    "tool_match": true
+  },
+  {
+    "id": 9,
+    "question": "对比 2023 和 2024 年，各会议收录论文数量变化趋势如何？",
+    "question_type": "sql",
+    "expected_tools": [
+      "execute_sql"
+    ],
+    "actual_tools": [
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT conference, year, COUNT(*) as paper_count \\nFROM papers \\nWHERE year IN (2023, 2024) AND conference IS NOT NULL\\nGROUP BY conference, year\\nORDER BY conference, year\"}",
+        "output": "content='conference | year | paper_count\\n-------------------------------\\nAAAI | 2023 | 2023\\nAAAI | 2024 | 2865\\nACL | 2023 | 1071\\nACL | 2024 | 939\\nEMNLP | 2023 | 1046\\nEMNLP | 2024 | 1268\\nICLR | 2023 | 3792\\nICLR | 2024 | 2260\\nICML | 2023 | 1828\\nICML | 2024 | 2610\\nIJCAI | 2023 | 851\\nIJCAI | 2024 | 1048\\nKDD | 2023 | 177\\nKDD | 2024 | 151\\nNAACL | 2024 | 561\\nNeurIPS | 2023 | 3218\\nNeurIPS | 2024 | 4035\\nWWW | 2023 | 198\\nWWW | 2024 | 160' name='execute_sql' tool_call_id='call_00_9KK0lUkiGMHmwJP7Tb2WaWSJ'",
+        "duration_s": 0.08
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"WITH yearly_counts AS (\\n    SELECT conference, year, COUNT(*) as paper_count \\n    FROM papers \\n    WHERE year IN (2023, 2024) AND conference IS NOT NULL\\n    GROUP BY conference, year\\n),\\npivot_data AS (\\n    SELECT \\n        conference,\\n        MAX(CASE WHEN year = 2023 THEN paper_count END) as count_2023,\\n        MAX(CASE WHEN year = 2024 THEN paper_count END) as count_2024\\n    FROM yearly_counts\\n    GROUP BY conference\\n)\\nSELECT \\n    conference,\\n    COALESCE(count_2023, 0)",
+        "output": "content='只允许 SELECT 查询操作，禁止执行其他 SQL 语句。' name='execute_sql' tool_call_id='call_00_APqySiGQDH2955dqbiww5Nc3'",
+        "duration_s": 0.0
+      },
+      {
+        "name": "execute_sql",
+        "input": "{\"sql\": \"SELECT \\n    conference,\\n    SUM(CASE WHEN year = 2023 THEN 1 ELSE 0 END) as count_2023,\\n    SUM(CASE WHEN year = 2024 THEN 1 ELSE 0 END) as count_2024,\\n    SUM(CASE WHEN year = 2024 THEN 1 ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN 1 ELSE 0 END) as change_absolute,\\n    ROUND(\\n        CASE \\n            WHEN SUM(CASE WHEN year = 2023 THEN 1 ELSE 0 END) = 0 THEN NULL\\n            ELSE (SUM(CASE WHEN year = 2024 THEN 1 ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN 1 ELSE 0 END)) * 1",
+        "output": "content='conference | count_2023 | count_2024 | change_absolute | change_percent\\n-----------------------------------------------------------------------\\nICLR | 3792 | 2260 | -1532 | -40.40\\nAAAI | 2023 | 2865 | 842 | 41.62\\nNeurIPS | 3218 | 4035 | 817 | 25.39\\nICML | 1828 | 2610 | 782 | 42.78\\nNAACL | 0 | 561 | 561 | None\\nEMNLP | 1046 | 1268 | 222 | 21.22\\nIJCAI | 851 | 1048 | 197 | 23.15\\nACL | 1071 | 939 | -132 | -12.32\\nWWW | 198 | 160 | -38 | -19.19\\nKDD | 177 | 151 | -26 | -14.69' name='execute_sql' tool_call_id='call_00_MSRj1G8FHo9MZ0n2xUaLRROZ'",
+        "duration_s": 0.04
+      }
+    ],
+    "final_answer": "我来帮您分析2023年和2024年各会议收录论文数量的变化趋势。首先查询这两年的论文统计数据。现在让我计算每个会议从2023年到2024年的变化量和变化百分比：让我重新构造查询：基于查询结果，我来分析2023年到2024年各会议收录论文数量的变化趋势：\n\n## 主要发现：\n\n### 📈 **增长显著的会议：**\n1. **AAAI**：从2023年2,023篇增长到2024年2,865篇，**增长842篇（+41.62%）**\n2. **ICML**：从1,828篇增长到2,610篇，**增长782篇（+42.78%）**\n3. **NeurIPS**：从3,218篇增长到4,035篇，**增长817篇（+25.39%）**\n4. **EMNLP**：从1,046篇增长到1,268篇，**增长222篇（+21.22%）**\n5. **IJCAI**：从851篇增长到1,048篇，**增长197篇（+23.15%）**\n\n### 📉 **下降的会议：**\n1. **ICLR**：从3,792篇下降到2,260篇，**大幅减少1,532篇（-40.40%）** - 这是最显著的变化\n2. **ACL**：从1,071篇下降到939篇，**减少132篇（-12.32%）**\n3. **WWW**：从198篇下降到160篇，**减少38篇（-19.19%）**\n4. **KDD**：从177篇下降到151篇，**减少26篇（-14.69%）**\n\n### 🔄 **新增会议：**\n- **NAACL**：2024年有561篇论文，但2023年没有记录\n\n## 趋势分析：\n\n1. **AI顶会整体扩张**：AAAI、ICML、NeurIPS、EMNLP、IJCAI都呈现显著增长，反映了AI研究领域的持续活跃。\n\n2. **ICLR异常下降**：ICLR论文数量大幅减少40.4%，这可能与会议审稿标准变化、投稿策略调整或数据库收录不完整有关。\n\n3. **NLP会议分化**：EMNLP增长21.22%，而ACL下降12.32%，显示NLP领域内部会议吸引力可能发生变化。\n\n4. **计算机科学会议相对稳定**：WWW和KDD变化幅度较小，保持相对稳定的规模。\n\n5. **增长幅度对比**：ICML增长幅度最大（+42.78%），其次是AAAI（+41.62%），显示机器学习相关会议增长最为强劲。\n\n## 总结：\n2023-2024年间，大多数AI顶会论文数量呈增长趋势，特别是机器学习会议（ICML、NeurIPS）和综合AI会议（AAAI）。ICLR的显著下降值得关注，可能需要进一步分析原因。整体来看，AI研究领域仍在快速扩张，但不同会议的发展轨迹存在差异。",
+    "total_duration_s": 50.09,
+    "tool_match": true
+  },
+  {
+    "id": 10,
+    "question": "ICML 2025 有哪些关于 reinforcement learning 的高引论文？",
+    "question_type": "mixed",
+    "expected_tools": [
+      "execute_sql",
+      "search_abstracts"
+    ],
+    "actual_tools": [],
+    "final_answer": "[ERROR] GraphRecursionError: Recursion limit of 25 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+    "total_duration_s": 0.0,
+    "tool_match": false
+  }
+]
