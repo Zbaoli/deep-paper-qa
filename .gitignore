@@ -26,3 +26,6 @@ venv/
 
 # Logs
 logs/
+
+# Worktrees
+.worktrees/
