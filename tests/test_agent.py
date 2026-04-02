@@ -58,3 +58,15 @@ class TestModels:
         )
         assert len(result.chunks) == 1
         assert result.chunks[0].score == 0.95
+
+
+class TestDeepResearchPrompt:
+    """深度研究模式 prompt 测试"""
+
+    def test_system_prompt_contains_deep_research_section(self) -> None:
+        """system prompt 包含深度研究模式规则"""
+        from deep_paper_qa.prompts import SYSTEM_PROMPT
+
+        assert "深度研究模式" in SYSTEM_PROMPT
+        assert "ask_user" in SYSTEM_PROMPT
+        assert "/research" in SYSTEM_PROMPT
