@@ -28,3 +28,10 @@
 {"id": 28, "type": "mixed", "question": "2024 年 RAG 方向的论文和 2025 年的有什么区别？", "expected_tools": ["execute_sql", "vector_search"]}
 {"id": 29, "type": "mixed", "question": "Hinton 最近的论文主要研究什么方向？", "expected_tools": ["execute_sql", "vector_search"]}
 {"id": 30, "type": "mixed", "question": "高引用论文的共同特征是什么？方法上有哪些创新？", "expected_tools": ["execute_sql", "vector_search"]}
+{"id": 31, "type": "research", "question": "/research Transformer 在医学影像分割领域的主流方法有哪些？各自优劣？", "expected_tools": ["ask_user", "vector_search", "search_abstracts"], "note": "综述类：需要分解子问题、多轮检索、调用 ask_user"}
+{"id": 32, "type": "research", "question": "/research 从 2020 到 2025，RAG 技术是怎么发展的？关键节点论文是哪些？", "expected_tools": ["ask_user", "execute_sql", "search_abstracts", "vector_search"], "note": "技术演进：需要时间线检索+内容检索"}
+{"id": 33, "type": "research", "question": "/research 强化学习的方法有没有被用到 NLP 的数据增强里？", "expected_tools": ["ask_user", "vector_search", "search_abstracts"], "note": "跨领域关联：需要分别检索两个领域再找交叉"}
+{"id": 34, "type": "research", "question": "/research 做长文档问答，RAG vs 长上下文 vs 图谱方法，哪种更适合？", "expected_tools": ["ask_user", "vector_search", "search_abstracts"], "note": "方法选型：需要分别检索每种方法再对比"}
+{"id": 35, "type": "research", "question": "/research 多模态大模型在低资源语言上的研究做到什么程度了？还有哪些没覆盖？", "expected_tools": ["ask_user", "vector_search", "execute_sql"], "note": "研究空白发现：需要检索已有工作+推理空白"}
+{"id": 36, "type": "research", "question": "/research 2023-2025 各会议中 LLM 对齐技术的研究热度和方法演变", "expected_tools": ["ask_user", "execute_sql", "search_abstracts"], "note": "趋势+内容混合：需要统计+内容检索"}
+{"id": 37, "type": "research", "question": "/research 知识蒸馏和模型剪枝在大模型压缩中的效果对比", "expected_tools": ["ask_user", "vector_search", "search_abstracts"], "note": "方法对比：需要分别检索两种方法再综合"}
