@@ -102,7 +102,7 @@ async def on_message(message: cl.Message) -> None:
 
                 # ask_user 工具通过 AskUserMessage 自行展示，不创建 Step
                 if tool_name != "ask_user":
-                    step = cl.Step(name=f"🔧 {tool_name}", type="tool")
+                    step = cl.Step(name=tool_name, type="tool")
                     step.input = str(tool_input)
                     await step.send()
                     cl.user_session.set(f"step_{run_id}", step)
