@@ -1,14 +1,19 @@
-# Welcome to Chainlit! 🚀🤖
+# AI 科研论文智能问答助手
 
-Hi there, Developer! 👋 We're excited to have you on board. Chainlit is a powerful tool designed to help you prototype, debug and share applications built on top of LLMs.
+覆盖 **81,913 篇** AI 顶会论文（2020-2025），涵盖 ACL、EMNLP、NeurIPS、ICLR、ICML、AAAI、IJCAI、KDD、NAACL、WWW 等 10 个会议。
 
-## Useful Links 🔗
+## 你可以问什么？
 
-- **Documentation:** Get started with our comprehensive [Chainlit Documentation](https://docs.chainlit.io) 📚
-- **Discord Community:** Join our friendly [Chainlit Discord](https://discord.gg/k73SQ3FyUh) to ask questions, share your projects, and connect with other developers! 💬
+- **统计分析**：各会议论文数量、年度趋势、高引论文排名
+- **关键词搜索**：按研究方向检索论文（如 RAG、知识蒸馏、多模态）
+- **语义搜索**：用自然语言描述你想找的论文，系统基于向量相似度匹配
+- **作者查询**：查找某位作者的发表论文
+- **交叉分析**：对比不同会议/年份/方向的论文分布
 
-We can't wait to see what you create with Chainlit! Happy coding! 💻😊
+## 示例问题
 
-## Welcome screen
-
-To modify the welcome screen, edit the `chainlit.md` file at the root of your project. If you do not want a welcome screen, just leave this file empty.
+- 各会议论文数量是多少？
+- RAG 最近几年的研究趋势怎么样？
+- 推荐一些高引用的大语言模型论文
+- Yann LeCun 发了哪些论文？
+- 对比 NeurIPS 和 ICLR 在 LLM 方向的论文数量
