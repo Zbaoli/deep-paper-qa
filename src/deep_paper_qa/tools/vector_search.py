@@ -1,28 +1,12 @@
 """vector_search 工具：基于 pgvector 的 abstract 语义检索"""
 
-import re
-
 import aiohttp
 from langchain_core.tools import tool
 from loguru import logger
 
 from deep_paper_qa.config import settings
-from deep_paper_qa.tools.execute_sql import get_pool
-
-# 禁止出现在 where 片段中的关键词
-_FORBIDDEN_RE = re.compile(
-    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE|SELECT)\b",
-    re.IGNORECASE,
-)
-
-
-def _validate_where(where: str) -> str | None:
-    """校验 WHERE 片段安全性，返回错误信息或 None 表示通过。"""
-    if ";" in where:
-        return "WHERE 片段不允许包含分号。"
-    if _FORBIDDEN_RE.search(where):
-        return f"WHERE 片段包含禁止关键词: {_FORBIDDEN_RE.search(where).group()}"
-    return None
+from deep_paper_qa.tools.execute_sql import get_readonly_pool
+from deep_paper_qa.tools.sql_utils import validate_where
 
 
 async def _get_embedding(text: str) -> list[float]:
@@ -61,7 +45,7 @@ async def vector_search(query: str, top_k: int = 5, where: str = "") -> str:
 
     # 校验 where 片段
     if where:
-        err = _validate_where(where)
+        err = validate_where(where)
         if err:
             logger.warning("vector_search WHERE 校验失败: {}", err)
             return f"WHERE 条件不合法: {err}"
@@ -78,7 +62,7 @@ async def vector_search(query: str, top_k: int = 5, where: str = "") -> str:
 
         sql = f"""
             SELECT id, title, year, conference, citations,
-                   LEFT(abstract, 300) AS abstract_snippet,
+                   LEFT(abstract, 800) AS abstract_snippet,
                    1 - (abstract_embedding <=> $1::vector) AS similarity
             FROM papers
             {where_clause}
@@ -86,7 +70,7 @@ async def vector_search(query: str, top_k: int = 5, where: str = "") -> str:
             LIMIT $2
         """
 
-        pool = await get_pool()
+        pool = await get_readonly_pool()
         async with pool.acquire() as conn:
             # 增大 ef_search 确保带 WHERE 过滤时 HNSW 索引有足够候选集
             await conn.execute("SET hnsw.ef_search = 400")

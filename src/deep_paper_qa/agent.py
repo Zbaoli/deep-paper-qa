@@ -9,7 +9,6 @@ from langgraph.prebuilt import create_react_agent
 
 from deep_paper_qa.config import settings
 from deep_paper_qa.prompts import SYSTEM_PROMPT
-from deep_paper_qa.tools.ask_user import ask_user
 from deep_paper_qa.tools.execute_sql import execute_sql
 from deep_paper_qa.tools.search_abstracts import search_abstracts
 from deep_paper_qa.tools.vector_search import vector_search
@@ -40,7 +39,7 @@ def build_agent():
         trimmed = trimmer.invoke(state["messages"])
         return {"llm_input_messages": trimmed}
 
-    tools = [execute_sql, search_abstracts, vector_search, ask_user]
+    tools = [execute_sql, search_abstracts, vector_search]
 
     agent = create_react_agent(
         model,

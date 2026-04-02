@@ -113,9 +113,9 @@ def parse_paper(meta_path: Path) -> dict | None:
 
 async def import_papers(papers_dir: str) -> None:
     """扫描目录并批量导入论文"""
-    database_url = os.getenv("DATABASE_URL")
+    database_url = os.getenv("PG_DATABASE_URL")
     if not database_url:
-        logger.error("DATABASE_URL 环境变量未设置")
+        logger.error("PG_DATABASE_URL 环境变量未设置")
         raise SystemExit(1)
 
     root = Path(papers_dir)

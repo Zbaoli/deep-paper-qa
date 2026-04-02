@@ -118,12 +118,49 @@ class TestExecuteSql:
 
     @pytest.mark.asyncio
     async def test_timeout(self) -> None:
-        with patch(
-            "deep_paper_qa.tools.execute_sql.get_pool",
-            AsyncMock(side_effect=asyncio.TimeoutError()),
-        ), patch(
-            "asyncio.wait_for",
-            AsyncMock(side_effect=asyncio.TimeoutError()),
-        ):
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(side_effect=asyncio.TimeoutError())
+
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value = _MockAcquireCtx(mock_conn)
+
+        with patch("deep_paper_qa.tools.execute_sql.get_pool", AsyncMock(return_value=mock_pool)):
             result = await execute_sql.ainvoke({"sql": "SELECT * FROM papers"})
             assert "超时" in result or "失败" in result
+
+    @pytest.mark.asyncio
+    async def test_syntax_error_returns_message(self) -> None:
+        """PostgresSyntaxError 返回具体错误消息"""
+        import asyncpg
+
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(
+            side_effect=asyncpg.PostgresSyntaxError("syntax error at or near \"SELEC\"")
+        )
+
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value = _MockAcquireCtx(mock_conn)
+
+        with patch("deep_paper_qa.tools.execute_sql.get_pool", AsyncMock(return_value=mock_pool)):
+            result = await execute_sql.ainvoke({"sql": "SELECT * FORM papers"})
+            assert "语法错误" in result
+
+    @pytest.mark.asyncio
+    async def test_undefined_column_returns_available_columns(self) -> None:
+        """UndefinedColumnError 返回可用列名"""
+        import asyncpg
+
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(
+            side_effect=asyncpg.UndefinedColumnError("column \"direction\" does not exist")
+        )
+
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value = _MockAcquireCtx(mock_conn)
+
+        with patch("deep_paper_qa.tools.execute_sql.get_pool", AsyncMock(return_value=mock_pool)):
+            result = await execute_sql.ainvoke(
+                {"sql": "SELECT direction FROM papers"}
+            )
+            assert "列名错误" in result
+            assert "可用列名" in result

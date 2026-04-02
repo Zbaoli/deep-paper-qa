@@ -1,13 +1,13 @@
 """search_abstracts 工具：基于 PostgreSQL 全文检索搜索论文标题和摘要"""
 
 import asyncio
-import re
 
 from langchain_core.tools import tool
 from loguru import logger
 
 from deep_paper_qa.config import settings
-from deep_paper_qa.tools.execute_sql import get_pool
+from deep_paper_qa.tools.execute_sql import get_readonly_pool
+from deep_paper_qa.tools.sql_utils import validate_where
 
 _BASE_SEARCH_SQL = """
 SELECT id, title, year, conference, citations,
@@ -20,20 +20,6 @@ FROM papers,
 WHERE fts @@ query
 """
 
-# 禁止出现在 where 片段中的关键词
-_FORBIDDEN_RE = re.compile(
-    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE|SELECT)\b",
-    re.IGNORECASE,
-)
-
-
-def _validate_where(where: str) -> str | None:
-    """校验 WHERE 片段安全性，返回错误信息或 None 表示通过。"""
-    if ";" in where:
-        return "WHERE 片段不允许包含分号。"
-    if _FORBIDDEN_RE.search(where):
-        return f"WHERE 片段包含禁止关键词: {_FORBIDDEN_RE.search(where).group()}"
-    return None
 
 
 @tool
@@ -72,7 +58,7 @@ async def search_abstracts(query: str, limit: int = 10, where: str = "") -> str:
 
     # 校验 where 片段
     if where:
-        err = _validate_where(where)
+        err = validate_where(where)
         if err:
             logger.warning("search_abstracts WHERE 校验失败: {}", err)
             return f"WHERE 条件不合法: {err}"
@@ -84,7 +70,7 @@ async def search_abstracts(query: str, limit: int = 10, where: str = "") -> str:
     sql += "ORDER BY rank DESC\nLIMIT $2"
 
     try:
-        pool = await get_pool()
+        pool = await get_readonly_pool()
         async with pool.acquire() as conn:
             records = await asyncio.wait_for(
                 conn.fetch(sql, query, limit),

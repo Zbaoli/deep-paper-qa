@@ -1,6 +1,7 @@
 """Agent 构建和数据模型测试"""
 
 
+
 class TestBuildAgent:
     """Agent 构建测试"""
 
@@ -20,16 +21,6 @@ class TestBuildAgent:
         # 验证 agent 是一个可运行的 CompiledGraph
         assert hasattr(agent, "invoke")
         assert hasattr(agent, "ainvoke")
-
-    def test_agent_has_ask_user_tool(self) -> None:
-        """Agent 应包含 ask_user 工具"""
-        from deep_paper_qa.agent import build_agent
-
-        agent, _ = build_agent()
-        # CompiledStateGraph 通过 tools 节点访问已注册的工具
-        tool_node = agent.nodes["tools"].node.steps[0]
-        tool_names = list(tool_node.tools_by_name.keys())
-        assert "ask_user" in tool_names
 
 
 class TestModels:
@@ -65,15 +56,3 @@ class TestModels:
         )
         assert len(result.chunks) == 1
         assert result.chunks[0].score == 0.95
-
-
-class TestDeepResearchPrompt:
-    """深度研究模式 prompt 测试"""
-
-    def test_system_prompt_contains_deep_research_section(self) -> None:
-        """system prompt 包含深度研究模式规则"""
-        from deep_paper_qa.prompts import SYSTEM_PROMPT
-
-        assert "深度研究模式" in SYSTEM_PROMPT
-        assert "ask_user" in SYSTEM_PROMPT
-        assert "/research" in SYSTEM_PROMPT

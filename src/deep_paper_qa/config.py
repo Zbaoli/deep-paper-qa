@@ -8,6 +8,8 @@ class Settings(BaseSettings):
 
     # PostgreSQL
     pg_database_url: str = "postgresql://localhost:5432/deep_paper_qa"
+    # 只读连接（用于 search_abstracts/vector_search 的安全隔离，可选）
+    pg_readonly_url: str = ""
 
     # LLM
     llm_base_url: str = "https://api.openai.com/v1"
@@ -23,10 +25,9 @@ class Settings(BaseSettings):
     sql_max_rows: int = 20
     sql_timeout_seconds: float = 10.0
     vector_search_top_k: int = 5
-    abstract_max_chars: int = 200
+    abstract_max_chars: int = 800
 
     # Agent
-    recursion_limit: int = 10
     max_conversation_turns: int = 6
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
