@@ -36,13 +36,29 @@ async def on_chat_start() -> None:
 async def on_message(message: cl.Message) -> None:
     """处理用户消息，记录完整事件链"""
     thread_id = cl.user_session.get("thread_id")
+
+    # 检测深度研究模式
+    user_content = message.content
+    is_research = user_content.startswith("/research")
+    if is_research:
+        user_content = user_content[len("/research"):].strip()
+        if not user_content:
+            await cl.Message(content="请在 /research 后输入您的研究问题。").send()
+            return
+        await cl.Message(
+            content="🔬 已进入深度研究模式，将分阶段进行多轮检索。"
+        ).send()
+
     config = {
         "configurable": {"thread_id": thread_id},
-        "recursion_limit": 30,
+        "recursion_limit": 50 if is_research else 30,
     }
 
     # 记录用户消息
-    logger.info("用户消息 | thread_id={} | content={}", thread_id, message.content)
+    logger.info(
+        "用户消息 | thread_id={} | research={} | content={}",
+        thread_id, is_research, user_content,
+    )
     _conv_logger.log_user_message(thread_id, message.content)
 
     # 会话级统计
@@ -57,7 +73,7 @@ async def on_message(message: cl.Message) -> None:
 
     try:
         async for event in _agent.astream_events(
-            {"messages": [HumanMessage(content=message.content)]},
+            {"messages": [HumanMessage(content=user_content)]},
             config=config,
             version="v2",
         ):
@@ -84,11 +100,12 @@ async def on_message(message: cl.Message) -> None:
                 if tool_name not in tools_used:
                     tools_used.append(tool_name)
 
-                # Chainlit 中间步骤
-                step = cl.Step(name=f"🔧 {tool_name}", type="tool")
-                step.input = str(tool_input)
-                await step.send()
-                cl.user_session.set(f"step_{run_id}", step)
+                # ask_user 工具通过 AskUserMessage 自行展示，不创建 Step
+                if tool_name != "ask_user":
+                    step = cl.Step(name=f"🔧 {tool_name}", type="tool")
+                    step.input = str(tool_input)
+                    await step.send()
+                    cl.user_session.set(f"step_{run_id}", step)
 
             # 工具调用结束
             elif kind == "on_tool_end":
