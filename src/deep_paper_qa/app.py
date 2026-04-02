@@ -21,6 +21,17 @@ _agent, _checkpointer = build_agent()
 _conv_logger = ConversationLogger()
 
 
+@cl.set_starters
+async def set_starters() -> list[cl.Starter]:
+    """提供示例问题，引导新用户快速上手"""
+    return [
+        cl.Starter(label="会议论文统计", message="各会议论文数量是多少？"),
+        cl.Starter(label="RAG 研究趋势", message="RAG 最近几年的研究趋势怎么样？"),
+        cl.Starter(label="高引论文推荐", message="推荐一些高引用的大语言模型论文"),
+        cl.Starter(label="作者论文查询", message="Yann LeCun 发了哪些论文？"),
+    ]
+
+
 @cl.on_chat_start
 async def on_chat_start() -> None:
     """初始化会话"""
