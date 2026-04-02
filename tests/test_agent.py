@@ -1,7 +1,5 @@
 """Agent 构建和数据模型测试"""
 
-import pytest
-
 
 class TestBuildAgent:
     """Agent 构建测试"""
