@@ -10,19 +10,28 @@ class TestBuildAgent:
         """Agent 能正常构建"""
         from deep_paper_qa.agent import build_agent
 
-        agent, trimmer, checkpointer = build_agent()
+        agent, checkpointer = build_agent()
         assert agent is not None
-        assert trimmer is not None
         assert checkpointer is not None
 
     def test_agent_has_correct_structure(self) -> None:
         """Agent 应包含正确的图结构"""
         from deep_paper_qa.agent import build_agent
 
-        agent, _, _ = build_agent()
+        agent, _ = build_agent()
         # 验证 agent 是一个可运行的 CompiledGraph
         assert hasattr(agent, "invoke")
         assert hasattr(agent, "ainvoke")
+
+    def test_agent_has_ask_user_tool(self) -> None:
+        """Agent 应包含 ask_user 工具"""
+        from deep_paper_qa.agent import build_agent
+
+        agent, _ = build_agent()
+        # CompiledStateGraph 通过 tools 节点访问已注册的工具
+        tool_node = agent.nodes["tools"].node.steps[0]
+        tool_names = list(tool_node.tools_by_name.keys())
+        assert "ask_user" in tool_names
 
 
 class TestModels:
