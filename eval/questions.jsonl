@@ -43,3 +43,23 @@
 {"id": 43, "type": "content", "question": "关于 graph neural network 的研究，但不要综述类论文", "expected_tool": "search_abstracts", "note": "exclusion syntax with -survey"}
 {"id": 44, "type": "content", "question": "有没有类似 LoRA 的参数高效微调方法？", "expected_tool": "vector_search", "note": "conceptual/analogy query for vector_search"}
 {"id": 45, "type": "sql", "question": "2020 到 2025 年每年论文总数和平均引用数分别是多少？", "expected_tool": "execute_sql", "expected_sql_pattern": "SELECT.*year.*COUNT.*AVG.*GROUP BY"}
+{"id": 46, "type": "content", "question": "搜索 \"chain of thought\" 相关论文，限定 ICLR 2024", "expected_tool": "search_abstracts", "note": "phrase search with where filter"}
+{"id": 47, "type": "content", "question": "找一些和模型安全对齐类似的研究", "expected_tool": "vector_search", "note": "vector_search with conceptual query, where filter optional"}
+{"id": 48, "type": "content", "question": "NeurIPS 2025 引用超过 10 的语义搜索相关论文", "expected_tool": "vector_search", "note": "vector_search with where filter on year+conference+citations"}
+{"id": 49, "type": "sql", "question": "今年哪个会议的论文平均引用数最高？", "expected_tool": "execute_sql", "expected_sql_pattern": "SELECT.*conference.*AVG.*citations.*GROUP BY.*ORDER BY"}
+{"id": 50, "type": "content", "question": "帮我找 5 篇关于代码生成的论文", "expected_tool": "vector_search", "note": "top_k=5 explicit request"}
+{"id": 51, "type": "mixed", "question": "搜索 tokenization OR subword 相关论文，哪些会议发的最多？", "expected_tools": ["search_abstracts", "execute_sql"], "note": "search_abstracts OR syntax + sql aggregation"}
+{"id": 52, "type": "sql", "question": "请问这个数据库里有哪些字段？", "expected_tool": "execute_sql", "note": "meta question about schema, agent should answer from prompt knowledge without tool call or use sql"}
+{"id": 53, "type": "content", "question": "asdfghjkl 相关论文", "expected_tool": "vector_search", "note": "nonsensical input, expect empty results + graceful handling"}
+{"id": 54, "type": "content", "question": "What are the latest advances in test-time compute scaling?", "expected_tool": "vector_search", "note": "English-only query"}
+{"id": 55, "type": "mixed", "question": "WWW 会议中引用最高的 3 篇推荐系统论文的方法有什么区别？", "expected_tools": ["execute_sql", "vector_search"], "note": "top_k + where filter + content comparison"}
+{"id": 56, "type": "sql", "question": "哪些会议收录的论文超过 5000 篇？", "expected_tool": "execute_sql", "expected_sql_pattern": "HAVING.*COUNT.*5000", "note": "HAVING clause"}
+{"id": 57, "type": "sql", "question": "数据库中一共有多少位不同的作者？", "expected_tool": "execute_sql", "expected_sql_pattern": "DISTINCT.*unnest.*authors", "note": "COUNT DISTINCT + unnest array"}
+{"id": 58, "type": "sql", "question": "发表论文最多的前 10 位作者是谁？", "expected_tool": "execute_sql", "expected_sql_pattern": "unnest.*authors.*GROUP BY.*ORDER BY.*COUNT", "note": "unnest array + GROUP BY + LIMIT"}
+{"id": 59, "type": "sql", "question": "按引用数分段统计：0 引用、1-10、11-50、50 以上各有多少篇论文？", "expected_tool": "execute_sql", "expected_sql_pattern": "CASE.*WHEN.*citations", "note": "CASE WHEN conditional expression"}
+{"id": 60, "type": "content", "question": "Yann LeCun 关于 self-supervised learning 的论文有哪些？", "expected_tool": "search_abstracts", "note": "search_abstracts with where filter on author using ANY()"}
+{"id": 61, "type": "content", "question": "有没有关于 homomorphic encryption 在机器学习中应用的论文？", "expected_tool": "search_abstracts", "note": "cold/niche topic, likely empty results, test graceful handling"}
+{"id": 62, "type": "sql", "question": "刘知远发表了哪些论文？", "expected_tool": "execute_sql", "note": "Chinese author name query, real user pattern from logs"}
+{"id": 63, "type": "content", "question": "我想了解一下怎么让大模型在推理时更节省算力，有没有相关的研究方向？比如量化、剪枝、蒸馏或者什么新的方法都可以，最好是最近两年的高质量论文，顶会的优先", "expected_tool": "vector_search", "note": "very long verbose query, test handling of lengthy input"}
+{"id": 64, "type": "mixed", "question": "2024 年发表论文最多的作者是谁？他的研究方向是什么？", "expected_tools": ["execute_sql", "vector_search"], "note": "unnest + aggregation then content lookup"}
+{"id": 65, "type": "mixed", "question": "ACL 和 EMNLP 在 2025 年分别收录了多少篇 summarization 相关论文？内容上有什么新趋势？", "expected_tools": ["execute_sql", "search_abstracts"], "note": "cross-conference comparison + content analysis"}
