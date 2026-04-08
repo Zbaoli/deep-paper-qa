@@ -17,6 +17,9 @@ dependencies = [
     "asyncpg>=0.30",
     "aiohttp>=3.9",
     "plotly>=6.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.34",
+    "sse-starlette>=2.0",
 ]
 
 [project.optional-dependencies]

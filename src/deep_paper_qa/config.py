@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     tavily_api_key: str = ""
     external_search_timeout: int = 15
 
+    # CORS
+    cors_origins: list[str] = ["http://localhost:5173"]
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
