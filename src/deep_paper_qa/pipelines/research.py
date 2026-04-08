@@ -18,6 +18,9 @@ from deep_paper_qa.prompts import (
 from deep_paper_qa.tools.ask_user import ask_user
 from deep_paper_qa.tools.execute_sql import execute_sql
 from deep_paper_qa.tools.search_abstracts import search_abstracts
+from deep_paper_qa.tools.search_arxiv import search_arxiv
+from deep_paper_qa.tools.search_semantic_scholar import search_semantic_scholar
+from deep_paper_qa.tools.search_web import search_web
 
 
 async def clarify_node(state: ResearchState) -> dict:
@@ -106,7 +109,11 @@ async def research_step_node(state: ResearchState) -> dict:
 
     llm = get_llm()
     prompt = RESEARCH_STEP_PROMPT.format(current_question=current_question)
-    step_agent = create_react_agent(llm, tools=[execute_sql, search_abstracts], prompt=prompt)
+    step_agent = create_react_agent(
+        llm,
+        tools=[execute_sql, search_abstracts, search_arxiv, search_semantic_scholar, search_web],
+        prompt=prompt,
+    )
 
     result = await step_agent.ainvoke({"messages": [HumanMessage(content=current_question)]})
     ai_messages = [m for m in result["messages"] if isinstance(m, AIMessage) and m.content]

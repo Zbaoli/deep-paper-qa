@@ -9,6 +9,9 @@ from deep_paper_qa.config import get_llm
 from deep_paper_qa.prompts import GENERAL_PROMPT
 from deep_paper_qa.tools.execute_sql import execute_sql
 from deep_paper_qa.tools.search_abstracts import search_abstracts
+from deep_paper_qa.tools.search_arxiv import search_arxiv
+from deep_paper_qa.tools.search_semantic_scholar import search_semantic_scholar
+from deep_paper_qa.tools.search_web import search_web
 
 _trimmer = trim_messages(
     max_tokens=16000,
@@ -29,7 +32,7 @@ def build_general_subgraph():
     """构建普通问题 ReAct subgraph"""
     return create_react_agent(
         get_llm(temperature=0.7),
-        tools=[execute_sql, search_abstracts],
+        tools=[execute_sql, search_abstracts, search_arxiv, search_semantic_scholar, search_web],
         prompt=GENERAL_PROMPT,
         pre_model_hook=_pre_model_hook,
     )
