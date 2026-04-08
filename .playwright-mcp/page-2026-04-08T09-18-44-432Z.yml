@@ -1,0 +1,75 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e68]: 各会议论文数量是多少？
+      - generic [ref=e72]:
+        - img "Avatar for Assistant" [ref=e75]
+        - generic [ref=e76]:
+          - generic [ref=e98]:
+            - article [ref=e99]: 我来查询各会议论文数量的统计信息。根据数据库统计，各会议论文数量如下（按数量降序排列）：
+            - list [ref=e100]:
+              - listitem [ref=e101]: "NeurIPS: 19,442 篇"
+              - listitem [ref=e102]: "ICLR: 17,177 篇"
+              - listitem [ref=e103]: "AAAI: 13,754 篇"
+              - listitem [ref=e104]: "ICML: 11,268 篇"
+              - listitem [ref=e105]: "EMNLP: 5,795 篇"
+              - listitem [ref=e106]: "IJCAI: 5,539 篇"
+              - listitem [ref=e107]: "ACL: 5,111 篇"
+              - listitem [ref=e108]: "NAACL: 2,193 篇"
+              - listitem [ref=e109]: "WWW: 906 篇"
+              - listitem [ref=e110]: "KDD: 728 篇"
+            - article [ref=e111]: 分析说明：
+            - list [ref=e112]:
+              - listitem [ref=e113]: 顶级AI会议中，NeurIPS 论文数量最多（19,442篇），其次是 ICLR（17,177篇）和 AAAI（13,754篇）
+              - listitem [ref=e114]: 计算机视觉和机器学习领域的会议（NeurIPS、ICLR、ICML）论文数量普遍较多
+              - listitem [ref=e115]: 自然语言处理领域的会议（EMNLP、ACL、NAACL）论文数量相对适中
+              - listitem [ref=e116]: 数据挖掘和Web领域的会议（KDD、WWW）论文数量相对较少
+            - article [ref=e117]: 这些数据反映了2020-2025年间各AI顶会的论文发表规模差异。
+          - button [ref=e119] [cursor=pointer]:
+            - img
+      - heading "已使用 路由分类" [level=3] [ref=e88]:
+        - button "已使用 路由分类" [ref=e89] [cursor=pointer]:
+          - generic [ref=e90]: 已使用
+          - text: 路由分类
+          - img [ref=e91]
+      - generic [ref=e123]:
+        - img "Avatar for execute_sql" [ref=e126]
+        - heading "已使用 execute_sql" [level=3] [ref=e130]:
+          - button "已使用 execute_sql" [ref=e131] [cursor=pointer]:
+            - generic [ref=e132]: 已使用
+            - text: execute_sql
+            - img [ref=e133]
+      - article [ref=e147]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - generic [ref=e151]:
+        - img "Avatar for Assistant" [ref=e154]
+        - generic [ref=e155]:
+          - article [ref=e176]: 抱歉，处理您的问题时出现错误：'clarify_count'
+          - button [ref=e178] [cursor=pointer]:
+            - img
+      - heading "已使用 路由分类" [level=3] [ref=e167]:
+        - button "已使用 路由分类" [ref=e168] [cursor=pointer]:
+          - generic [ref=e169]: 已使用
+          - text: 路由分类
+          - img [ref=e170]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [active] [ref=e48]
+        - generic [ref=e49]:
+          - button [ref=e52] [cursor=pointer]:
+            - img
+          - generic [ref=e53]:
+            - button [disabled]:
+              - img
+      - article [ref=e179]: 大语言模型可能会犯错。请核实重要信息。

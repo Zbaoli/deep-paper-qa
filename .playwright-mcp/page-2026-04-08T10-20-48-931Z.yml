@@ -1,0 +1,129 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e68]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - generic [ref=e72]:
+        - img "Avatar for Assistant" [ref=e75]
+        - generic [ref=e98]:
+          - article [ref=e136]: "问题已明确，可以制定研究计划。[\"子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。\", \"子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。\", \"子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。\", \"子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。\"]我将使用 search_abstracts 工具来检索 2023-2025 年间关于 LLM Agent 的相关文献。首先，我会用全文检索模式查找综述和关键论文。现在让我用向量检索模式来查找更概念性的内容，特别是关于 LLM Agent 的核心概念和框架：## 关键发现总结"
+          - article [ref=e137]: 基于对 2023-2025 年间 LLM Agent 相关文献的检索，我建立了以下研究脉络的初步框架：
+          - heading "1. 综述与框架性研究" [level=3] [ref=e138]
+          - list [ref=e139]:
+            - listitem [ref=e140]: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025)：系统综述了 LLM-based AI Agents 的反馈机制，提出了一个通用框架，将现有工作封装其中。
+            - listitem [ref=e141]: "《Position: Foundation Agents as the Paradigm Shift for Decision Making》 (ICML 2024)：提出了基础智能体（Foundation Agents）作为决策范式的转变，受到大语言模型成功的启发。"
+          - heading "2. 关键论文与核心概念" [level=3] [ref=e142]
+          - list [ref=e143]:
+            - listitem [ref=e144]: AgentBench (ICLR 2024, 引用40)：多维基准测试，包含8个不同环境来评估LLM作为智能体的推理和决策能力。
+            - listitem [ref=e145]: REMEMBERER框架 (NeurIPS 2023)：提出了一种可进化的LLM-based智能体框架，配备长期经验记忆，构成半参数强化学习智能体。
+            - listitem [ref=e146]: Multi-agent Architecture Search via Agentic Supernet (ICML 2025)：提出了"智能体超网"概念，优化智能体架构的概率连续分布。
+          - heading "3. 核心研究方向" [level=3] [ref=e147]
+          - list [ref=e148]:
+            - listitem [ref=e149]: 反馈机制与学习：如何让LLM-based智能体从反馈中高效学习并迭代优化策略。
+            - listitem [ref=e150]: 多智能体系统：通过协作和交互扩展个体智能体的认知边界。
+            - listitem [ref=e151]: 离线训练范式：在不修改LLM权重的情况下训练智能体，将函数视为可学习的"智能体参数"。
+            - listitem [ref=e152]: 评估基准：开发多维基准来评估LLM作为智能体的推理和决策能力。
+          - heading "4. 应用领域" [level=3] [ref=e153]
+          - list [ref=e154]:
+            - listitem [ref=e155]: AutoML：AutoML-Agent (ICML 2025) 提出了全流程AutoML的多智能体LLM框架。
+            - listitem [ref=e156]: 代码审计：RepoAudit (ICML 2025) 用于仓库级代码审计的自主LLM智能体。
+            - listitem [ref=e157]: 城市移动性：LLM作为城市居民的智能体框架 (NeurIPS 2024)。
+            - listitem [ref=e158]: 数学建模：MM-Agent (NeurIPS 2025) 用于现实世界数学建模问题。
+          - heading "5. 关键技术挑战" [level=3] [ref=e159]
+          - list [ref=e160]:
+            - listitem [ref=e161]: 长期推理和决策能力不足
+            - listitem [ref=e162]: 指令遵循能力有限
+            - listitem [ref=e163]: 动态资源分配问题
+            - listitem [ref=e164]: 与现实世界数据的对齐
+            - listitem [ref=e165]: 专业领域知识的整合
+          - article [ref=e166]: 这个初步框架显示，LLM Agent 研究正从单一智能体向多智能体系统发展，从静态架构向动态可进化架构演进，并且越来越注重与现实世界的交互和实际应用。反馈机制、评估基准和架构搜索成为当前研究的热点方向。
+      - generic [ref=e104]:
+        - img "Avatar for Assistant" [ref=e107]
+        - generic [ref=e111]:
+          - article [ref=e112]: 研究进展
+          - article [ref=e113]: 已制定研究计划，共 4 个子问题：
+          - list [ref=e114]:
+            - listitem [ref=e115]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+            - listitem [ref=e116]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+            - listitem [ref=e117]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+            - listitem [ref=e118]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+          - article [ref=e119]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+      - article [ref=e134]: 继续
+      - generic [ref=e171]:
+        - img "Avatar for Assistant" [ref=e174]
+        - generic [ref=e178]:
+          - article [ref=e179]: 研究进展
+          - article [ref=e180]: 子问题 1/4 完成。
+          - 'heading "子问题 1: 子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。" [level=3] [ref=e181]'
+          - heading "关键发现总结" [level=2] [ref=e182]
+          - article [ref=e183]: 基于对 2023-2025 年间 LLM Agent 相关文献的检索，我建立了以下研究脉络的初步框架：
+          - heading "1. 综述与框架性研究" [level=3] [ref=e184]
+          - list [ref=e185]:
+            - listitem [ref=e186]: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025)：系统综述了 LLM-based AI Agents 的反馈机制，提出了一个通用框架，将现有工作封装其中。
+            - listitem [ref=e187]: "《Position: Foundation Agents as the Paradigm Shift for Decision Making》 (ICML 2024)：提出了基础智能体（Foundation Agents）作为决策范式的转变，受到大语言模型成功的启发。"
+          - heading "2. 关键论文与核心概念" [level=3] [ref=e188]
+          - list [ref=e189]:
+            - listitem [ref=e190]: AgentBench (ICLR 2024, 引用40)：多维基准测试，包含8个不同环境来评估LLM作为智能体的推理和决策能力。
+            - listitem [ref=e191]: REMEMBERER框架 (NeurIPS 2023)：提出了一种可进化的LLM-based智能体框架，配备长期经验记忆，构成半参数强化学习智能体。
+            - listitem [ref=e192]: Multi-agent Architecture Search via Agentic Supernet (ICML 2025)：提出了"智能体超网"概念，优化智能体架构的概率连续分布。
+          - heading "3. 核心研究方向" [level=3] [ref=e193]
+          - list [ref=e194]:
+            - listitem [ref=e195]: 反馈机制与学习：如何让LLM-based智能体从反馈中高效学习并迭代优化策略。
+            - listitem [ref=e196]: 多智能体系统：通过协作和交互扩展个体智能体的认知边界。
+            - listitem [ref=e197]: 离线训练范式：在不修改LLM权重的情况下训练智能体，将函数视为可学习的"智能体参数"。
+            - listitem [ref=e198]: 评估基准：开发多维基准来评估LLM作为智能体的推理和决策能力。
+          - heading "4. 应用领域" [level=3] [ref=e199]
+          - list [ref=e200]:
+            - listitem [ref=e201]: AutoML：AutoML-Agent (ICML 2025) 提出了全流程AutoML的多智能体LLM框架。
+            - listitem [ref=e202]: 代码审计：RepoAudit (ICML 2025) 用于仓库级代码审计的自主LLM智能体。
+            - listitem [ref=e203]: 城市移动性：LLM作为城市居民的智能体框架 (NeurIPS 2024)。
+            - listitem [ref=e204]: 数学建模：MM-Agent (NeurIPS 2025) 用于现实世界数学建模问题。
+          - heading "5. 关键技术挑战" [level=3] [ref=e205]
+          - list [ref=e206]:
+            - listitem [ref=e207]: 长期推理和决策能力不足
+            - listitem [ref=e208]: 指令遵循能力有限
+            - listitem [ref=e209]: 动态资源分配问题
+            - listitem [ref=e210]: 与现实世界数据的对齐
+            - listitem [ref=e211]: 专业领域知识的整合
+          - article [ref=e212]: 这个初步框架显示，LLM Agent 研究正从单一智能体向多智能体系统发展，从静态架构向动态可进化架构演进，并且越来越注重与现实世界的交互和实际应用。反馈机制、评估基准和架构搜索成为当前研究的热点方向。
+          - article [ref=e213]: 请选择：继续下一个子问题 / 调整方向（请说明）/ 直接生成总结
+      - heading "已使用 路由分类" [level=3] [ref=e88]:
+        - button "已使用 路由分类" [ref=e89] [cursor=pointer]:
+          - generic [ref=e90]: 已使用
+          - text: 路由分类
+          - img [ref=e91]
+      - generic [ref=e217]:
+        - img "Avatar for search_abstracts" [ref=e220]
+        - heading "已使用 search_abstracts" [level=3] [ref=e224]:
+          - button "已使用 search_abstracts" [ref=e225] [cursor=pointer]:
+            - generic [ref=e226]: 已使用
+            - text: search_abstracts
+            - img [ref=e227]
+      - generic [ref=e232]:
+        - img "Avatar for search_abstracts" [ref=e235]
+        - heading "已使用 search_abstracts" [level=3] [ref=e239]:
+          - button "已使用 search_abstracts" [ref=e240] [cursor=pointer]:
+            - generic [ref=e241]: 已使用
+            - text: search_abstracts
+            - img [ref=e242]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [active] [ref=e48]
+        - generic [ref=e49]:
+          - button [ref=e52] [cursor=pointer]:
+            - img
+          - generic [ref=e53]:
+            - button [disabled]:
+              - img
+      - article [ref=e244]: 大语言模型可能会犯错。请核实重要信息。

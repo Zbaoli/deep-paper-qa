@@ -1,0 +1,125 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e68]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - generic [ref=e72]:
+        - img "Avatar for Assistant" [ref=e75]
+        - generic [ref=e98]:
+          - article [ref=e136]: "问题已明确，可以制定研究计划。[\"子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。\", \"子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。\", \"子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。\", \"子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。\"]我将使用 search_abstracts 工具来检索 2023-2025 年间关于 LLM Agent 的相关文献。首先，我会搜索综述性文章和关键论文。现在让我搜索更多关于 LLM Agent 核心概念和架构的论文：让我尝试使用更宽泛的搜索词：让我尝试使用向量搜索模式来获取更概念性的结果：## 关键发现总结"
+          - article [ref=e137]: 基于对 2023-2025 年间 LLM Agent 相关文献的检索，我建立了以下研究脉络的初步框架：
+          - heading "1. 综述性文献" [level=3] [ref=e138]
+          - list [ref=e139]:
+            - listitem [ref=e140]: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025)：系统综述了 LLM-based AI agents 的反馈机制，提供了该领域的全面概览。
+            - listitem [ref=e141]: 《The Evolving Landscape of LLM- and VLM-Integrated Reinforcement Learning》 (IJCAI 2025)：探讨了 LLM/VLM 与强化学习的融合趋势。
+          - heading "2. 关键论文与核心概念" [level=3] [ref=e142]
+          - heading "评估与基准测试" [level=4] [ref=e143]
+          - list [ref=e144]:
+            - listitem [ref=e145]: "《AgentBench: Evaluating LLMs as Agents》 (ICLR 2024，引用40)：提出了一个多维度的 LLM-as-Agent 评估基准，包含8个不同环境，评估推理和决策能力。"
+            - listitem [ref=e146]: 《Collab-Overcooked》 (EMNLP 2025)：新的 LLM-based 多智能体系统基准，专注于协作能力评估。
+          - heading "架构与框架" [level=4] [ref=e147]
+          - list [ref=e148]:
+            - listitem [ref=e149]: 《Multi-agent Architecture Search via Agentic Supernet》 (ICML 2025)：提出了 agentic supernet 概念，优化智能体架构的概率分布。
+            - listitem [ref=e150]: 《Synergistic Multi-Agent Framework with Trajectory Learning》 (AAAI 2025)：SMART 框架，用于知识密集型任务的多智能体协同。
+            - listitem [ref=e151]: "《AGILE: A Novel Reinforcement Learning Framework of LLM Agents》 (NeurIPS 2024)：将 LLM agent 构建为强化学习问题。"
+          - heading "核心能力研究" [level=4] [ref=e152]
+          - list [ref=e153]:
+            - listitem [ref=e154]: 反馈机制：如何让 LLM agents 从反馈中学习并优化策略
+            - listitem [ref=e155]: 工具使用：《Offline Training of Language Model Agents with Functions as Learnable Weights》探讨了将函数作为可学习参数
+            - listitem [ref=e156]: 决策优化：《Empowering LLM Agents with Zero-Shot Optimal Decision-Making through Q-learning》结合了 LLM 的零样本能力和 Q-learning 的最优决策
+            - listitem [ref=e157]: 协作与多智能体系统：多个论文关注多智能体协作、通信和协同问题解决
+          - heading "应用领域" [level=4] [ref=e158]
+          - list [ref=e159]:
+            - listitem [ref=e160]: "代码审计：《RepoAudit: An Autonomous LLM-Agent for Repository-Level Code Auditing》"
+            - listitem [ref=e161]: 城市移动性：《Large Language Models as Urban Residents》
+            - listitem [ref=e162]: "AutoML：《AutoML-Agent: A Multi-Agent LLM Framework for Full-Pipeline AutoML》"
+            - listitem [ref=e163]: "游戏环境：《LLM-PySC2: Starcraft II learning environment for Large Language Models》"
+          - heading "3. 研究趋势" [level=3] [ref=e164]
+          - list [ref=e165]:
+            - listitem [ref=e166]: 从单智能体到多智能体系统的演进
+            - listitem [ref=e167]: 评估标准化的需求日益增长
+            - listitem [ref=e168]: 与强化学习的深度融合
+            - listitem [ref=e169]: 专业化应用的扩展（代码、科学、城市等）
+            - listitem [ref=e170]: 安全与可靠性关注度提升（如后门攻击研究）
+          - heading "4. 研究空白与挑战" [level=3] [ref=e171]
+          - list [ref=e172]:
+            - listitem [ref=e173]: 长期推理和决策能力的不足
+            - listitem [ref=e174]: 实时动态环境中的专业化挑战
+            - listitem [ref=e175]: 计算成本和效率问题
+            - listitem [ref=e176]: 安全威胁（如后门攻击）的探索不足
+            - listitem [ref=e177]: 人类行为模拟的
+      - generic [ref=e104]:
+        - img "Avatar for Assistant" [ref=e107]
+        - generic [ref=e111]:
+          - article [ref=e112]: 研究进展
+          - article [ref=e113]: 已制定研究计划，共 4 个子问题：
+          - list [ref=e114]:
+            - listitem [ref=e115]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+            - listitem [ref=e116]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+            - listitem [ref=e117]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+            - listitem [ref=e118]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+          - article [ref=e119]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+      - article [ref=e134]: 总结
+      - heading "已使用 路由分类" [level=3] [ref=e88]:
+        - button "已使用 路由分类" [ref=e89] [cursor=pointer]:
+          - generic [ref=e90]: 已使用
+          - text: 路由分类
+          - img [ref=e91]
+      - generic [ref=e182]:
+        - img "Avatar for search_abstracts" [ref=e185]
+        - heading "已使用 search_abstracts" [level=3] [ref=e189]:
+          - button "已使用 search_abstracts" [ref=e190] [cursor=pointer]:
+            - generic [ref=e191]: 已使用
+            - text: search_abstracts
+            - img [ref=e192]
+      - generic [ref=e197]:
+        - img "Avatar for search_abstracts" [ref=e200]
+        - heading "已使用 search_abstracts" [level=3] [ref=e204]:
+          - button "已使用 search_abstracts" [ref=e205] [cursor=pointer]:
+            - generic [ref=e206]: 已使用
+            - text: search_abstracts
+            - img [ref=e207]
+      - generic [ref=e212]:
+        - img "Avatar for search_abstracts" [ref=e215]
+        - generic [ref=e218]:
+          - heading "已使用 search_abstracts" [level=3] [ref=e219]:
+            - button "已使用 search_abstracts" [expanded] [active] [ref=e220] [cursor=pointer]:
+              - generic [ref=e221]: 已使用
+              - text: search_abstracts
+              - img [ref=e222]
+          - region [ref=e224]:
+            - generic [ref=e226]:
+              - generic [ref=e230]:
+                - generic [ref=e231]:
+                  - generic [ref=e232]: json
+                  - button [ref=e233] [cursor=pointer]:
+                    - img
+                - code [ref=e236]: "{'query': 'LLM-based agent framework multi-agent system tool use reasoning planning', 'where': 'year >= 2023 AND year <= 2025', 'limit': 15, 'mode': 'fulltext'}"
+              - article [ref=e240]: 未找到与 'LLM-based agent framework multi-agent system tool use reasoning planning' 相关的论文。可尝试换用英文关键词、更宽泛的搜索词，或切换到 mode='vector' 进行语义检索。
+      - generic [ref=e244]:
+        - img "Avatar for search_abstracts" [ref=e247]
+        - heading "已使用 search_abstracts" [level=3] [ref=e251]:
+          - button "已使用 search_abstracts" [ref=e252] [cursor=pointer]:
+            - generic [ref=e253]: 已使用
+            - text: search_abstracts
+            - img [ref=e254]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [ref=e48]
+        - generic [ref=e49]:
+          - generic [ref=e51]:
+            - img
+          - button [ref=e94] [cursor=pointer]:
+            - img
+      - article [ref=e256]: 大语言模型可能会犯错。请核实重要信息。

@@ -1,0 +1,708 @@
+{
+  "timestamp": "2026-04-08T16:04:28.754702",
+  "total": 100,
+  "correct": 98,
+  "accuracy": 98.0,
+  "results": [
+    {
+      "id": 1,
+      "question": "今天天气怎么样？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 2,
+      "question": "帮我写一段 Python 排序代码",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 3,
+      "question": "帮我润色一下我的论文摘要",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 4,
+      "question": "推荐一部好看的电影",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 5,
+      "question": "明天股市会涨吗？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 6,
+      "question": "怎么做红烧肉？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 7,
+      "question": "你是谁开发的？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 8,
+      "question": "帮我翻译这段话",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 9,
+      "question": "北京到上海的火车票多少钱？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "question": "请帮我写一封求职信",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 11,
+      "question": "JavaScript 和 TypeScript 有什么区别？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 12,
+      "question": "如何学好英语？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 13,
+      "question": "给我讲个笑话",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 14,
+      "question": "2024年奥运会在哪举办？",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 15,
+      "question": "帮我算一下 123 * 456",
+      "expected": "reject",
+      "actual": "reject",
+      "correct": true
+    },
+    {
+      "id": 16,
+      "question": "ACL 2025 有多少篇论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 17,
+      "question": "2024年NeurIPS收录了多少篇论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 18,
+      "question": "各会议论文数量是多少？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "question": "引用数最高的10篇论文是哪些？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 20,
+      "question": "有哪些关于 RAG 的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 21,
+      "question": "有哪些关于 Chain-of-Thought prompting 的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 22,
+      "question": "2024年引用最高的 RAG 论文讲了什么？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 23,
+      "question": "Hinton 近两年发了什么论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 24,
+      "question": "ICLR 2023 关于 RLHF 的论文有几篇？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 25,
+      "question": "推荐一些高引用的大语言模型论文",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 26,
+      "question": "NeurIPS 2024 关于多模态的论文有哪些？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 27,
+      "question": "哪个会议发表的论文数量最多？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 28,
+      "question": "预印本和会议论文的比例是多少？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 29,
+      "question": "合著作者最多的论文是哪篇？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 30,
+      "question": "EMNLP 2024 的平均引用数是多少？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 31,
+      "question": "关于 FlashAttention 的论文有哪些？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 32,
+      "question": "找一下关于模型量化的论文",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 33,
+      "question": "ICML 2024 收了哪些关于强化学习的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 34,
+      "question": "Yann LeCun 发了哪些论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 35,
+      "question": "有没有关于 Mixture of Experts 的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 36,
+      "question": "引用超过 100 的论文有多少篇？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 37,
+      "question": "KDD 和 WWW 哪个会议论文更多？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 38,
+      "question": "2025年有多少篇关于 LLM 的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 39,
+      "question": "AAAI 2024 的论文主要关注什么方向？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 40,
+      "question": "搜索一下关于代码生成的论文",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 41,
+      "question": "有没有关于图神经网络的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 42,
+      "question": "最近有什么关于 prompt engineering 的论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 43,
+      "question": "哪些论文讨论了 LLM 的幻觉问题？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 44,
+      "question": "NAACL 2024 有多少篇论文？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 45,
+      "question": "关于 diffusion model 的高引论文有哪些？",
+      "expected": "general",
+      "actual": "general",
+      "correct": true
+    },
+    {
+      "id": 46,
+      "question": "调研 AI for Science 在蛋白质结构预测方向的最新进展",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 47,
+      "question": "总结 2023-2025 年 LLM Agent 的研究脉络",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 48,
+      "question": "梳理 text-to-image 从 GAN 到 diffusion 的技术演进",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 49,
+      "question": "写一份关于多模态大模型的研究综述",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 50,
+      "question": "调研 RLHF 的替代方案，包括 DPO、KTO 等方法的优劣",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 51,
+      "question": "总结 AI 在药物发现领域的应用进展",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 52,
+      "question": "梳理大模型推理优化的研究脉络，包括量化、蒸馏、剪枝",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 53,
+      "question": "综述 Retrieval-Augmented Generation 的研究现状和未来方向",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 54,
+      "question": "调研自动驾驶感知领域最近的技术突破",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 55,
+      "question": "总结 Transformer 架构从 NLP 扩展到视觉领域的演进历程",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 56,
+      "question": "写一份关于联邦学习隐私保护的综述报告",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 57,
+      "question": "调研代码大模型的最新进展，包括训练方法和评测基准",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 58,
+      "question": "梳理 few-shot learning 到 in-context learning 的发展脉络",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 59,
+      "question": "综述 AI 可解释性研究的主要方法和挑战",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 60,
+      "question": "调研知识图谱与大语言模型结合的研究方向",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 61,
+      "question": "总结多智能体协作的研究进展和关键论文",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 62,
+      "question": "写一份 AI 安全对齐的研究综述",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 63,
+      "question": "梳理视觉语言模型从 CLIP 到 GPT-4V 的技术路线",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 64,
+      "question": "调研低资源语言 NLP 的最新研究方法",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 65,
+      "question": "综述强化学习在机器人控制中的应用进展",
+      "expected": "research",
+      "actual": "research",
+      "correct": true
+    },
+    {
+      "id": 66,
+      "question": "RAG 近三年的发展趋势怎么样？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 67,
+      "question": "知识蒸馏这个方向是在升温还是降温？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 68,
+      "question": "2020-2025 年 GAN 相关论文的数量变化",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 69,
+      "question": "Transformer 架构改进的研究热度变化",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 70,
+      "question": "多模态大模型近几年论文数量趋势如何？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 71,
+      "question": "强化学习这几年的论文数量是增还是减？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 72,
+      "question": "联邦学习的研究热度近年来有什么变化？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 73,
+      "question": "NLP 领域 prompt engineering 的研究趋势",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 74,
+      "question": "图神经网络的研究热度在下降吗？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 75,
+      "question": "自监督学习这几年发展趋势怎么样？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 76,
+      "question": "对比学习的论文数量近年有什么变化？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 77,
+      "question": "AI 生成内容（AIGC）的研究趋势",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 78,
+      "question": "模型量化这个方向近三年热不热？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 79,
+      "question": "注意力机制优化的研究趋势如何？",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 80,
+      "question": "数据增强方法的论文数量变化趋势",
+      "expected": "trend",
+      "actual": "trend",
+      "correct": true
+    },
+    {
+      "id": 81,
+      "question": "帮我精读 Attention Is All You Need",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 82,
+      "question": "详细解读 FlashAttention 论文的方法部分",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 83,
+      "question": "这篇 DPO 论文的核心贡献是什么？",
+      "expected": "reading",
+      "actual": "general",
+      "correct": false
+    },
+    {
+      "id": 84,
+      "question": "帮我读一下 BERT 这篇论文",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 85,
+      "question": "解读 GPT-4 的技术报告",
+      "expected": "reading",
+      "actual": "research",
+      "correct": false
+    },
+    {
+      "id": 86,
+      "question": "帮我精读 LoRA 论文，重点看方法和实验",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 87,
+      "question": "逐章节解读 ResNet 论文",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 88,
+      "question": "详细分析 InstructGPT 这篇论文的训练流程",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 89,
+      "question": "精读 Chain-of-Thought Prompting 的原始论文",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 90,
+      "question": "帮我读一下 Mixtral 8x7B 的技术报告",
+      "expected": "reading",
+      "actual": "reading",
+      "correct": true
+    },
+    {
+      "id": 91,
+      "question": "对比 DPO 和 RLHF 这两篇论文的方法差异",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 92,
+      "question": "FlashAttention v1 和 v2 有什么改进？",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 93,
+      "question": "对比 BERT 和 GPT 的架构差异",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 94,
+      "question": "LoRA 和 QLoRA 的方法对比",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 95,
+      "question": "对比 Mamba 和 Transformer 这两篇论文",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 96,
+      "question": "CLIP 和 BLIP 的方法有什么不同？",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 97,
+      "question": "对比 RAG 和 REALM 的检索方法",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 98,
+      "question": "ResNet 和 ViT 的架构对比分析",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 99,
+      "question": "对比 PPO 和 DPO 的训练方法差异",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    },
+    {
+      "id": 100,
+      "question": "SAM 和 Segment Anything 2 有什么改进？",
+      "expected": "compare",
+      "actual": "compare",
+      "correct": true
+    }
+  ]
+}

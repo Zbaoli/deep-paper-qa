@@ -1,0 +1,64 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e68]: 各会议论文数量是多少？
+      - generic [ref=e72]:
+        - img "Avatar for Assistant" [ref=e75]
+        - generic [ref=e76]:
+          - generic [ref=e79]:
+            - article [ref=e101]: general我来查询各会议论文数量的统计信息。根据数据库统计，各会议论文数量如下（按数量降序排列）：
+            - list [ref=e102]:
+              - listitem [ref=e103]: "NeurIPS: 19,442 篇"
+              - listitem [ref=e104]: "ICLR: 17,177 篇"
+              - listitem [ref=e105]: "AAAI: 13,754 篇"
+              - listitem [ref=e106]: "ICML: 11,268 篇"
+              - listitem [ref=e107]: "EMNLP: 5,795 篇"
+              - listitem [ref=e108]: "IJCAI: 5,539 篇"
+              - listitem [ref=e109]: "ACL: 5,111 篇"
+              - listitem [ref=e110]: "NAACL: 2,193 篇"
+              - listitem [ref=e111]: "WWW: 906 篇"
+              - listitem [ref=e112]: "KDD: 728 篇"
+            - article [ref=e113]: "总计: 83,913 篇论文"
+            - article [ref=e114]: 分析：
+            - list [ref=e115]:
+              - listitem [ref=e116]: 顶级机器学习会议（NeurIPS、ICLR、ICML）论文数量最多，反映了AI领域的快速发展
+              - listitem [ref=e117]: 自然语言处理会议（EMNLP、ACL、NAACL）论文数量相对较多，显示NLP是AI研究的重要分支
+              - listitem [ref=e118]: 计算机视觉会议（如CVPR、ECCV）未在数据库中，可能数据库主要关注NLP和机器学习领域
+              - listitem [ref=e119]: 传统AI会议（AAAI、IJCAI）仍有相当数量的论文产出
+              - listitem [ref=e120]: 数据挖掘和网络会议（KDD、WWW）论文数量相对较少
+          - button [ref=e122] [cursor=pointer]:
+            - img
+      - heading "已使用 路由分类" [level=3] [ref=e93]:
+        - button "已使用 路由分类" [ref=e94] [cursor=pointer]:
+          - generic [ref=e95]: 已使用
+          - text: 路由分类
+          - img [ref=e96]
+      - generic [ref=e126]:
+        - img "Avatar for execute_sql" [ref=e129]
+        - heading "已使用 execute_sql" [level=3] [ref=e133]:
+          - button "已使用 execute_sql" [ref=e134] [cursor=pointer]:
+            - generic [ref=e135]: 已使用
+            - text: execute_sql
+            - img [ref=e136]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [active] [ref=e48]
+        - generic [ref=e49]:
+          - button [ref=e52] [cursor=pointer]:
+            - img
+          - generic [ref=e53]:
+            - button [disabled]:
+              - img
+      - article [ref=e138]: 大语言模型可能会犯错。请核实重要信息。

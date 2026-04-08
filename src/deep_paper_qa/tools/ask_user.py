@@ -1,12 +1,45 @@
-"""ask_user 工具：深度研究模式中暂停等待用户输入"""
+"""ask_user 工具：暂停等待用户输入（基于 asyncio.Event，脱离 Chainlit）"""
 
-import chainlit as cl
+import asyncio
+from typing import Any
+
 from langchain_core.tools import tool
 from loguru import logger
 
+# thread_id → (Event, 回复内容) 映射
+_pending: dict[str, dict[str, Any]] = {}
+
+# 默认超时（秒）
+_DEFAULT_TIMEOUT = 300
+
+
+def get_pending_question(thread_id: str) -> dict[str, Any] | None:
+    """获取指定 thread 当前等待中的问题，无则返回 None"""
+    entry = _pending.get(thread_id)
+    if entry and not entry["event"].is_set():
+        return {"question": entry["question"], "summary": entry["summary"]}
+    return None
+
+
+def submit_reply(thread_id: str, reply: str) -> bool:
+    """提交用户回复，唤醒等待中的 ask_user。成功返回 True。"""
+    entry = _pending.get(thread_id)
+    if entry and not entry["event"].is_set():
+        entry["reply"] = reply
+        entry["event"].set()
+        logger.info("ask_user | thread={} | 收到用户回复: {}", thread_id, reply[:200])
+        return True
+    logger.warning("ask_user | thread={} | 无等待中的问题", thread_id)
+    return False
+
 
 @tool
-async def ask_user(summary: str, question: str) -> str:
+async def ask_user(
+    summary: str,
+    question: str,
+    __thread_id: str = "",
+    __timeout: float = 0,
+) -> str:
     """暂停研究流程，向用户展示当前发现并等待指令。仅在深度研究模式中使用。
 
     在每个研究阶段结束后调用，展示阶段性发现摘要，询问用户下一步操作。
@@ -16,16 +49,29 @@ async def ask_user(summary: str, question: str) -> str:
         summary: 当前阶段的发现摘要，展示给用户
         question: 向用户提的问题（如"是否继续下一个子问题？"）
     """
-    content = f"**研究进展**\n\n{summary}\n\n---\n\n{question}"
-    logger.info("ask_user | summary_len={} | question={}", len(summary), question[:100])
+    timeout = __timeout if __timeout > 0 else _DEFAULT_TIMEOUT
+    logger.info(
+        "ask_user | thread={} | summary_len={} | question={}",
+        __thread_id,
+        len(summary),
+        question[:100],
+    )
 
-    response = await cl.AskUserMessage(content=content, timeout=300).send()
+    event = asyncio.Event()
+    _pending[__thread_id] = {
+        "event": event,
+        "question": question,
+        "summary": summary,
+        "reply": "",
+    }
 
-    if response is None:
-        logger.info("ask_user | 用户超时未回复，默认继续")
+    try:
+        await asyncio.wait_for(event.wait(), timeout=timeout)
+        reply = _pending[__thread_id]["reply"]
+        logger.info("ask_user | thread={} | 用户回复: {}", __thread_id, reply[:200])
+        return reply
+    except asyncio.TimeoutError:
+        logger.info("ask_user | thread={} | 用户超时未回复", __thread_id)
         return "用户未回复，请继续执行下一个子问题。"
-
-    # Chainlit 2.x 返回 StepDict (dict)，用户回复在 "output" 键中
-    user_reply = response.get("output", "") if isinstance(response, dict) else str(response)
-    logger.info("ask_user | 用户回复: {}", user_reply[:200])
-    return user_reply
+    finally:
+        _pending.pop(__thread_id, None)

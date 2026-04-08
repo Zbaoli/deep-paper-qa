@@ -1,0 +1,34 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e22]:
+    - img "logo" [ref=e23]
+    - generic [ref=e24]:
+      - textbox "在此输入您的消息..." [active] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e29]:
+          - img
+        - generic [ref=e30]:
+          - button [disabled]:
+            - img
+    - generic [ref=e31]:
+      - button "会议论文统计" [disabled]:
+        - generic:
+          - paragraph: 会议论文统计
+      - button "RAG 研究趋势" [disabled]:
+        - generic:
+          - paragraph: RAG 研究趋势
+      - button "深度调研" [disabled]:
+        - generic:
+          - paragraph: 深度调研
+      - button "高引论文推荐" [disabled]:
+        - generic:
+          - paragraph: 高引论文推荐

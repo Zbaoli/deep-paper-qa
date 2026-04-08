@@ -1,0 +1,216 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e21]:
+        - generic [ref=e36]:
+          - img "Avatar for Assistant" [ref=e39]
+          - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+        - article [ref=e68]: 总结 2023-2025 年 LLM Agent 的研究脉络
+        - generic [ref=e72]:
+          - img "Avatar for Assistant" [ref=e75]
+          - generic [ref=e98]:
+            - article [ref=e419]: "[研究报告]"
+            - article [ref=e420]: 好的，遵照您的要求，我将基于提供的子问题发现，为您生成一份结构化的研究报告。
+            - heading "关于大语言模型智能体（LLM Agent）的研究现状与趋势分析报告（2023-2025）" [level=3] [ref=e421]
+            - article [ref=e422]: 本报告旨在整合近期关于大语言模型智能体（LLM Agent）的研究成果，梳理其核心架构、关键技术与应用进展，并在此基础上分析当前的研究趋势与潜在空白。
+            - heading "1. 研究脉络与核心框架" [level=4] [ref=e423]
+            - article [ref=e424]: 近期研究已从早期的概念验证转向系统化、理论化的框架构建。两篇重要的综述性工作为领域奠定了理论基础：
+            - list [ref=e425]:
+              - listitem [ref=e426]: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025) 系统性地回顾并分类了LLM智能体的反馈机制，提出了一个能够涵盖大部分现有工作的通用框架，强调了反馈循环在智能体学习和适应中的核心作用。
+              - listitem [ref=e427]: "《Position: Foundation Agents as the Paradigm Shift for Decision Making》 (ICML 2024) 则更具前瞻性地提出了“基础智能体”的范式，将其类比于基础模型，倡导构建能够泛化于广泛决策任务的通用智能体，并阐述了其基本特征与面临的挑战。"
+            - article [ref=e428]: 这些工作表明，研究社区正致力于为LLM Agent建立统一的理论框架和演进方向。
+            - heading "2. 智能体架构与系统的演进" [level=4] [ref=e429]
+            - article [ref=e430]: 智能体的架构设计正从静态、单一模式向动态、协作和专业化方向快速发展。
+            - list [ref=e431]:
+              - listitem [ref=e432]: 从单一到多智能体协作：研究普遍认识到，通过多智能体系统的协作可以显著扩展个体智能体的能力边界，解决复杂任务。
+              - listitem [ref=e433]: 从静态到动态架构：标志性工作 《Multi-agent Architecture Search via Agentic Supernet》 (ICML 2025) 提出了“Agentic Supernet”概念和MaAS框架，实现了根据具体查询动态采样最优智能体架构的能力，代表了架构设计从手工设计到自动、自适应搜索的重要转变。
+              - listitem [ref=e434]:
+                - text: 专业化框架涌现：针对特定领域，出现了诸多专用框架，如用于代码审计的
+                - code [ref=e435]: RepoAudit
+                - text: 、用于数学建模的
+                - code [ref=e436]: MM-Agent
+                - text: 以及用于自动化机器学习的
+                - code [ref=e437]: AutoML-Agent
+                - text: 等，显示了LLM Agent技术在垂直领域的深度应用。
+            - heading "3. 训练与优化方法的关键进展" [level=4] [ref=e438]
+            - article [ref=e439]: 如何高效地训练和优化LLM Agent是核心挑战之一，当前研究呈现出多样化的技术路径。
+            - list [ref=e440]:
+              - listitem [ref=e441]: 离线训练范式：一种主流思路是在不修改底层LLM权重的前提下进行训练，例如将可调用函数（Tools）视为“可学习权重”，通过优化函数调用来训练智能体。
+              - listitem [ref=e442]: 与强化学习深度融合：研究探索将LLM作为策略教师来训练更高效的强化学习（RL）智能体，或利用分层多轮RL来解决长期任务中的信用分配和复杂推理问题。这表明LLM的规划能力与RL的试错学习能力正形成互补。
+            - heading "4. 评估基准与安全性考量" [level=4] [ref=e443]
+            - article [ref=e444]: 随着智能体能力提升，系统化的评估和安全风险研究变得至关重要。
+            - list [ref=e445]:
+              - listitem [ref=e446]:
+                - text: "综合评估基准的建立：《AgentBench: Evaluating LLMs as Agents》 (ICLR 2024) 是一个里程碑式的工作，它提供了涵盖8个不同环境的综合基准，揭示了商业模型与开源模型在复杂智能体任务上的显著差距。此外，像"
+                - code [ref=e447]: MM-Bench
+                - text: 这样的领域专用基准也在出现。
+              - listitem [ref=e448]: 安全性威胁受到关注：《Watch Out for Your Agents! Investigating Backdoor Threats to LLM-Based Agents》 (NeurIPS 2024) 首次系统性地揭示了LLM智能体面临的后门攻击威胁，提出了攻击框架。这连同对智能体不确定性量化的重新评估需求，共同指向了可靠性与安全这一关键研究方向。
+            - heading "5. 应用领域的深化与拓展" [level=4] [ref=e449]
+            - article [ref=e450]: LLM Agent的应用正迅速渗透至多个专业领域，展示了其解决现实世界复杂问题的潜力。
+            - list [ref=e451]:
+              - listitem [ref=e452]:
+                - text: 软件开发与审计：如
+                - code [ref=e453]: RepoAudit
+                - text: 实现仓库级代码审计。
+              - listitem [ref=e454]:
+                - text: 科学计算与建模：
+                - code [ref=e455]: MM-Agent
+                - text: 专门用于解决现实世界的数学建模问题。
+              - listitem [ref=e456]: 城市与交通规划：研究探索将LLM作为模拟城市居民移动行为的生成框架。
+              - listitem [ref=e457]: 自动化机器学习：实现从数据预处理到模型部署的全流程AutoML。
+            - heading "6. 研究趋势总结与空白分析" [level=4] [ref=e458]
+            - article [ref=e459]: 当前主要趋势：
+            - list [ref=e460]:
+              - listitem [ref=e461]: 范式系统化：从零散应用转向构建统一的理论框架和基础智能体范式。
+              - listitem [ref=e462]: 架构动态化：智能体架构从固定设计走向可搜索、可自适应生成的模式。
+              - listitem [ref=e463]: 训练专业化：融合离线学习、强化学习等多种范式，形成更高效的训练方法。
+              - listitem [ref=e464]: 评估标准化：建立多维、跨环境的基准测试以客观衡量智能体能力。
+              - listitem [ref=e465]: 关注安全可靠：从仅追求能力扩展到深入研究其安全性、鲁棒性和不确定性。
+              - listitem [ref=e466]: 应用垂直化：在代码、科研、城市管理等专业领域产生深度解决方案。
+            - article [ref=e467]: 潜在的研究空白与未来方向：
+            - list [ref=e468]:
+              - listitem [ref=e469]: 理论基础的夯实：尽管有综述和立场论文，但LLM Agent的形式化理论（如收敛性、可解释性理论）仍显薄弱。如何形式化定义智能体的“学习”和“泛化”是需要深入探索的问题。
+              - listitem [ref=e470]: 高效与轻量化训练：当前许多训练方法仍依赖大量API调用或计算资源。研究参数高效的智能体微调方法，或如何用小模型驱动高效智能体，是一个重要的实用化方向。
+              - listitem [ref=e471]: 长期记忆与持续学习：现有智能体在跨会话的长期记忆保持和在不遗忘旧技能前提下学习新任务（持续学习）方面能力有限，这是实现真正“自主”智能体的关键障碍。
+              - listitem [ref=e472]: 复杂价值对齐与安全：后门攻击研究只是开端。智能体在复杂、多轮交互中如何保持与人类复杂价值观的对齐，如何防止其在追求目标时产生不可预测的副作用，是更具挑战性的安全议题。
+              - listitem [ref=e473]: 跨模态智能体的深度融合：当前研究虽涉及多模态，但如何让智能体深度理解并主动生成、编辑图像、视频、3D场景等多模态内容，并基于此进行规划与决策，仍是一个开放领域。
+              - listitem [ref=e474]: 对现实物理世界的泛化：大多数基准仍停留在数字环境。如何将智能体的能力泛化到充满不确定性的真实物理世界（如机器人操控、复杂实验操作），是连接数字智能与物理世界的终极挑战之一。
+            - article [ref=e475]: 结论：2023-2025年间，LLM Agent研究已进入一个快速成熟和分化的阶段，在架构、训练、评估和应用等方面取得了实质性进展。未来的研究将在深化现有方向的同时，必然朝向夯实理论、提升效率、保障长期安全与跨模态物理泛化等更基础、更复杂的挑战迈进。
+        - generic [ref=e104]:
+          - img "Avatar for Assistant" [ref=e107]
+          - generic [ref=e111]:
+            - article [ref=e112]: 研究进展
+            - article [ref=e113]: 已制定研究计划，共 4 个子问题：
+            - list [ref=e114]:
+              - listitem [ref=e115]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+              - listitem [ref=e116]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+              - listitem [ref=e117]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+              - listitem [ref=e118]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+            - article [ref=e119]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+        - article [ref=e134]: 总结
+        - generic [ref=e206]:
+          - img "Avatar for Assistant" [ref=e209]
+          - generic [ref=e213]:
+            - article [ref=e214]: 研究进展
+            - article [ref=e215]: 子问题 1/4 完成。
+            - 'heading "子问题 1: 子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。" [level=3] [ref=e216]'
+            - heading "关键发现总结" [level=2] [ref=e217]
+            - article [ref=e218]: 基于对2023-2025年间LLM Agent相关文献的检索，我建立了以下研究脉络的初步框架：
+            - heading "一、综述文献" [level=3] [ref=e219]
+            - list [ref=e220]:
+              - listitem [ref=e221]:
+                - article [ref=e222]: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025)
+                - list [ref=e223]:
+                  - listitem [ref=e224]: 系统综述了LLM-based AI agents的反馈机制
+                  - listitem [ref=e225]: 提出了一个通用框架，涵盖现有大部分工作
+                  - listitem [ref=e226]: 对反馈机制进行了分类和深入探讨
+              - listitem [ref=e227]:
+                - article [ref=e228]: "《Position: Foundation Agents as the Paradigm Shift for Decision Making》 (ICML 2024)"
+                - list [ref=e229]:
+                  - listitem [ref=e230]: 倡导构建基础智能体作为决策学习的范式转变
+                  - listitem [ref=e231]: 基于大语言模型成功经验，提出了基础智能体的基本特征和挑战
+            - heading "二、关键论文" [level=3] [ref=e232]
+            - list [ref=e233]:
+              - listitem [ref=e234]:
+                - article [ref=e235]: "《AgentBench: Evaluating LLMs as Agents》 (ICLR 2024, 引用40)"
+                - list [ref=e236]:
+                  - listitem [ref=e237]: 提出了一个多维基准测试，包含8个不同环境
+                  - listitem [ref=e238]: 评估了29个API-based和开源LLM作为智能体的能力
+                  - listitem [ref=e239]: 发现商业LLM在复杂环境中表现强劲，但与开源模型存在显著差距
+              - listitem [ref=e240]:
+                - article [ref=e241]: 《Watch Out for Your Agents! Investigating Backdoor Threats to LLM-Based Agents》 (NeurIPS 2024, 引用7)
+                - list [ref=e242]:
+                  - listitem [ref=e243]: 首次研究了LLM-based agents的后门攻击威胁
+                  - listitem [ref=e244]: 提出了智能体后门攻击的一般框架
+              - listitem [ref=e245]:
+                - article [ref=e246]: 《Multi-agent Architecture Search via Agentic Supernet》 (ICML 2025)
+                - list [ref=e247]:
+                  - listitem [ref=e248]: 提出了agentic supernet概念，一种概率和连续的智能体架构分布
+                  - listitem [ref=e249]: 引入了MaAS框架，根据查询动态采样智能体架构
+            - heading "三、核心概念与研究脉络" [level=3] [ref=e250]
+            - heading "1. 智能体架构与框架" [level=4] [ref=e251]
+            - list [ref=e252]:
+              - listitem [ref=e253]: 多智能体系统：通过协作扩展个体智能体的认知边界
+              - listitem [ref=e254]: 智能体框架：如AutoML-Agent、MM-Agent、RepoAudit等专用框架
+              - listitem [ref=e255]: 架构搜索：从静态系统转向动态、查询依赖的架构
+            - heading "2. 训练与优化方法" [level=4] [ref=e256]
+            - list [ref=e257]:
+              - listitem [ref=e258]: 离线训练：不修改LLM权重的训练范式（函数作为可学习权重）
+              - listitem [ref=e259]: 强化学习集成：LLM作为策略教师训练RL智能体
+              - listitem [ref=e260]: 分层多轮RL：解决多轮交互中的信用分配和推理问题
+            - heading "3. 评估与基准测试" [level=4] [ref=e261]
+            - list [ref=e262]:
+              - listitem [ref=e263]: AgentBench：综合评估LLM作为智能体的能力
+              - listitem [ref=e264]: MM-Bench：专门用于数学建模任务的基准
+            - heading "4. 安全与可靠性" [level=4] [ref=e265]
+            - list [ref=e266]:
+              - listitem [ref=e267]: 后门攻击：智能体特有的安全威胁
+              - listitem [ref=e268]: 不确定性量化：需要重新评估LLM智能体的不确定性
+            - heading "5. 应用领域" [level=4] [ref=e269]
+            - list [ref=e270]:
+              - listitem [ref=e271]: 代码审计：RepoAudit用于仓库级代码审计
+              - listitem [ref=e272]: 城市移动性：LLM作为城市居民的移动生成框架
+              - listitem [ref=e273]: 数学建模：MM-Agent用于现实世界数学建模问题
+              - listitem [ref=e274]: AutoML：全流程自动化机器学习
+            - heading "四、研究趋势" [level=3] [ref=e275]
+            - list [ref=e276]:
+              - listitem [ref=e277]: 从单一智能体到多智能体协作
+              - listitem [ref=e278]: 从静态架构到动态、自适应架构
+              - listitem [ref=e279]: 从单纯提示工程到系统化训练方法
+              - listitem [ref=e280]: 从能力评估到安全性和可靠性关注
+              - listitem [ref=e281]: 从通用任务到特定领域应用深化
+            - article [ref=e282]: 这个初步框架显示LLM Agent研究正在从基础概念探索向系统化、专业化、安全可靠的方向发展，形成了涵盖架构设计、训练方法、评估基准、安全考虑和应用场景的完整研究脉络。
+            - article [ref=e283]: 请选择：继续下一个子问题 / 调整方向（请说明）/ 直接生成总结
+        - article [ref=e417]: 总结
+        - heading "已使用 路由分类" [level=3] [ref=e88]:
+          - button "已使用 路由分类" [active] [ref=e89] [cursor=pointer]:
+            - generic [ref=e90]: 已使用
+            - text: 路由分类
+            - img [ref=e91]
+        - generic [ref=e293]:
+          - img "Avatar for search_abstracts" [ref=e296]
+          - generic [ref=e299]:
+            - heading "已使用 search_abstracts" [level=3] [ref=e300]:
+              - button "已使用 search_abstracts" [expanded] [ref=e301] [cursor=pointer]:
+                - generic [ref=e302]: 已使用
+                - text: search_abstracts
+                - img [ref=e303]
+            - region [ref=e321]:
+              - generic [ref=e323]:
+                - generic [ref=e327]:
+                  - generic [ref=e328]:
+                    - generic [ref=e329]: json
+                    - button [ref=e330] [cursor=pointer]:
+                      - img
+                  - code [ref=e333]: "{'query': 'LLM Agent OR \"Large Language Model Agent\" OR \"Language Model Agent\" survey review overview', 'where': 'year >= 2023 AND year <= 2025', 'limit': 15, 'mode': 'fulltext'}"
+                - generic [ref=e336]:
+                  - article [ref=e337]: "[1] A Survey on the Feedback Mechanism of LLM-based AI Agents ID: ijcai-2025-1175 | IJCAI 2025 | 引用: 1 | 相关度: 0.0704 摘要片段: 【agents】. To provide a comprehensive 【overview】 of this rapidly evolving field, this paper presents a systematic 【review】 of these studies, offering a holistic perspective on the feedback mechanisms in 【LLM】"
+                  - article [ref=e338]: "[2] The Evolving Landscape of LLM- and VLM-Integrated Reinforcement Learning ID: ijcai-2025-1181 | IJCAI 2025 | 引用: 0 | 相关度: 0.0597 摘要片段: Reinforcement"
+        - generic [ref=e308]:
+          - img "Avatar for search_abstracts" [ref=e311]
+          - heading "已使用 search_abstracts" [level=3] [ref=e315]:
+            - button "已使用 search_abstracts" [ref=e316] [cursor=pointer]:
+              - generic [ref=e317]: 已使用
+              - text: search_abstracts
+              - img [ref=e318]
+      - button [ref=e477] [cursor=pointer]:
+        - img
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [ref=e48]
+        - generic [ref=e49]:
+          - button [ref=e52] [cursor=pointer]:
+            - img
+          - generic [ref=e53]:
+            - button [disabled]:
+              - img
+      - article [ref=e478]: 大语言模型可能会犯错。请核实重要信息。

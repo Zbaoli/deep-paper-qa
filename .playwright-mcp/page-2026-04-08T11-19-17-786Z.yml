@@ -1,0 +1,43 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e56]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - img "Avatar for Assistant" [ref=e63]
+      - generic [ref=e97]:
+        - img "Avatar for Assistant" [ref=e100]
+        - generic [ref=e104]:
+          - article [ref=e105]: 研究进展
+          - article [ref=e106]: 已制定研究计划，共 4 个子问题：
+          - list [ref=e107]:
+            - listitem [ref=e108]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+            - listitem [ref=e109]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+            - listitem [ref=e110]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+            - listitem [ref=e111]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+          - article [ref=e112]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+      - heading "已使用 路由分类" [level=3] [ref=e76]:
+        - button "已使用 路由分类" [ref=e77] [cursor=pointer]:
+          - generic [ref=e78]: 已使用
+          - text: 路由分类
+          - img [ref=e79]
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - textbox "在此输入您的消息..." [active] [ref=e85]
+        - generic [ref=e86]:
+          - button [ref=e113] [cursor=pointer]:
+            - img
+          - generic [ref=e89]:
+            - button [disabled]:
+              - img
+      - article [ref=e114]: 大语言模型可能会犯错。请核实重要信息。

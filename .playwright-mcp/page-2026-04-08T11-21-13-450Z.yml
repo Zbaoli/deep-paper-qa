@@ -1,0 +1,111 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e56]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - img "Avatar for Assistant" [ref=e63]
+      - generic [ref=e97]:
+        - img "Avatar for Assistant" [ref=e100]
+        - generic [ref=e104]:
+          - article [ref=e105]: 研究进展
+          - article [ref=e106]: 已制定研究计划，共 4 个子问题：
+          - list [ref=e107]:
+            - listitem [ref=e108]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+            - listitem [ref=e109]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+            - listitem [ref=e110]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+            - listitem [ref=e111]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+          - article [ref=e112]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+      - article [ref=e126]: 总结
+      - generic [ref=e131]:
+        - img "Avatar for Assistant" [ref=e134]
+        - generic [ref=e138]:
+          - article [ref=e139]: 研究进展
+          - article [ref=e140]: 子问题 1/4 完成。
+          - 'heading "子问题 1: 子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。" [level=3] [ref=e141]'
+          - heading "关键发现总结" [level=2] [ref=e142]
+          - article [ref=e143]: 基于对2023-2025年间LLM Agent相关文献的检索，我建立了以下研究脉络的初步框架：
+          - heading "一、综述文献" [level=3] [ref=e144]
+          - list [ref=e145]:
+            - listitem [ref=e146]:
+              - text: 《A Survey on the Feedback Mechanism of LLM-based AI Agents》 (IJCAI 2025)
+              - list [ref=e147]:
+                - listitem [ref=e148]: 系统综述了LLM-based AI agents的反馈机制
+                - listitem [ref=e149]: 提出了一个通用框架，涵盖现有大部分工作
+                - listitem [ref=e150]: 将反馈机制分类并提供了该领域的全面概览
+          - heading "二、关键论文和核心概念" [level=3] [ref=e151]
+          - heading "1. 评估基准与框架" [level=4] [ref=e152]
+          - list [ref=e153]:
+            - listitem [ref=e154]: AgentBench (ICLR 2024, 引用40)：首个多维度的LLM-as-Agent评估基准，包含8个不同环境
+            - listitem [ref=e155]: InfiAgent-DABench (ICML 2024)：专门评估数据分析任务的LLM-based agents基准
+            - listitem [ref=e156]: ALI-Agent (NeurIPS 2024)：基于agent的评估框架，用于评估LLM与人类价值观的对齐
+          - heading "2. 架构设计与关键技术" [level=4] [ref=e157]
+          - list [ref=e158]:
+            - listitem [ref=e159]: Multi-agent Architecture Search via Agentic Supernet (ICML 2025)：提出了agentic supernet概念，优化agent架构的概率分布
+            - listitem [ref=e160]: Offline Training of Language Model Agents with Functions as Learnable Weights (ICML 2024)：将函数作为可学习的"agent参数"进行训练
+            - listitem [ref=e161]: AutoML-Agent (ICML 2025)：用于全流程AutoML的多agent LLM框架
+          - heading "3. 应用场景" [level=4] [ref=e162]
+          - list [ref=e163]:
+            - listitem [ref=e164]: 数学建模：MM-Agent (NeurIPS 2025) 用于解决现实世界数学建模问题
+            - listitem [ref=e165]: 代码审计：RepoAudit (ICML 2025) 用于仓库级代码审计的自主LLM-agent
+            - listitem [ref=e166]: 城市移动性：LLM Agent框架用于个人移动性生成 (NeurIPS 2024)
+            - listitem [ref=e167]: 信息传播模拟：LLM-enhanced Agent-based Simulation Tool (IJCAI 2024)
+          - heading "4. 安全与可靠性" [level=4] [ref=e168]
+          - list [ref=e169]:
+            - listitem [ref=e170]: Watch Out for Your Agents! Investigating Backdoor Threats to LLM-Based Agents (NeurIPS 2024)：首次系统研究LLM-based agents的后门攻击威胁
+            - listitem [ref=e171]: "Position: Uncertainty Quantification Needs Reassessment for Large Language Model Agents (ICML 2025)：重新评估LLM agents的不确定性量化需求"
+          - heading "三、研究趋势" [level=3] [ref=e172]
+          - list [ref=e173]:
+            - listitem [ref=e174]: 从单一agent到多agent系统：强调agent间的协作与交互
+            - listitem [ref=e175]: 专业化与自动化：针对特定领域（如AutoML、代码审计）的专用agent框架
+            - listitem [ref=e176]: 评估标准化：建立系统化的评估基准和框架
+            - listitem [ref=e177]: 安全与对齐：关注LLM agents的安全威胁和与人类价值观的对齐
+            - listitem [ref=e178]: 离线训练与优化：探索不修改LLM权重的agent训练方法
+          - heading "四、核心研究问题" [level=3] [ref=e179]
+          - list [ref=e180]:
+            - listitem [ref=e181]: 反馈机制的设计与优化
+            - listitem [ref=e182]: 多agent系统的架构搜索与协作
+            - listitem [ref=e183]: 特定领域应用的agent专业化
+            - listitem [ref=e184]: 安全威胁与防御机制
+            - listitem [ref=e185]: 评估标准与方法论
+          - article [ref=e186]: 这个初步框架显示了LLM Agent研究正在从概念验证转向系统化、专业化、安全可靠的实际应用阶段。
+          - article [ref=e187]: 请选择：继续下一个子问题 / 调整方向（请说明）/ 直接生成总结
+      - heading "已使用 路由分类" [level=3] [ref=e76]:
+        - button "已使用 路由分类" [ref=e77] [cursor=pointer]:
+          - generic [ref=e78]: 已使用
+          - text: 路由分类
+          - img [ref=e79]
+      - generic [ref=e191]:
+        - img "Avatar for search_abstracts" [ref=e194]
+        - heading "已使用 search_abstracts" [level=3] [ref=e198]:
+          - button "已使用 search_abstracts" [ref=e199] [cursor=pointer]:
+            - generic [ref=e200]: 已使用
+            - text: search_abstracts
+            - img [ref=e201]
+      - generic [ref=e206]:
+        - img "Avatar for search_abstracts" [ref=e209]
+        - heading "已使用 search_abstracts" [level=3] [ref=e213]:
+          - button "已使用 search_abstracts" [ref=e214] [cursor=pointer]:
+            - generic [ref=e215]: 已使用
+            - text: search_abstracts
+            - img [ref=e216]
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - textbox "在此输入您的消息..." [active] [ref=e85]
+        - generic [ref=e86]:
+          - button [ref=e113] [cursor=pointer]:
+            - img
+          - generic [ref=e89]:
+            - button [disabled]:
+              - img
+      - article [ref=e218]: 大语言模型可能会犯错。请核实重要信息。

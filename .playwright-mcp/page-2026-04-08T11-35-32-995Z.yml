@@ -1,0 +1,131 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e56]: 总结 2023-2025 年 LLM Agent 的研究脉络
+      - img "Avatar for Assistant" [ref=e63]
+      - generic [ref=e68]:
+        - img "Avatar for Assistant" [ref=e71]
+        - generic [ref=e75]:
+          - article [ref=e76]: 研究进展
+          - article [ref=e77]: 已制定研究计划，共 4 个子问题：
+          - list [ref=e78]:
+            - listitem [ref=e79]: "子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。"
+            - listitem [ref=e80]: "子问题2: 使用 search_abstracts 检索 2023-2025 年间 LLM Agent 在特定应用领域（如代码生成、科学发现、机器人控制）的研究进展，以分析其技术扩散路径。"
+            - listitem [ref=e81]: "子问题3: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的架构设计（如规划、工具使用、多智能体协作）的关键技术论文，以梳理其核心能力演进。"
+            - listitem [ref=e82]: "子问题4: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的评估基准、主要挑战与未来方向的文献，以总结其发展现状与趋势。"
+          - article [ref=e83]: 请确认计划，或提出修改意见。回复「继续」开始执行。
+      - article [ref=e95]: 总结
+      - generic [ref=e128]:
+        - img "Avatar for Assistant" [ref=e131]
+        - generic [ref=e135]:
+          - article [ref=e136]: 研究进展
+          - article [ref=e137]: 子问题 1/4 完成。
+          - 'heading "子问题 1: 子问题1: 使用 search_abstracts 检索 2023-2025 年间关于 LLM Agent 的综述、关键论文和核心概念，以建立研究脉络的初步框架。" [level=3] [ref=e138]'
+          - heading "关键发现总结" [level=2] [ref=e139]
+          - article [ref=e140]: 基于两次检索结果，我建立了关于2023-2025年间LLM Agent研究的初步框架：
+          - heading "1. 综述类文献" [level=3] [ref=e141]
+          - list [ref=e142]:
+            - listitem [ref=e143]: "EMNLP 2025: \"From Automation to Autonomy: A Survey on Large Language Models in Scientific Discovery\" - 这篇综述系统地描述了LLM在科学发现中从工具到分析员再到科学家的角色演变，提出了三级分类法（Tool, Analyst, Scientist），是理解LLM Agent自主性发展的关键框架。"
+            - listitem [ref=e144]: "EMNLP 2023: \"How Do Large Language Models Capture the Ever-changing World Knowledge? A Review of Recent Advances\" - 虽然主要关注知识更新，但为理解LLM Agent的知识基础提供了背景。"
+          - heading "2. 关键论文与研究方向" [level=3] [ref=e145]
+          - article [ref=e146]: a. 自主性与框架设计
+          - list [ref=e147]:
+            - listitem [ref=e148]: "AutoML-Agent (ICML 2025): 多智能体LLM框架，用于全流程AutoML，展示了多智能体协作的潜力"
+            - listitem [ref=e149]: "RepoAudit (ICML 2025): 用于代码审计的自主LLM智能体"
+            - listitem [ref=e150]: "Scaling Autonomous Agents via Automatic Reward Modeling And Planning (ICLR 2025): 通过自动奖励建模和规划扩展自主智能体"
+          - article [ref=e151]: b. 评估与基准
+          - list [ref=e152]:
+            - listitem [ref=e153]: "STEER (ICML 2024): 评估LLM智能体的经济理性"
+            - listitem [ref=e154]: "Can Large Language Models Agents Simulate Human Trust Behavior? (NeurIPS 2024): 研究LLM智能体模拟人类信任行为的能力"
+            - listitem [ref=e155]: "Collab-Overcooked (EMNLP 2025): 评估LLM作为协作智能体的基准"
+          - article [ref=e156]: c. 训练与优化
+          - list [ref=e157]:
+            - listitem [ref=e158]: "Offline Training of Language Model Agents with Functions as Learnable Weights (ICML 2024): 不修改LLM权重的智能体训练新范式"
+            - listitem [ref=e159]: "Position: Uncertainty Quantification Needs Reassessment for Large Language Model Agents (ICML 2025): 强调不确定性量化的重要性"
+          - article [ref=e160]: d. 应用领域
+          - list [ref=e161]:
+            - listitem [ref=e162]: "Large Language Models as Urban Residents (NeurIPS 2024): 个人移动性生成的LLM智能体框架"
+            - listitem [ref=e163]: "Open Models, Closed Minds? (AAAI 2025): 研究开源模型在模拟人类个性方面的能力"
+          - heading "3. 核心概念与研究方向" [level=3] [ref=e164]
+          - article [ref=e165]: a. 自主性层级（基于EMNLP 2025综述）：
+          - list [ref=e166]:
+            - listitem [ref=e167]: 工具级：任务特定的自动化
+            - listitem [ref=e168]: 分析员级：数据分析和解释
+            - listitem [ref=e169]: 科学家级：自主提出假设、设计和执行实验
+          - article [ref=e170]: b. 关键技术挑战：
+          - list [ref=e171]:
+            - listitem [ref=e172]: 不确定性量化
+            - listitem [ref=e173]: 奖励建模与规划
+            - listitem [ref=e174]: 多智能体协作
+            - listitem [ref=e175]: 人类行为模拟
+            - listitem [ref=e176]: 离线训练方法
+          - article [ref=e177]: c. 评估维度：
+          - list [ref=e178]:
+            - listitem [ref=e179]: 经济理性
+            - listitem [ref=e180]: 信任行为模拟
+            - listitem [ref=e181]: 协作能力
+            - listitem [ref=e182]: 事实性（long-form factuality）
+          - heading "4. 研究脉络趋势" [level=3] [ref=e183]
+          - list [ref=e184]:
+            - listitem [ref=e185]: 从工具到智能体：研究重点从LLM作为工具转向LLM作为自主智能体
+            - listitem [ref=e186]: 从单智能体到多智能体：关注多智能体协作框架
+            - listitem [ref=e187]: 从能力评估到行为理解：不仅评估性能，还研究智能体行为（信任、协作等）
+            - listitem [ref=e188]: 从在线到离线训练：探索不依赖在线交互的训练方法
+          - article [ref=e189]: 这个初步框架显示LLM Agent研究正在快速发展，重点从基础能力转向自主性、协作性和行为理解等更高级的智能体特性。
+          - article [ref=e190]: 请选择：继续下一个子问题 / 调整方向（请说明）/ 直接生成总结
+      - generic [ref=e106]:
+        - heading "已使用 路由分类" [level=3] [ref=e107]:
+          - button "已使用 路由分类" [expanded] [ref=e108] [cursor=pointer]:
+            - generic [ref=e109]: 已使用
+            - text: 路由分类
+            - img [ref=e110]
+        - region [ref=e191]:
+          - article [ref=e197]: 问题类型：深度研究
+      - generic [ref=e201]:
+        - img "Avatar for search_abstracts" [ref=e204]
+        - generic [ref=e207]:
+          - heading "已使用 search_abstracts" [level=3] [ref=e208]:
+            - button "已使用 search_abstracts" [expanded] [active] [ref=e209] [cursor=pointer]:
+              - generic [ref=e210]: 已使用
+              - text: search_abstracts
+              - img [ref=e211]
+          - region [ref=e213]:
+            - generic [ref=e215]:
+              - generic [ref=e219]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]: json
+                  - button [ref=e222] [cursor=pointer]:
+                    - img
+                - code [ref=e225]: "{'query': '\"LLM Agent\" OR \"Large Language Model Agent\" OR \"language model agent\" survey review overview', 'mode': 'fulltext', 'limit': 15, 'where': 'year >= 2023 AND year <= 2025'}"
+              - generic [ref=e228]:
+                - article [ref=e229]: "[1] Position: Uncertainty Quantification Needs Reassessment for Large Language Model Agents ID: icml-2025-kirchhof25b | ICML 2025 | 引用: 0 | 相关度: 0.0584 摘要片段: 【LLM】 【agents】 operate in when communicating with a user, and that we need to research avenues that enrich"
+                - article [ref=e230]: "[2] STEER: Assessing the Economic Rationality of Large Language Models ID: icml-2024-raman24b | ICML 2024 | 引用: 0 | 相关度: 0.0548 摘要片段: 【LLM】 【agent】 is reliable enough to be trusted -- requires a methodology for assessi"
+      - generic [ref=e234]:
+        - img "Avatar for search_abstracts" [ref=e237]
+        - heading "已使用 search_abstracts" [level=3] [ref=e241]:
+          - button "已使用 search_abstracts" [ref=e242] [cursor=pointer]:
+            - generic [ref=e243]: 已使用
+            - text: search_abstracts
+            - img [ref=e244]
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - textbox "在此输入您的消息..." [ref=e116]
+        - generic [ref=e117]:
+          - button [ref=e246] [cursor=pointer]:
+            - img
+          - generic [ref=e120]:
+            - button [disabled]:
+              - img
+      - article [ref=e247]: 大语言模型可能会犯错。请核实重要信息。

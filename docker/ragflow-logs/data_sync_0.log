@@ -1,0 +1,151 @@
+2026-03-31 20:51:42,509 INFO     25 data_sync_0 log path: /ragflow/logs/data_sync_0.log, log levels: {'peewee': 'WARNING', 'pdfminer': 'WARNING', 'root': 'INFO'}
+2026-03-31 20:51:42,511 INFO     25 
+  _____        _           _____
+ |  __ \      | |         / ____|
+ | |  | | __ _| |_ __ _  | (___  _   _ _ __   ___
+ | |  | |/ _` | __/ _` |  \___ \| | | | '_ \ / __|
+ | |__| | (_| | || (_| |  ____) | |_| | | | | (__
+ |_____/ \__,_|\__\__,_| |_____/ \__, |_| |_|\___|
+                                  __/ |
+                                 |___/
+    
+2026-03-31 20:51:42,511 INFO     25 RAGFlow version: v0.24.0
+2026-03-31 20:51:42,511 INFO     25 Current configs, from /ragflow/conf/service_conf.yaml:
+	ragflow: {'host': '0.0.0.0', 'http_port': 9380}
+	admin: {'host': '0.0.0.0', 'http_port': 9381}
+	mysql: {'name': 'rag_flow', 'user': 'root', 'password': '********', 'host': 'ragflow-mysql', 'port': 3306, 'max_connections': 900, 'stale_timeout': 300, 'max_allowed_packet': 1073741824}
+	minio: {'user': 'rag_flow', 'password': '********', 'host': 'ragflow-minio:9000', 'bucket': '', 'prefix_path': ''}
+	es: {'hosts': 'http://ragflow-es:9200', 'username': 'elastic', 'password': '********'}
+	os: {'hosts': 'http://opensearch01:9201', 'username': 'admin', 'password': '********'}
+	infinity: {'uri': 'infinity:23817', 'postgres_port': 5432, 'db_name': 'default_db'}
+	oceanbase: {'scheme': 'oceanbase', 'config': {'db_name': 'test', 'user': 'root@ragflow', 'password': 'infini_rag_flow', 'host': 'oceanbase', 'port': 2881}}
+	seekdb: {'scheme': 'oceanbase', 'config': {'db_name': 'ragflow_doc', 'user': 'root', 'password': 'infini_rag_flow', 'host': 'seekdb', 'port': 2881}}
+	redis: {'db': 1, 'username': '', 'password': '********', 'host': 'ragflow-redis:6379'}
+	user_default_llm: {'default_models': {'embedding_model': {'api_key': 'xxx', 'base_url': 'http://:80'}}}
+2026-03-31 20:51:42,514 WARNING  25 SECURITY WARNING: Using auto-generated SECRET_KEY.
+2026-03-31 20:51:42,523 INFO     25 GET http://ragflow-es:9200/ [status:200 duration:0.007s]
+2026-03-31 20:51:42,525 INFO     25 HEAD http://ragflow-es:9200/ [status:200 duration:0.001s]
+2026-03-31 20:51:42,525 INFO     25 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 20:51:42,525 INFO     25 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 20:51:42,525 INFO     25 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 20:51:42,525 INFO     25 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 20:51:42,528 WARNING  25 Load term.freq FAIL!
+2026-03-31 20:51:42,532 WARNING  25 Realtime synonym is disabled, since no redis connection.
+2026-03-31 20:51:42,829 WARNING  25 Load term.freq FAIL!
+2026-03-31 20:51:42,833 WARNING  25 Realtime synonym is disabled, since no redis connection.
+2026-03-31 20:51:42,834 INFO     25 RAGFlow data sync is ready after 16.95903444290161s initialization.
+2026-03-31 20:51:42,839 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:51:45,847 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:51:48,852 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:51:51,862 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:51:54,876 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:51:57,891 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:52:00,894 WARNING  25 DB is not ready yet: (1146, "Table 'rag_flow.sync_logs' doesn't exist")
+2026-03-31 20:58:34,545 INFO     23 data_sync_0 log path: /ragflow/logs/data_sync_0.log, log levels: {'peewee': 'WARNING', 'pdfminer': 'WARNING', 'root': 'INFO'}
+2026-03-31 20:58:34,550 INFO     23 
+  _____        _           _____
+ |  __ \      | |         / ____|
+ | |  | | __ _| |_ __ _  | (___  _   _ _ __   ___
+ | |  | |/ _` | __/ _` |  \___ \| | | | '_ \ / __|
+ | |__| | (_| | || (_| |  ____) | |_| | | | | (__
+ |_____/ \__,_|\__\__,_| |_____/ \__, |_| |_|\___|
+                                  __/ |
+                                 |___/
+    
+2026-03-31 20:58:34,550 INFO     23 RAGFlow version: v0.24.0
+2026-03-31 20:58:34,550 INFO     23 Current configs, from /ragflow/conf/service_conf.yaml:
+	ragflow: {'host': '0.0.0.0', 'http_port': 9380}
+	admin: {'host': '0.0.0.0', 'http_port': 9381}
+	mysql: {'name': 'rag_flow', 'user': 'root', 'password': '********', 'host': 'ragflow-mysql', 'port': 3306, 'max_connections': 900, 'stale_timeout': 300, 'max_allowed_packet': 1073741824}
+	minio: {'user': 'rag_flow', 'password': '********', 'host': 'ragflow-minio:9000', 'bucket': '', 'prefix_path': ''}
+	es: {'hosts': 'http://ragflow-es:9200', 'username': 'elastic', 'password': '********'}
+	os: {'hosts': 'http://opensearch01:9201', 'username': 'admin', 'password': '********'}
+	infinity: {'uri': 'infinity:23817', 'postgres_port': 5432, 'db_name': 'default_db'}
+	oceanbase: {'scheme': 'oceanbase', 'config': {'db_name': 'test', 'user': 'root@ragflow', 'password': 'infini_rag_flow', 'host': 'oceanbase', 'port': 2881}}
+	seekdb: {'scheme': 'oceanbase', 'config': {'db_name': 'ragflow_doc', 'user': 'root', 'password': 'infini_rag_flow', 'host': 'seekdb', 'port': 2881}}
+	redis: {'db': 1, 'username': '', 'password': '********', 'host': 'ragflow-redis:6379'}
+	user_default_llm: {'default_models': {'embedding_model': {'api_key': 'xxx', 'base_url': 'http://:80'}}}
+2026-03-31 20:58:34,554 WARNING  23 SECURITY WARNING: Using auto-generated SECRET_KEY.
+2026-03-31 20:58:34,613 INFO     23 GET http://ragflow-es:9200/ [status:200 duration:0.048s]
+2026-03-31 20:58:34,618 INFO     23 HEAD http://ragflow-es:9200/ [status:200 duration:0.004s]
+2026-03-31 20:58:34,618 INFO     23 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 20:58:34,619 INFO     23 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 20:58:34,619 INFO     23 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 20:58:34,619 INFO     23 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 20:58:34,625 WARNING  23 Load term.freq FAIL!
+2026-03-31 20:58:34,634 WARNING  23 Realtime synonym is disabled, since no redis connection.
+2026-03-31 20:58:35,256 WARNING  23 Load term.freq FAIL!
+2026-03-31 20:58:35,261 WARNING  23 Realtime synonym is disabled, since no redis connection.
+2026-03-31 20:58:35,261 INFO     23 RAGFlow data sync is ready after 21.03210735321045s initialization.
+2026-03-31 21:41:49,533 INFO     26 data_sync_0 log path: /ragflow/logs/data_sync_0.log, log levels: {'peewee': 'WARNING', 'pdfminer': 'WARNING', 'root': 'INFO'}
+2026-03-31 21:41:49,536 INFO     26 
+  _____        _           _____
+ |  __ \      | |         / ____|
+ | |  | | __ _| |_ __ _  | (___  _   _ _ __   ___
+ | |  | |/ _` | __/ _` |  \___ \| | | | '_ \ / __|
+ | |__| | (_| | || (_| |  ____) | |_| | | | | (__
+ |_____/ \__,_|\__\__,_| |_____/ \__, |_| |_|\___|
+                                  __/ |
+                                 |___/
+    
+2026-03-31 21:41:49,536 INFO     26 RAGFlow version: v0.24.0
+2026-03-31 21:41:49,536 INFO     26 Current configs, from /ragflow/conf/service_conf.yaml:
+	ragflow: {'host': '0.0.0.0', 'http_port': 9380}
+	admin: {'host': '0.0.0.0', 'http_port': 9381}
+	mysql: {'name': 'rag_flow', 'user': 'root', 'password': '********', 'host': 'ragflow-mysql', 'port': 3306, 'max_connections': 900, 'stale_timeout': 300, 'max_allowed_packet': 1073741824}
+	minio: {'user': 'rag_flow', 'password': '********', 'host': 'ragflow-minio:9000', 'bucket': '', 'prefix_path': ''}
+	es: {'hosts': 'http://ragflow-es:9200', 'username': 'elastic', 'password': '********'}
+	os: {'hosts': 'http://opensearch01:9201', 'username': 'admin', 'password': '********'}
+	infinity: {'uri': 'infinity:23817', 'postgres_port': 5432, 'db_name': 'default_db'}
+	oceanbase: {'scheme': 'oceanbase', 'config': {'db_name': 'test', 'user': 'root@ragflow', 'password': 'infini_rag_flow', 'host': 'oceanbase', 'port': 2881}}
+	seekdb: {'scheme': 'oceanbase', 'config': {'db_name': 'ragflow_doc', 'user': 'root', 'password': 'infini_rag_flow', 'host': 'seekdb', 'port': 2881}}
+	redis: {'db': 1, 'username': '', 'password': '********', 'host': 'ragflow-redis:6379'}
+	user_default_llm: {'default_models': {'embedding_model': {'api_key': 'xxx', 'base_url': 'http://:80'}}}
+2026-03-31 21:41:49,537 WARNING  26 SECURITY WARNING: Using auto-generated SECRET_KEY.
+2026-03-31 21:41:49,546 INFO     26 GET http://ragflow-es:9200/ [status:200 duration:0.006s]
+2026-03-31 21:41:49,548 INFO     26 HEAD http://ragflow-es:9200/ [status:200 duration:0.001s]
+2026-03-31 21:41:49,548 INFO     26 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 21:41:49,548 INFO     26 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 21:41:49,548 INFO     26 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-03-31 21:41:49,548 INFO     26 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-03-31 21:41:49,550 WARNING  26 Load term.freq FAIL!
+2026-03-31 21:41:49,554 WARNING  26 Realtime synonym is disabled, since no redis connection.
+2026-03-31 21:41:49,823 WARNING  26 Load term.freq FAIL!
+2026-03-31 21:41:49,826 WARNING  26 Realtime synonym is disabled, since no redis connection.
+2026-03-31 21:41:49,826 INFO     26 RAGFlow data sync is ready after 18.635757446289062s initialization.
+2026-04-02 16:50:37,052 INFO     24 data_sync_0 log path: /ragflow/logs/data_sync_0.log, log levels: {'peewee': 'WARNING', 'pdfminer': 'WARNING', 'root': 'INFO'}
+2026-04-02 16:50:37,055 INFO     24 
+  _____        _           _____
+ |  __ \      | |         / ____|
+ | |  | | __ _| |_ __ _  | (___  _   _ _ __   ___
+ | |  | |/ _` | __/ _` |  \___ \| | | | '_ \ / __|
+ | |__| | (_| | || (_| |  ____) | |_| | | | | (__
+ |_____/ \__,_|\__\__,_| |_____/ \__, |_| |_|\___|
+                                  __/ |
+                                 |___/
+    
+2026-04-02 16:50:37,056 INFO     24 RAGFlow version: v0.24.0
+2026-04-02 16:50:37,056 INFO     24 Current configs, from /ragflow/conf/service_conf.yaml:
+	ragflow: {'host': '0.0.0.0', 'http_port': 9380}
+	admin: {'host': '0.0.0.0', 'http_port': 9381}
+	mysql: {'name': 'rag_flow', 'user': 'root', 'password': '********', 'host': 'ragflow-mysql', 'port': 3306, 'max_connections': 900, 'stale_timeout': 300, 'max_allowed_packet': 1073741824}
+	minio: {'user': 'rag_flow', 'password': '********', 'host': 'ragflow-minio:9000', 'bucket': '', 'prefix_path': ''}
+	es: {'hosts': 'http://ragflow-es:9200', 'username': 'elastic', 'password': '********'}
+	os: {'hosts': 'http://opensearch01:9201', 'username': 'admin', 'password': '********'}
+	infinity: {'uri': 'infinity:23817', 'postgres_port': 5432, 'db_name': 'default_db'}
+	oceanbase: {'scheme': 'oceanbase', 'config': {'db_name': 'test', 'user': 'root@ragflow', 'password': 'infini_rag_flow', 'host': 'oceanbase', 'port': 2881}}
+	seekdb: {'scheme': 'oceanbase', 'config': {'db_name': 'ragflow_doc', 'user': 'root', 'password': 'infini_rag_flow', 'host': 'seekdb', 'port': 2881}}
+	redis: {'db': 1, 'username': '', 'password': '********', 'host': 'ragflow-redis:6379'}
+	user_default_llm: {'default_models': {'embedding_model': {'api_key': 'xxx', 'base_url': 'http://:80'}}}
+2026-04-02 16:50:37,058 WARNING  24 SECURITY WARNING: Using auto-generated SECRET_KEY.
+2026-04-02 16:50:37,104 INFO     24 GET http://ragflow-es:9200/ [status:200 duration:0.041s]
+2026-04-02 16:50:37,109 INFO     24 HEAD http://ragflow-es:9200/ [status:200 duration:0.004s]
+2026-04-02 16:50:37,109 INFO     24 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-04-02 16:50:37,110 INFO     24 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-04-02 16:50:37,110 INFO     24 Use Elasticsearch http://ragflow-es:9200 as the doc engine.
+2026-04-02 16:50:37,110 INFO     24 Elasticsearch http://ragflow-es:9200 is healthy.
+2026-04-02 16:50:37,114 WARNING  24 Load term.freq FAIL!
+2026-04-02 16:50:37,118 WARNING  24 Realtime synonym is disabled, since no redis connection.
+2026-04-02 16:50:37,517 WARNING  24 Load term.freq FAIL!
+2026-04-02 16:50:37,523 WARNING  24 Realtime synonym is disabled, since no redis connection.
+2026-04-02 16:50:37,524 INFO     24 RAGFlow data sync is ready after 34.19519925117493s initialization.

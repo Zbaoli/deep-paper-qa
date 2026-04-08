@@ -1,0 +1,33 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - button [ref=e9] [cursor=pointer]:
+      - img
+    - generic [ref=e10]:
+      - button "说明" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: 说明
+      - button "Toggle theme" [ref=e13] [cursor=pointer]:
+        - img
+        - generic [ref=e14]: Toggle theme
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e36]:
+        - img "Avatar for Assistant" [ref=e39]
+        - article [ref=e44]: 你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。
+      - article [ref=e68]: 各会议论文数量是多少？
+      - generic [ref=e72]:
+        - img "Avatar for Assistant" [ref=e75]
+        - article [ref=e80]: general
+      - heading "已使用 路由分类" [level=3] [ref=e93]:
+        - button "已使用 路由分类" [ref=e94] [cursor=pointer]:
+          - generic [ref=e95]: 已使用
+          - text: 路由分类
+          - img [ref=e96]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - textbox "在此输入您的消息..." [active] [ref=e48]
+        - generic [ref=e49]:
+          - generic [ref=e51]:
+            - img
+          - button [ref=e99] [cursor=pointer]:
+            - img
+      - article [ref=e100]: 大语言模型可能会犯错。请核实重要信息。
