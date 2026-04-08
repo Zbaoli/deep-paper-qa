@@ -31,11 +31,8 @@ class Settings(BaseSettings):
     max_conversation_turns: int = 6
 
     # 外部搜索 API
-    arxiv_max_results: int = 5
     semantic_scholar_api_key: str = ""
-    semantic_scholar_max_results: int = 5
     tavily_api_key: str = ""
-    tavily_max_results: int = 5
     external_search_timeout: int = 15
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
