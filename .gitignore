@@ -30,3 +30,7 @@ logs/
 # Worktrees
 .worktrees/
 .gstack/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
