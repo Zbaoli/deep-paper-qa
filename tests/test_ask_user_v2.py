@@ -20,7 +20,7 @@ class TestAskUser:
 
         task = asyncio.create_task(simulate_user_reply("thread-1"))
         result = await ask_user.ainvoke(
-            {"summary": "摘要", "question": "是否继续？", "__thread_id": "thread-1"}
+            {"summary": "摘要", "question": "是否继续？", "thread_id": "thread-1"}
         )
         await task
         assert result == "继续"
@@ -32,8 +32,8 @@ class TestAskUser:
             {
                 "summary": "摘要",
                 "question": "是否继续？",
-                "__thread_id": "thread-2",
-                "__timeout": 0.1,
+                "thread_id": "thread-2",
+                "timeout": 0.1,
             }
         )
         assert "未回复" in result
@@ -44,7 +44,7 @@ class TestAskUser:
 
         async def invoke_ask() -> str:
             return await ask_user.ainvoke(
-                {"summary": "研究进展", "question": "下一步？", "__thread_id": "thread-3"}
+                {"summary": "研究进展", "question": "下一步？", "thread_id": "thread-3"}
             )
 
         task = asyncio.create_task(invoke_ask())
