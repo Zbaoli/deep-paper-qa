@@ -59,17 +59,17 @@ class RouterOutput(BaseModel):
 class ResearchState(MessagesState):
     """深度研究 pipeline 状态"""
 
-    plan: list[str]
-    current_step: int
-    findings: list[str]
-    clarify_count: int
+    plan: list[str] = []
+    current_step: int = 0
+    findings: list[str] = []
+    clarify_count: int = 0
 
 
 class TrendState(MessagesState):
     """趋势分析 pipeline 状态"""
 
-    query_topic: str
-    stats_data: str
-    phases: list[dict[str, Any]]
-    representative_papers: list[str]
-    report: str
+    query_topic: str = ""
+    stats_data: str = ""
+    phases: list[dict[str, Any]] = []
+    representative_papers: list[str] = []
+    report: str = ""
