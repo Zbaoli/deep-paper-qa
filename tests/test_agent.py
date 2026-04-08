@@ -1,24 +1,31 @@
-"""主图构建测试"""
+"""DeepAgent 构建测试"""
 
 
-class TestBuildGraph:
-    """主图构建测试"""
+class TestBuildAgent:
+    """DeepAgent 构建测试"""
 
-    def test_graph_builds_successfully(self) -> None:
-        """主图能正常构建"""
-        from deep_paper_qa.agent import build_graph
+    def test_agent_builds_successfully(self) -> None:
+        """agent 能正常构建"""
+        from deep_paper_qa.agent import build_agent
 
-        graph, checkpointer = build_graph()
-        assert graph is not None
+        agent, checkpointer = build_agent()
+        assert agent is not None
         assert checkpointer is not None
 
-    def test_graph_has_correct_structure(self) -> None:
-        """主图应包含正确的图结构"""
-        from deep_paper_qa.agent import build_graph
+    def test_agent_has_invoke_methods(self) -> None:
+        """agent 应支持 invoke 和 ainvoke"""
+        from deep_paper_qa.agent import build_agent
 
-        graph, _ = build_graph()
-        assert hasattr(graph, "invoke")
-        assert hasattr(graph, "ainvoke")
+        agent, _ = build_agent()
+        assert hasattr(agent, "invoke")
+        assert hasattr(agent, "ainvoke")
+
+    def test_agent_has_stream_methods(self) -> None:
+        """agent 应支持流式输出"""
+        from deep_paper_qa.agent import build_agent
+
+        agent, _ = build_agent()
+        assert hasattr(agent, "astream_events")
 
 
 class TestModels:
