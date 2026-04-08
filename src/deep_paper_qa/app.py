@@ -4,7 +4,7 @@ import time
 import uuid
 
 import chainlit as cl
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from loguru import logger
 
 from deep_paper_qa.agent import build_graph
@@ -19,6 +19,19 @@ _graph, _checkpointer = build_graph()
 
 # 结构化事件记录器
 _conv_logger = ConversationLogger()
+
+# 只有 general pipeline 支持流式输出，其他 pipeline 从 state 获取最终消息
+_STREAMING_CATEGORIES = {"general"}
+
+# 路由分类标签映射
+_CATEGORY_LABELS = {
+    "reject": "拒答",
+    "general": "普通问答",
+    "research": "深度研究",
+    "reading": "论文精读",
+    "compare": "论文对比",
+    "trend": "趋势分析",
+}
 
 
 @cl.set_starters
@@ -46,7 +59,7 @@ async def on_chat_start() -> None:
 @cl.on_message
 async def on_message(message: cl.Message) -> None:
     """处理用户消息，记录完整事件链"""
-    # 如果有 ask_user 正在等待回复，跳过新的 graph 调用（让 AskUserMessage 接收回复）
+    # 如果有 ask_user 正在等待回复，跳过新的 graph 调用
     if cl.user_session.get("waiting_for_ask_user"):
         return
 
@@ -67,15 +80,8 @@ async def on_message(message: cl.Message) -> None:
     tools_used: list[str] = []
     tool_timings: dict[str, tuple[str, float]] = {}
 
-    # 路由分类标签映射
-    category_labels = {
-        "reject": "拒答",
-        "general": "普通问答",
-        "research": "深度研究",
-        "reading": "论文精读",
-        "compare": "论文对比",
-        "trend": "趋势分析",
-    }
+    # 路由结果，用于决定是否启用流式输出
+    routed_category = ""
     router_shown = False
 
     final_msg = cl.Message(content="")
@@ -96,7 +102,8 @@ async def on_message(message: cl.Message) -> None:
                     output = event.get("data", {}).get("output", {})
                     cat = output.get("category", "")
                     if cat:
-                        label = category_labels.get(cat, cat)
+                        routed_category = cat
+                        label = _CATEGORY_LABELS.get(cat, cat)
                         step = cl.Step(name="路由分类", type="tool")
                         step.output = f"问题类型：{label}"
                         await step.send()
@@ -163,30 +170,27 @@ async def on_message(message: cl.Message) -> None:
                     step.output = output_str[:500] if len(output_str) > 500 else output_str
                     await step.update()
 
-            # LLM 流式输出（跳过路由节点的 LLM 输出）
-            elif kind == "on_chat_model_stream" and router_shown:
+            # LLM 流式输出（仅 general pipeline）
+            elif (
+                kind == "on_chat_model_stream"
+                and router_shown
+                and routed_category in _STREAMING_CATEGORIES
+            ):
                 chunk = event.get("data", {}).get("chunk", None)
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
 
-        # 从 checkpointer 获取最终消息（处理非流式 pipeline 如 research/trend）
-        try:
-            from langchain_core.messages import AIMessage as _AIMessage
-
-            state = _graph.get_state(config)
-            msgs = state.values.get("messages", [])
-            # 取最后一条 AI 消息
-            for m in reversed(msgs):
-                if isinstance(m, _AIMessage) and m.content:
-                    # 如果是研究报告或趋势报告，用 state 中的完整内容覆盖流式碎片
-                    if "**[研究报告]**" in m.content or "<!--plotly:" in m.content:
+        # 非流式 pipeline：从 state 获取最终消息
+        if routed_category not in _STREAMING_CATEGORIES:
+            try:
+                state = _graph.get_state(config)
+                msgs = state.values.get("messages", [])
+                for m in reversed(msgs):
+                    if isinstance(m, AIMessage) and m.content:
                         final_msg.content = m.content
-                    # 如果流式输出为空，用 state 中的内容兜底
-                    elif not final_msg.content.strip():
-                        final_msg.content = m.content
-                    break
-        except Exception as state_err:
-            logger.warning("获取最终状态失败: {}", state_err)
+                        break
+            except Exception as state_err:
+                logger.warning("获取最终状态失败: {}", state_err)
 
         # 处理趋势分析图表
         if "<!--plotly:" in final_msg.content:
