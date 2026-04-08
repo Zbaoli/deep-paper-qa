@@ -1,4 +1,4 @@
-"""Chainlit 入口：Agent 流式输出 + 中间步骤展示 + 日志记录"""
+"""Chainlit 入口：DeepAgent 流式输出 + 中间步骤展示 + 日志记录"""
 
 import re
 import time
@@ -6,20 +6,23 @@ import uuid
 
 import chainlit as cl
 import plotly.io as pio
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from loguru import logger
 
-from deep_paper_qa.agent import CATEGORY_LABELS, build_graph
+from deep_paper_qa.agent import build_agent
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.logging_setup import setup_logging
 
 setup_logging()
 
-_graph, _checkpointer = build_graph()
+_agent, _checkpointer = build_agent()
 _conv_logger = ConversationLogger()
 
-# 只有 general pipeline 支持流式输出
-_STREAMING_CATEGORIES = {"general"}
+# DeepAgents 内置工具名称（用于特殊展示）
+_BUILTIN_TOOL_LABELS = {
+    "write_todos": "📋 制定计划",
+    "task": "🔀 委派子任务",
+}
 
 
 @cl.set_starters
@@ -46,58 +49,35 @@ async def on_chat_start() -> None:
 
 @cl.on_message
 async def on_message(message: cl.Message) -> None:
-    """处理用户消息，记录完整事件链"""
-    # 如果有 ask_user 正在等待回复，跳过新的 graph 调用
+    """处理用户消息"""
     if cl.user_session.get("waiting_for_ask_user"):
         return
 
     thread_id = cl.user_session.get("thread_id")
-
     config = {
         "configurable": {"thread_id": thread_id},
         "recursion_limit": 50,
     }
 
-    # 记录用户消息
     logger.info("用户消息 | thread_id={} | content={}", thread_id, message.content)
     _conv_logger.log_user_message(thread_id, message.content)
 
-    # 会话级统计
     msg_start = time.monotonic()
     tool_call_count = 0
     tools_used: list[str] = []
     tool_timings: dict[str, tuple[str, float]] = {}
 
-    # 路由结果，用于决定是否启用流式输出
-    routed_category = ""
-    router_shown = False
-
     final_msg = cl.Message(content="")
     await final_msg.send()
 
     try:
-        async for event in _graph.astream_events(
+        async for event in _agent.astream_events(
             {"messages": [HumanMessage(content=message.content)]},
             config=config,
             version="v2",
         ):
             kind = event.get("event", "")
             name = event.get("name", "")
-
-            # 路由节点完成时展示分类结果
-            if kind == "on_chain_end" and name == "router" and not router_shown:
-                try:
-                    output = event.get("data", {}).get("output", {})
-                    cat = output.get("category", "")
-                    if cat:
-                        routed_category = cat
-                        label = CATEGORY_LABELS.get(cat, cat)
-                        step = cl.Step(name="路由分类", type="tool")
-                        step.output = f"问题类型：{label}"
-                        await step.send()
-                        router_shown = True
-                except Exception:
-                    pass
 
             # 工具调用开始
             if kind == "on_tool_start":
@@ -121,7 +101,8 @@ async def on_message(message: cl.Message) -> None:
                 if tool_name == "ask_user":
                     cl.user_session.set("waiting_for_ask_user", True)
                 else:
-                    step = cl.Step(name=tool_name, type="tool")
+                    display_name = _BUILTIN_TOOL_LABELS.get(tool_name, tool_name)
+                    step = cl.Step(name=display_name, type="tool")
                     step.input = str(tool_input)
                     await step.send()
                     cl.user_session.set(f"step_{run_id}", step)
@@ -158,32 +139,13 @@ async def on_message(message: cl.Message) -> None:
                     step.output = output_str[:500] if len(output_str) > 500 else output_str
                     await step.update()
 
-            # LLM 流式输出（仅 general pipeline）
-            elif (
-                kind == "on_chat_model_stream"
-                and router_shown
-                and routed_category in _STREAMING_CATEGORIES
-            ):
+            # LLM 流式输出（统一流式，不再区分管线）
+            elif kind == "on_chat_model_stream":
                 chunk = event.get("data", {}).get("chunk", None)
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
 
-        # 非流式 pipeline：从 state 获取最终消息，用新消息展示
-        if routed_category not in _STREAMING_CATEGORIES:
-            try:
-                state = _graph.get_state(config)
-                msgs = state.values.get("messages", [])
-                for m in reversed(msgs):
-                    if isinstance(m, AIMessage) and m.content:
-                        # 删除初始空消息，发送新消息展示完整内容
-                        await final_msg.remove()
-                        final_msg = cl.Message(content=m.content)
-                        await final_msg.send()
-                        break
-            except Exception as state_err:
-                logger.warning("获取最终状态失败: {}", state_err)
-
-        # 处理趋势分析图表
+        # 处理图表（generate_chart 输出嵌入在最终消息中）
         if "<!--plotly:" in final_msg.content:
             plotly_match = re.search(r"<!--plotly:(.*?)-->", final_msg.content, re.DOTALL)
             if plotly_match:
@@ -193,14 +155,14 @@ async def on_message(message: cl.Message) -> None:
                 )
                 try:
                     fig = pio.from_json(chart_json)
-                    elements = [cl.Plotly(name="趋势图", figure=fig, display="inline")]
-                    final_msg.elements = elements
+                    final_msg.elements = [
+                        cl.Plotly(name="数据图表", figure=fig, display="inline")
+                    ]
                 except Exception as plot_err:
                     logger.warning("Plotly 图表渲染失败: {}", plot_err)
 
         await final_msg.update()
 
-        # 会话统计
         total_ms = int((time.monotonic() - msg_start) * 1000)
         logger.info(
             "会话统计 | thread_id={} | total_ms={} | tool_calls={} | tools_used={}",
