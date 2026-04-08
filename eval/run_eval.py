@@ -9,7 +9,7 @@ from pathlib import Path
 from langchain_core.messages import HumanMessage
 from loguru import logger
 
-from deep_paper_qa.agent import build_agent
+from deep_paper_qa.agent import build_graph
 from eval.judge import judge_answer
 
 # 并发数
@@ -101,6 +101,17 @@ async def eval_one(agent, q: dict) -> dict:
         ) if "execute_sql" in expected else True
         has_content = bool(called_set & content_tools) if expected & content_tools else True
         tool_correct = has_sql and has_content
+    elif q_type == "trend":
+        # 趋势分析需要同时用 SQL 统计和内容检索
+        tool_correct = "execute_sql" in called_set and bool(
+            called_set & {"search_abstracts", "vector_search"}
+        )
+    elif q_type == "research":
+        # 深度研究需要多次工具调用
+        tool_correct = len(tools_called) >= 3
+    elif q_type == "reject":
+        # 拒答不应调用任何工具
+        tool_correct = len(called_set) == 0
 
     logger.info("  #{} 工具调用: {} | 路由正确: {}", qid, tools_called, tool_correct)
 
@@ -126,11 +137,18 @@ async def judge_results(results: list[dict], semaphore: asyncio.Semaphore) -> No
 
     async def judge_one(r: dict) -> None:
         async with semaphore:
+            # 生成工具调用摘要供 Judge 评估效率
+            call_summary = "\n".join(
+                f"{i+1}. {td['name']}({td['input'][:150]})"
+                for i, td in enumerate(r["tool_details"])
+            )
             scores = await judge_answer(
                 question=r["question"],
                 question_type=r["type"],
                 answer=r["_full_answer"],
                 tool_outputs=r["_tool_outputs_full"],
+                tool_call_count=r["tool_call_count"],
+                tool_call_summary=call_summary,
             )
             r["quality_scores"] = scores
 
@@ -172,7 +190,7 @@ def _generate_report(results: list[dict], total: int) -> str:
         lines.append(f"**总体平均分**: {avg_overall:.2f} / 5.00（标准差: {std_overall:.2f}）\n")
 
         # 按维度汇总
-        dims = ["accuracy", "completeness", "citation", "clarity"]
+        dims = ["accuracy", "completeness", "citation", "clarity", "efficiency"]
         lines.append("| 维度 | 平均分 | 最低分 | 最高分 |")
         lines.append("|------|--------|--------|--------|")
         for dim in dims:
@@ -184,12 +202,12 @@ def _generate_report(results: list[dict], total: int) -> str:
 
         # 按题型分组
         lines.append("\n### 按题型质量分布\n")
-        lines.append("| 题型 | 题数 | overall | accuracy | completeness | citation | clarity |")
-        lines.append("|------|------|---------|----------|--------------|----------|---------|")
+        lines.append("| 题型 | 题数 | overall | accuracy | completeness | citation | clarity | efficiency |")
+        lines.append("|------|------|---------|----------|--------------|----------|---------|------------|")
         by_type: dict[str, list[dict]] = {}
         for r in scored_results:
             by_type.setdefault(r["type"], []).append(r)
-        for t in ["sql", "content", "mixed"]:
+        for t in ["sql", "content", "mixed", "trend", "research", "reject"]:
             type_results = by_type.get(t, [])
             if not type_results:
                 continue
@@ -198,8 +216,9 @@ def _generate_report(results: list[dict], total: int) -> str:
             comp = statistics.mean(r["quality_scores"]["completeness"]["score"] for r in type_results)
             c = statistics.mean(r["quality_scores"]["citation"]["score"] for r in type_results)
             cl = statistics.mean(r["quality_scores"]["clarity"]["score"] for r in type_results)
+            ef = statistics.mean(r["quality_scores"]["efficiency"]["score"] for r in type_results)
             lines.append(
-                f"| {t} | {len(type_results)} | {o:.2f} | {a:.2f} | {comp:.2f} | {c:.2f} | {cl:.2f} |"
+                f"| {t} | {len(type_results)} | {o:.2f} | {a:.2f} | {comp:.2f} | {c:.2f} | {cl:.2f} | {ef:.2f} |"
             )
 
         # 低分题（overall < 3）
@@ -224,7 +243,7 @@ def _generate_report(results: list[dict], total: int) -> str:
     routing_by_type: dict[str, list[dict]] = {}
     for r in results:
         routing_by_type.setdefault(r["type"], []).append(r)
-    for t in ["sql", "content", "mixed"]:
+    for t in ["sql", "content", "mixed", "trend", "research", "reject"]:
         type_results = routing_by_type.get(t, [])
         if not type_results:
             continue
@@ -244,7 +263,7 @@ async def run_eval() -> None:
     questions = [json.loads(line) for line in questions_file.read_text().strip().split("\n")]
     total = len(questions)
 
-    agent, checkpointer = build_agent()
+    agent, checkpointer = build_graph()
     semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
     async def bounded_eval(q: dict) -> dict:
