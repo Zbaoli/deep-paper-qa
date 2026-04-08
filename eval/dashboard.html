@@ -27,6 +27,9 @@
     --sql-color: #818cf8;
     --content-color: #34d399;
     --mixed-color: #fb923c;
+    --trend-color: #60a5fa;
+    --research-color: #a78bfa;
+    --reject-color: #6b7280;
     --mono: 'IBM Plex Mono', 'Menlo', monospace;
     --sans: 'IBM Plex Sans', -apple-system, sans-serif;
   }
@@ -92,7 +95,7 @@
   /* KPI cards */
   .kpi-row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 24px;
   }
@@ -175,8 +178,11 @@
   .type-badge.sql { background: rgba(129,140,248,0.15); color: var(--sql-color); }
   .type-badge.content { background: rgba(52,211,153,0.15); color: var(--content-color); }
   .type-badge.mixed { background: rgba(251,146,60,0.15); color: var(--mixed-color); }
+  .type-badge.trend { background: rgba(96,165,250,0.15); color: var(--trend-color); }
+  .type-badge.research { background: rgba(167,139,250,0.15); color: var(--research-color); }
+  .type-badge.reject { background: rgba(107,114,128,0.15); color: var(--reject-color); }
 
-  .type-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .type-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .type-stat-label { font-size: 11px; color: var(--text-dim); }
   .type-stat-value { font-family: var(--mono); font-size: 18px; font-weight: 600; color: var(--text-bright); }
 
@@ -283,6 +289,9 @@
   .pill-sql { background: rgba(129,140,248,0.15); color: var(--sql-color); }
   .pill-content { background: rgba(52,211,153,0.15); color: var(--content-color); }
   .pill-mixed { background: rgba(251,146,60,0.15); color: var(--mixed-color); }
+  .pill-trend { background: rgba(96,165,250,0.15); color: var(--trend-color); }
+  .pill-research { background: rgba(167,139,250,0.15); color: var(--research-color); }
+  .pill-reject { background: rgba(107,114,128,0.15); color: var(--reject-color); }
 
   .score-badge {
     font-family: var(--mono);
@@ -349,7 +358,7 @@
 
   .detail-scores {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
     margin-bottom: 20px;
   }
@@ -551,6 +560,7 @@
             <th data-sort="tool_routing_correct">Routing</th>
             <th data-sort="tool_call_count">Calls</th>
             <th data-sort="overall">Quality</th>
+            <th data-sort="efficiency">Efficiency</th>
             <th>Tools</th>
           </tr>
         </thead>
@@ -604,7 +614,7 @@ function scoreBg(score) {
 }
 
 function typeClass(type) {
-  return { sql: 'pill-sql', content: 'pill-content', mixed: 'pill-mixed' }[type] || '';
+  return { sql: 'pill-sql', content: 'pill-content', mixed: 'pill-mixed', trend: 'pill-trend', research: 'pill-research', reject: 'pill-reject' }[type] || '';
 }
 
 function renderAll() {
@@ -631,11 +641,12 @@ function renderKPIs() {
     <div class="kpi purple"><div class="kpi-label">Avg Quality</div><div class="kpi-value">${avgQ}</div><div class="kpi-sub">/ 5.00</div></div>
     <div class="kpi amber"><div class="kpi-label">Avg Calls</div><div class="kpi-value">${avgCalls}</div><div class="kpi-sub">per question</div></div>
     <div class="kpi red"><div class="kpi-label">Low Score (&lt;3)</div><div class="kpi-value">${lowCount}</div><div class="kpi-sub">${(lowCount/total*100).toFixed(1)}% of total</div></div>
+    <div class="kpi blue"><div class="kpi-label">Avg Efficiency</div><div class="kpi-value">${scored.length && scored[0].quality_scores.efficiency ? (scored.reduce((s,r) => s + (r.quality_scores.efficiency?.score||0), 0) / scored.length).toFixed(2) : '—'}</div><div class="kpi-sub">/ 5.00</div></div>
   `;
 }
 
 function renderTypeGrid() {
-  const types = ['sql', 'content', 'mixed'];
+  const types = ['sql', 'content', 'mixed', 'trend', 'research', 'reject'];
   const html = types.map(t => {
     const items = DATA.filter(r => r.type === t);
     const correct = items.filter(r => r.tool_routing_correct).length;
@@ -652,6 +663,7 @@ function renderTypeGrid() {
           <div><div class="type-stat-label">Routing</div><div class="type-stat-value">${correct}/${items.length}</div></div>
           <div><div class="type-stat-label">Avg Quality</div><div class="type-stat-value" style="color:${scoreColor(parseFloat(avgQ))}">${avgQ}</div></div>
           <div><div class="type-stat-label">Avg Calls</div><div class="type-stat-value">${avgC}</div></div>
+          <div><div class="type-stat-label">Efficiency</div><div class="type-stat-value">${scored.length && scored[0].quality_scores.efficiency ? (scored.reduce((s,r) => s + (r.quality_scores.efficiency?.score||0), 0) / scored.length).toFixed(2) : '—'}</div></div>
           <div><div class="type-stat-label">Low Score</div><div class="type-stat-value" style="color:var(--red)">${scored.filter(r=>r.quality_scores.overall<3).length}</div></div>
         </div>
       </div>
@@ -661,7 +673,7 @@ function renderTypeGrid() {
 }
 
 function renderDimBars() {
-  const dims = ['accuracy', 'completeness', 'citation', 'clarity'];
+  const dims = ['accuracy', 'completeness', 'citation', 'clarity', 'efficiency'];
   const scored = DATA.filter(r => r.quality_scores);
   const html = dims.map(dim => {
     const avg = scored.reduce((s,r) => s + r.quality_scores[dim].score, 0) / scored.length;
@@ -699,7 +711,7 @@ function renderToolBars() {
 
 function renderHeatmap() {
   // Filters
-  const filterHtml = ['all','sql','content','mixed'].map(f =>
+  const filterHtml = ['all','sql','content','mixed','trend','research','reject'].map(f =>
     `<button class="filter-btn ${currentFilter===f?'active':''}" data-filter="${f}">${f}</button>`
   ).join('');
   document.getElementById('heatmap-filters').innerHTML = filterHtml;
@@ -721,18 +733,20 @@ function renderHeatmap() {
 
 function renderTable() {
   // Filters
-  const filterHtml = ['all','sql','content','mixed','low (<3)','high calls (>4)'].map(f =>
+  const filterHtml = ['all','sql','content','mixed','trend','research','reject','low (<3)','high calls (>4)','low efficiency (<3)'].map(f =>
     `<button class="filter-btn ${currentFilter===f?'active':''}" data-filter="${f}">${f}</button>`
   ).join('');
   document.getElementById('table-filters').innerHTML = filterHtml;
 
   let filtered = [...DATA];
-  if (currentFilter === 'sql' || currentFilter === 'content' || currentFilter === 'mixed') {
+  if (['sql', 'content', 'mixed', 'trend', 'research', 'reject'].includes(currentFilter)) {
     filtered = filtered.filter(r => r.type === currentFilter);
   } else if (currentFilter === 'low (<3)') {
     filtered = filtered.filter(r => r.quality_scores && r.quality_scores.overall < 3);
   } else if (currentFilter === 'high calls (>4)') {
     filtered = filtered.filter(r => r.tool_call_count > 4);
+  } else if (currentFilter === 'low efficiency (<3)') {
+    filtered = filtered.filter(r => r.quality_scores?.efficiency?.score != null && r.quality_scores.efficiency.score < 3);
   }
 
   filtered.sort((a, b) => {
@@ -740,6 +754,9 @@ function renderTable() {
     if (sortCol === 'overall') {
       va = a.quality_scores?.overall || 0;
       vb = b.quality_scores?.overall || 0;
+    } else if (sortCol === 'efficiency') {
+      va = a.quality_scores?.efficiency?.score || 0;
+      vb = b.quality_scores?.efficiency?.score || 0;
     } else {
       va = a[sortCol]; vb = b[sortCol];
     }
@@ -759,6 +776,7 @@ function renderTable() {
         <td><span class="${r.tool_routing_correct ? 'routing-ok' : 'routing-fail'}">${r.tool_routing_correct ? 'OK' : 'FAIL'}</span></td>
         <td style="font-family:var(--mono);${r.tool_call_count > 4 ? 'color:var(--red)' : ''}">${r.tool_call_count}</td>
         <td><span class="score-badge" style="background:${scoreBg(score)};color:${scoreColor(score)}">${score.toFixed(2)}</span></td>
+        <td>${(() => { const es = r.quality_scores?.efficiency?.score; return es != null ? `<span class="score-badge" style="background:${scoreBg(es)};color:${scoreColor(es)}">${es}</span>` : '—'; })()}</td>
         <td><div class="tools-list">${toolsHtml}</div></td>
       </tr>
     `;
@@ -790,7 +808,7 @@ function showDetail(id) {
   if (!r) return;
 
   const score = r.quality_scores?.overall || 0;
-  const dims = ['accuracy', 'completeness', 'citation', 'clarity', 'overall'];
+  const dims = ['accuracy', 'completeness', 'citation', 'clarity', 'efficiency', 'overall'];
 
   const scoresHtml = dims.map(d => {
     const s = d === 'overall' ? score : (r.quality_scores?.[d]?.score || 0);
@@ -849,7 +867,15 @@ function showDetail(id) {
     </div>
     <div class="detail-body">
       <div class="detail-scores">${scoresHtml}</div>
-      ${judgeComment ? `<div style="background:var(--surface-2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text-dim)"><strong style="color:var(--amber)">Judge:</strong> ${escHtml(judgeComment)}</div>` : ''}
+      ${r.quality_scores ? `<div style="background:var(--surface-2);border-radius:8px;padding:16px;margin-bottom:16px;font-size:12px;line-height:1.7">
+        <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--amber);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Judge Evaluation</div>
+        ${judgeComment ? `<div style="color:var(--text-bright);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">${escHtml(judgeComment)}</div>` : ''}
+        ${['accuracy','completeness','citation','clarity','efficiency'].map(dim => {
+          const d = r.quality_scores[dim];
+          if (!d) return '';
+          return `<div style="margin-bottom:8px"><strong style="color:${scoreColor(d.score)}">${dim} (${d.score})</strong>: <span style="color:var(--text-dim)">${escHtml(d.reason || '')}</span></div>`;
+        }).join('')}
+      </div>` : ''}
 
       <div class="detail-section">
         <div class="detail-section-title">Tool Calls (${r.tool_call_count})</div>
