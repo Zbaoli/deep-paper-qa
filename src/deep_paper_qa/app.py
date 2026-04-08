@@ -169,20 +169,24 @@ async def on_message(message: cl.Message) -> None:
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
 
-        # 如果流式输出为空（非流式 pipeline 如 research/trend），从 checkpointer 获取最终消息
-        if not final_msg.content.strip():
-            try:
-                from langchain_core.messages import AIMessage as _AIMessage
+        # 从 checkpointer 获取最终消息（处理非流式 pipeline 如 research/trend）
+        try:
+            from langchain_core.messages import AIMessage as _AIMessage
 
-                state = _graph.get_state(config)
-                msgs = state.values.get("messages", [])
-                # 取最后一条 AI 消息
-                for m in reversed(msgs):
-                    if isinstance(m, _AIMessage) and m.content:
+            state = _graph.get_state(config)
+            msgs = state.values.get("messages", [])
+            # 取最后一条 AI 消息
+            for m in reversed(msgs):
+                if isinstance(m, _AIMessage) and m.content:
+                    # 如果是研究报告或趋势报告，用 state 中的完整内容覆盖流式碎片
+                    if "**[研究报告]**" in m.content or "<!--plotly:" in m.content:
                         final_msg.content = m.content
-                        break
-            except Exception as state_err:
-                logger.warning("获取最终状态失败: {}", state_err)
+                    # 如果流式输出为空，用 state 中的内容兜底
+                    elif not final_msg.content.strip():
+                        final_msg.content = m.content
+                    break
+        except Exception as state_err:
+            logger.warning("获取最终状态失败: {}", state_err)
 
         # 处理趋势分析图表
         if "<!--plotly:" in final_msg.content:
