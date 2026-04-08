@@ -45,7 +45,7 @@ async def clarify_node(state: ResearchState) -> dict:
     new_count = state["clarify_count"] + 1
     logger.info("深度研究 | 澄清第{}轮: {}", new_count, result.content[:100])
     return {
-        "messages": [AIMessage(content=result.content)],
+        "messages": [AIMessage(content=f"**[澄清问题 {new_count}/3]**\n\n{result.content}")],
         "clarify_count": new_count,
     }
 
@@ -90,7 +90,12 @@ async def plan_node(state: ResearchState) -> dict:
         plan = [line.strip() for line in result.content.split("\n") if line.strip()]
 
     logger.info("深度研究 | 研究计划: {} 个子问题", len(plan))
-    return {"plan": plan, "current_step": 0}
+    plan_text = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(plan))
+    return {
+        "plan": plan,
+        "current_step": 0,
+        "messages": [AIMessage(content=f"**[研究计划]** 共 {len(plan)} 个子问题：\n\n{plan_text}")],
+    }
 
 
 async def ask_plan_confirm_node(state: ResearchState) -> dict:
@@ -133,9 +138,11 @@ async def research_step_node(state: ResearchState) -> dict:
         f"### 子问题 {step_idx + 1}: {current_question}\n\n{finding}"
     ]
 
+    total = len(state["plan"])
     return {
         "findings": new_findings,
         "current_step": step_idx + 1,
+        "messages": [AIMessage(content=f"**[子问题 {step_idx + 1}/{total}]** {current_question}\n\n{finding}")],
     }
 
 
@@ -176,7 +183,7 @@ async def report_node(state: ResearchState) -> dict:
     report = result.content
 
     logger.info("深度研究 | 报告生成完成，长度={}", len(report))
-    return {"messages": [AIMessage(content=report)]}
+    return {"messages": [AIMessage(content=f"**[研究报告]**\n\n{report}")]}
 
 
 def build_research_subgraph() -> StateGraph:
