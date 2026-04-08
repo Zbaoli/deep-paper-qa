@@ -5,6 +5,7 @@ description = "AI 科研论文智能问答助手"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "deepagents>=0.1",
     "langgraph>=0.3",
     "langchain-openai>=0.3",
     "langchain-core>=0.3",
