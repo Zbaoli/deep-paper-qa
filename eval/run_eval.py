@@ -9,7 +9,7 @@ from pathlib import Path
 from langchain_core.messages import HumanMessage
 from loguru import logger
 
-from deep_paper_qa.agent import build_graph
+from deep_paper_qa.agent import build_agent
 from eval.judge import judge_answer
 
 # 并发数
@@ -271,7 +271,7 @@ async def run_eval() -> None:
     questions = [json.loads(line) for line in questions_file.read_text().strip().split("\n")]
     total = len(questions)
 
-    agent, checkpointer = build_graph()
+    agent, checkpointer = build_agent(include_ask_user=False)
     semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
     async def bounded_eval(q: dict) -> dict:
