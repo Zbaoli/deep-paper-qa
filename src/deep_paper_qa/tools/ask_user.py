@@ -25,5 +25,7 @@ async def ask_user(summary: str, question: str) -> str:
         logger.info("ask_user | 用户超时未回复，默认继续")
         return "用户未回复，请继续执行下一个子问题。"
 
-    logger.info("ask_user | 用户回复: {}", response.output[:200])
-    return response.output
+    # Chainlit 2.x 返回 StepDict (dict)，用户回复在 "output" 键中
+    user_reply = response.get("output", "") if isinstance(response, dict) else str(response)
+    logger.info("ask_user | 用户回复: {}", user_reply[:200])
+    return user_reply

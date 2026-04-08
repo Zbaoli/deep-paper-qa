@@ -21,8 +21,7 @@ class TestAskUser:
     @pytest.mark.asyncio
     async def test_returns_user_response(self) -> None:
         """正常情况：用户回复后返回回复内容"""
-        mock_response = MagicMock()
-        mock_response.output = "继续"
+        mock_response = {"output": "继续"}
 
         mock_cl = _make_cl_mock(mock_response)
         # 在模块加载前注入 sys.modules，避免触发 chainlit 懒加载机制
@@ -62,8 +61,7 @@ class TestAskUser:
     @pytest.mark.asyncio
     async def test_formats_message_with_summary_and_question(self) -> None:
         """验证展示给用户的消息包含 summary 和 question"""
-        mock_response = MagicMock()
-        mock_response.output = "总结"
+        mock_response = {"output": "总结"}
 
         mock_cl = _make_cl_mock(mock_response)
         sys.modules["chainlit"] = mock_cl  # type: ignore[assignment]
