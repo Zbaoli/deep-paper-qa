@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from loguru import logger
 
 from deep_paper_qa.config import settings
 from deep_paper_qa.logging_setup import setup_logging
