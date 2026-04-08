@@ -26,14 +26,16 @@ uv run python scripts/embed_abstracts.py       # 生成向量嵌入
 
 ```
 Chainlit UI (app.py)
-  └─ LangGraph ReAct Agent (agent.py) + InMemorySaver
+  └─ LangGraph 多管线 Agent (agent.py) + InMemorySaver
        ├─ execute_sql    — asyncpg → PostgreSQL（元数据统计，仅 SELECT）
-       ├─ search_abstracts — websearch_to_tsquery 全文检索（关键词搜索）
-       └─ vector_search  — pgvector HNSW + 外部 Embedding API（语义搜索）
+       ├─ search_abstracts — 全文检索 + 向量语义检索（本地数据库）
+       ├─ search_arxiv   — aiohttp → arXiv API（最新预印本）
+       ├─ search_semantic_scholar — aiohttp → Semantic Scholar API（引用数据、跨库搜索）
+       └─ search_web     — aiohttp → Tavily API（网络搜索、非学术信息）
 ```
 
-- **agent.py**: `create_react_agent` 构建，绑定 3 个 tool，system prompt 来自 prompts.py
-- **prompts.py**: ~120 行 system prompt，包含工具选择策略、SQL 模式、关键词扩展规则、数据质量警觉规则
+- **agent.py**: 多管线路由（general/research/trend/reading/compare），各子图绑定工具，system prompt 来自 prompts.py
+- **prompts.py**: 各管线 system prompt，包含工具选择策略（本地优先、联网补充）、SQL 模式、关键词扩展规则
 - **config.py**: `pydantic-settings` 加载 `.env`，所有配置项集中管理
 - **app.py**: Chainlit 入口，处理消息流式输出、tool call 展示、loguru + JSONL 双日志
 - **conversation_logger.py**: 每个对话写独立 JSONL 文件到 `logs/`
@@ -57,6 +59,8 @@ PostgreSQL 16 + pgvector，单表 `papers`：
 - `DATABASE_URL` — PostgreSQL 连接串
 - `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY` — LLM 配置（OpenAI 兼容）
 - `EMBEDDING_BASE_URL` / `EMBEDDING_MODEL` / `EMBEDDING_DIM` — 嵌入服务
+- `SEMANTIC_SCHOLAR_API_KEY` — Semantic Scholar API key（可选，提高速率限制）
+- `TAVILY_API_KEY` — Tavily Search API key（必填，启用网络搜索）
 
 ## Docker
 
