@@ -184,3 +184,53 @@ async def reply(thread_id: str, req: ReplyRequest) -> dict[str, str]:
 
     submit_reply(thread_id, req.reply)
     return {"status": "ok"}
+
+
+@router.get("/conversations")
+async def list_conversations() -> dict:
+    """历史会话列表"""
+    import json
+    from pathlib import Path
+
+    log_dir = Path("logs")
+    if not log_dir.exists():
+        return {"conversations": []}
+
+    conversations = []
+    for f in sorted(log_dir.glob("*.jsonl"), reverse=True)[:50]:
+        try:
+            first_line = f.read_text(encoding="utf-8").split("\n", 1)[0]
+            event = json.loads(first_line)
+            conversations.append(
+                {
+                    "id": f.stem,
+                    "file": f.name,
+                    "started_at": event.get("ts", ""),
+                    "first_message": event.get("content", "")[:100],
+                }
+            )
+        except Exception:
+            continue
+
+    return {"conversations": conversations}
+
+
+@router.get("/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str) -> dict:
+    """单个会话的完整消息"""
+    import json
+    from pathlib import Path
+
+    log_file = Path("logs") / f"{conversation_id}.jsonl"
+    if not log_file.exists():
+        raise HTTPException(status_code=404, detail="会话不存在")
+
+    events = []
+    for line in log_file.read_text(encoding="utf-8").strip().split("\n"):
+        if line:
+            try:
+                events.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    return {"id": conversation_id, "events": events}
