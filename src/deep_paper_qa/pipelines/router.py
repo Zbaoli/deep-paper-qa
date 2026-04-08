@@ -31,10 +31,12 @@ async def classify_question(question: str) -> RouteCategory:
     """
     try:
         llm = _get_router_llm()
-        result = await llm.ainvoke([
-            SystemMessage(content=ROUTER_PROMPT),
-            HumanMessage(content=question),
-        ])
+        result = await llm.ainvoke(
+            [
+                SystemMessage(content=ROUTER_PROMPT),
+                HumanMessage(content=question),
+            ]
+        )
         logger.info("路由分类 | question='{}' | category={}", question[:80], result.category.value)
         return result.category
     except Exception as e:

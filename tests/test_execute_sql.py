@@ -111,9 +111,7 @@ class TestExecuteSql:
         mock_pool.acquire.return_value = _MockAcquireCtx(mock_conn)
 
         with patch("deep_paper_qa.tools.execute_sql.get_pool", AsyncMock(return_value=mock_pool)):
-            result = await execute_sql.ainvoke(
-                {"sql": "SELECT * FROM papers WHERE year=9999"}
-            )
+            result = await execute_sql.ainvoke({"sql": "SELECT * FROM papers WHERE year=9999"})
             assert "未找到" in result
 
     @pytest.mark.asyncio
@@ -135,7 +133,7 @@ class TestExecuteSql:
 
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(
-            side_effect=asyncpg.PostgresSyntaxError("syntax error at or near \"SELEC\"")
+            side_effect=asyncpg.PostgresSyntaxError('syntax error at or near "SELEC"')
         )
 
         mock_pool = MagicMock()
@@ -152,15 +150,13 @@ class TestExecuteSql:
 
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(
-            side_effect=asyncpg.UndefinedColumnError("column \"direction\" does not exist")
+            side_effect=asyncpg.UndefinedColumnError('column "direction" does not exist')
         )
 
         mock_pool = MagicMock()
         mock_pool.acquire.return_value = _MockAcquireCtx(mock_conn)
 
         with patch("deep_paper_qa.tools.execute_sql.get_pool", AsyncMock(return_value=mock_pool)):
-            result = await execute_sql.ainvoke(
-                {"sql": "SELECT direction FROM papers"}
-            )
+            result = await execute_sql.ainvoke({"sql": "SELECT direction FROM papers"})
             assert "列名错误" in result
             assert "可用列名" in result

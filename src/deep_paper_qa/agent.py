@@ -59,14 +59,18 @@ def build_graph():
     graph.set_entry_point("router")
 
     # 路由条件边
-    graph.add_conditional_edges("router", route_by_category, {
-        "reject": "reject",
-        "general": "general",
-        "research": "research",
-        "reading": "reading",
-        "compare": "compare",
-        "trend": "trend",
-    })
+    graph.add_conditional_edges(
+        "router",
+        route_by_category,
+        {
+            "reject": "reject",
+            "general": "general",
+            "research": "research",
+            "reading": "reading",
+            "compare": "compare",
+            "trend": "trend",
+        },
+    )
 
     # 所有终端节点连接到 END
     graph.add_edge("reject", END)

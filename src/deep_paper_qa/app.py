@@ -83,7 +83,9 @@ async def on_message(message: cl.Message) -> None:
 
                 logger.info(
                     "Tool调用 | thread_id={} | tool={} | input={}",
-                    thread_id, tool_name, tool_input,
+                    thread_id,
+                    tool_name,
+                    tool_input,
                 )
                 _conv_logger.log_tool_start(thread_id, tool_name, tool_input)
 
@@ -115,18 +117,17 @@ async def on_message(message: cl.Message) -> None:
                 logger.info(
                     "Tool返回 | thread_id={} | tool={} | duration_ms={} | "
                     "output_len={} | output={}",
-                    thread_id, tool_name, duration_ms,
-                    len(output_str), output_str[:1000],
+                    thread_id,
+                    tool_name,
+                    duration_ms,
+                    len(output_str),
+                    output_str[:1000],
                 )
-                _conv_logger.log_tool_end(
-                    thread_id, tool_name, duration_ms, output_str
-                )
+                _conv_logger.log_tool_end(thread_id, tool_name, duration_ms, output_str)
 
                 step = cl.user_session.get(f"step_{run_id}")
                 if step:
-                    step.output = (
-                        output_str[:500] if len(output_str) > 500 else output_str
-                    )
+                    step.output = output_str[:500] if len(output_str) > 500 else output_str
                     await step.update()
 
             # LLM 流式输出
@@ -141,7 +142,10 @@ async def on_message(message: cl.Message) -> None:
         total_ms = int((time.monotonic() - msg_start) * 1000)
         logger.info(
             "会话统计 | thread_id={} | total_ms={} | tool_calls={} | tools_used={}",
-            thread_id, total_ms, tool_call_count, tools_used,
+            thread_id,
+            total_ms,
+            tool_call_count,
+            tools_used,
         )
         _conv_logger.log_agent_reply(
             thread_id,

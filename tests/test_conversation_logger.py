@@ -81,9 +81,7 @@ class TestLogAgentReply:
     def test_writes_agent_reply_event(
         self, logger_instance: ConversationLogger, tmp_path: Path
     ) -> None:
-        logger_instance.log_agent_reply(
-            "thread-1", "共 42 篇", 3200, 1, ["execute_sql"]
-        )
+        logger_instance.log_agent_reply("thread-1", "共 42 篇", 3200, 1, ["execute_sql"])
 
         files = _find_jsonl(tmp_path)
         assert len(files) == 1
@@ -111,7 +109,10 @@ class TestMultipleEvents:
         events = _read_events(files[0])
         assert len(events) == 4
         assert [e["event"] for e in events] == [
-            "user_message", "tool_start", "tool_end", "agent_reply"
+            "user_message",
+            "tool_start",
+            "tool_end",
+            "agent_reply",
         ]
 
 
@@ -126,13 +127,13 @@ class TestFileNaming:
         assert len(files) == 1
         # 验证文件名格式：YYYY-MM-DD_HH-MM-SS.jsonl
         import re
+
         assert re.match(r"\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.jsonl", files[0].name)
 
-    def test_different_threads_write_to_different_files(
-        self, tmp_path: Path
-    ) -> None:
+    def test_different_threads_write_to_different_files(self, tmp_path: Path) -> None:
         """不同 thread_id 写入不同文件"""
         import time
+
         cl = ConversationLogger(log_dir=str(tmp_path))
         cl.log_user_message("thread-a", "问题A")
         time.sleep(1.1)  # 确保时间戳不同

@@ -39,9 +39,7 @@ async def get_readonly_pool() -> asyncpg.Pool:
     if not settings.pg_readonly_url:
         return await get_pool()
     if _readonly_pool is None or _readonly_pool._closed:
-        _readonly_pool = await asyncpg.create_pool(
-            settings.pg_readonly_url, min_size=1, max_size=5
-        )
+        _readonly_pool = await asyncpg.create_pool(settings.pg_readonly_url, min_size=1, max_size=5)
         logger.info("asyncpg 只读连接池已创建")
     return _readonly_pool
 

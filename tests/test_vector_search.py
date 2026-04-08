@@ -80,8 +80,13 @@ class TestVectorSearch:
         mock_session.__aexit__ = AsyncMock(return_value=False)
 
         with (
-            patch("deep_paper_qa.tools.vector_search.get_readonly_pool", AsyncMock(return_value=mock_pool)),
-            patch("deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session),
+            patch(
+                "deep_paper_qa.tools.vector_search.get_readonly_pool",
+                AsyncMock(return_value=mock_pool),
+            ),
+            patch(
+                "deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session
+            ),
         ):
             result = await vector_search.ainvoke({"query": "RAG chunking strategies"})
             assert "RAG Survey" in result
@@ -95,7 +100,9 @@ class TestVectorSearch:
         mock_session.__aenter__ = AsyncMock(return_value=mock_session)
         mock_session.__aexit__ = AsyncMock(return_value=False)
 
-        with patch("deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session):
+        with patch(
+            "deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session
+        ):
             result = await vector_search.ainvoke({"query": "test query"})
             assert "暂不可用" in result
 
@@ -118,8 +125,13 @@ class TestVectorSearch:
         mock_session.__aexit__ = AsyncMock(return_value=False)
 
         with (
-            patch("deep_paper_qa.tools.vector_search.get_readonly_pool", AsyncMock(return_value=mock_pool)),
-            patch("deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session),
+            patch(
+                "deep_paper_qa.tools.vector_search.get_readonly_pool",
+                AsyncMock(return_value=mock_pool),
+            ),
+            patch(
+                "deep_paper_qa.tools.vector_search.aiohttp.ClientSession", return_value=mock_session
+            ),
         ):
             result = await vector_search.ainvoke({"query": "nonexistent topic"})
             assert "未找到" in result

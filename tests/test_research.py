@@ -62,11 +62,13 @@ class TestPlanNode:
     @patch("deep_paper_qa.pipelines.research._get_research_llm")
     async def test_generates_plan(self, mock_get_llm: AsyncMock) -> None:
         mock_llm = AsyncMock()
-        mock_llm.ainvoke.return_value.content = json.dumps([
-            "子问题1: 使用 search_abstracts 检索 LLM Agent 框架",
-            "子问题2: 使用 execute_sql 统计各年论文数",
-            "子问题3: 使用 search_abstracts 检索多智能体协作",
-        ])
+        mock_llm.ainvoke.return_value.content = json.dumps(
+            [
+                "子问题1: 使用 search_abstracts 检索 LLM Agent 框架",
+                "子问题2: 使用 execute_sql 统计各年论文数",
+                "子问题3: 使用 search_abstracts 检索多智能体协作",
+            ]
+        )
         mock_get_llm.return_value = mock_llm
 
         state = {

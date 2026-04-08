@@ -42,32 +42,39 @@ class ConversationLogger:
 
     def log_user_message(self, thread_id: str, content: str) -> None:
         """记录用户消息事件"""
-        self._write_event(thread_id, {
-            "thread_id": thread_id,
-            "event": "user_message",
-            "content": content,
-        })
+        self._write_event(
+            thread_id,
+            {
+                "thread_id": thread_id,
+                "event": "user_message",
+                "content": content,
+            },
+        )
 
     def log_tool_start(self, thread_id: str, tool: str, input_data: dict) -> None:
         """记录工具调用开始事件"""
-        self._write_event(thread_id, {
-            "thread_id": thread_id,
-            "event": "tool_start",
-            "tool": tool,
-            "input": input_data,
-        })
+        self._write_event(
+            thread_id,
+            {
+                "thread_id": thread_id,
+                "event": "tool_start",
+                "tool": tool,
+                "input": input_data,
+            },
+        )
 
-    def log_tool_end(
-        self, thread_id: str, tool: str, duration_ms: int, output: str
-    ) -> None:
+    def log_tool_end(self, thread_id: str, tool: str, duration_ms: int, output: str) -> None:
         """记录工具调用结束事件"""
-        self._write_event(thread_id, {
-            "thread_id": thread_id,
-            "event": "tool_end",
-            "tool": tool,
-            "duration_ms": duration_ms,
-            "output": output,
-        })
+        self._write_event(
+            thread_id,
+            {
+                "thread_id": thread_id,
+                "event": "tool_end",
+                "tool": tool,
+                "duration_ms": duration_ms,
+                "output": output,
+            },
+        )
 
     def log_agent_reply(
         self,
@@ -78,11 +85,14 @@ class ConversationLogger:
         tools_used: list[str],
     ) -> None:
         """记录 Agent 最终回答事件"""
-        self._write_event(thread_id, {
-            "thread_id": thread_id,
-            "event": "agent_reply",
-            "content": content,
-            "total_ms": total_ms,
-            "tool_calls": tool_calls,
-            "tools_used": tools_used,
-        })
+        self._write_event(
+            thread_id,
+            {
+                "thread_id": thread_id,
+                "event": "agent_reply",
+                "content": content,
+                "total_ms": total_ms,
+                "tool_calls": tool_calls,
+                "tools_used": tools_used,
+            },
+        )

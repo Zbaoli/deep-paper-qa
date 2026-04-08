@@ -33,10 +33,12 @@ class TestAskUser:
 
         from deep_paper_qa.tools.ask_user import ask_user
 
-        result = await ask_user.ainvoke({
-            "summary": "找到 5 篇 RAG 相关论文",
-            "question": "是否继续下一个子问题？",
-        })
+        result = await ask_user.ainvoke(
+            {
+                "summary": "找到 5 篇 RAG 相关论文",
+                "question": "是否继续下一个子问题？",
+            }
+        )
         assert result == "继续"
 
     @pytest.mark.asyncio
@@ -49,10 +51,12 @@ class TestAskUser:
 
         from deep_paper_qa.tools.ask_user import ask_user
 
-        result = await ask_user.ainvoke({
-            "summary": "找到 5 篇论文",
-            "question": "是否继续？",
-        })
+        result = await ask_user.ainvoke(
+            {
+                "summary": "找到 5 篇论文",
+                "question": "是否继续？",
+            }
+        )
         assert "继续" in result
 
     @pytest.mark.asyncio
@@ -68,10 +72,12 @@ class TestAskUser:
 
         from deep_paper_qa.tools.ask_user import ask_user
 
-        await ask_user.ainvoke({
-            "summary": "阶段性发现摘要",
-            "question": "下一步？",
-        })
+        await ask_user.ainvoke(
+            {
+                "summary": "阶段性发现摘要",
+                "question": "下一步？",
+            }
+        )
 
         # 验证 AskUserMessage 被调用，且 content 包含 summary 和 question
         call_args = mock_cl.AskUserMessage.call_args

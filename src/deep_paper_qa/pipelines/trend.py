@@ -83,12 +83,14 @@ async def search_representatives_node(state: TrendState) -> dict:
         elif years.strip().isdigit():
             where = f"year = {years.strip()}"
 
-        result = await search_abstracts.ainvoke({
-            "query": topic,
-            "mode": "fulltext",
-            "limit": 3,
-            "where": where,
-        })
+        result = await search_abstracts.ainvoke(
+            {
+                "query": topic,
+                "mode": "fulltext",
+                "limit": 3,
+                "where": where,
+            }
+        )
         papers.append(f"### {phase.get('phase', '')} ({years})\n{result}")
 
     logger.info("趋势分析 | 检索代表作完成，共 {} 个阶段", len(state["phases"]))

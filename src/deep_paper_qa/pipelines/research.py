@@ -35,10 +35,12 @@ async def clarify_node(state: ResearchState) -> dict:
     """澄清追问节点：判断问题是否足够清晰"""
     llm = _get_research_llm()
     user_msg = state["messages"][-1].content
-    result = await llm.ainvoke([
-        SystemMessage(content=RESEARCH_CLARIFY_PROMPT),
-        HumanMessage(content=user_msg),
-    ])
+    result = await llm.ainvoke(
+        [
+            SystemMessage(content=RESEARCH_CLARIFY_PROMPT),
+            HumanMessage(content=user_msg),
+        ]
+    )
 
     new_count = state["clarify_count"] + 1
     logger.info("深度研究 | 澄清第{}轮: {}", new_count, result.content[:100])
@@ -51,10 +53,12 @@ async def clarify_node(state: ResearchState) -> dict:
 async def ask_clarify_node(state: ResearchState) -> dict:
     """通过 ask_user 向用户展示澄清问题并等待回复"""
     last_msg = state["messages"][-1].content
-    response = await ask_user.ainvoke({
-        "summary": "正在分析您的研究问题...",
-        "question": last_msg,
-    })
+    response = await ask_user.ainvoke(
+        {
+            "summary": "正在分析您的研究问题...",
+            "question": last_msg,
+        }
+    )
     return {"messages": [HumanMessage(content=response)]}
 
 
@@ -72,10 +76,12 @@ async def plan_node(state: ResearchState) -> dict:
     user_msgs = [m.content for m in state["messages"] if isinstance(m, HumanMessage)]
     context = "\n".join(user_msgs)
 
-    result = await llm.ainvoke([
-        SystemMessage(content=RESEARCH_PLAN_PROMPT),
-        HumanMessage(content=context),
-    ])
+    result = await llm.ainvoke(
+        [
+            SystemMessage(content=RESEARCH_PLAN_PROMPT),
+            HumanMessage(content=context),
+        ]
+    )
 
     try:
         plan = json.loads(result.content)
@@ -89,11 +95,13 @@ async def plan_node(state: ResearchState) -> dict:
 
 async def ask_plan_confirm_node(state: ResearchState) -> dict:
     """向用户展示研究计划并等待确认"""
-    plan_text = "\n".join(f"{i+1}. {q}" for i, q in enumerate(state["plan"]))
-    response = await ask_user.ainvoke({
-        "summary": f"已制定研究计划，共 {len(state['plan'])} 个子问题：\n\n{plan_text}",
-        "question": "请确认计划，或提出修改意见。回复\u300c继续\u300d开始执行。",
-    })
+    plan_text = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(state["plan"]))
+    response = await ask_user.ainvoke(
+        {
+            "summary": f"已制定研究计划，共 {len(state['plan'])} 个子问题：\n\n{plan_text}",
+            "question": "请确认计划，或提出修改意见。回复\u300c继续\u300d开始执行。",
+        }
+    )
     return {"messages": [HumanMessage(content=response)]}
 
 
@@ -104,7 +112,9 @@ async def research_step_node(state: ResearchState) -> dict:
         return {}
 
     current_question = state["plan"][step_idx]
-    logger.info("深度研究 | 执行子问题 {}/{}: {}", step_idx + 1, len(state["plan"]), current_question)
+    logger.info(
+        "深度研究 | 执行子问题 {}/{}: {}", step_idx + 1, len(state["plan"]), current_question
+    )
 
     llm = _get_research_llm()
     prompt = RESEARCH_STEP_PROMPT.format(current_question=current_question)
@@ -119,7 +129,9 @@ async def research_step_node(state: ResearchState) -> dict:
     ai_messages = [m for m in result["messages"] if isinstance(m, AIMessage) and m.content]
     finding = ai_messages[-1].content if ai_messages else "未找到相关结果"
 
-    new_findings = list(state["findings"]) + [f"### 子问题 {step_idx + 1}: {current_question}\n\n{finding}"]
+    new_findings = list(state["findings"]) + [
+        f"### 子问题 {step_idx + 1}: {current_question}\n\n{finding}"
+    ]
 
     return {
         "findings": new_findings,
@@ -137,10 +149,12 @@ async def ask_step_confirm_node(state: ResearchState) -> dict:
     if step_idx >= total:
         question = "所有子问题已执行完毕。回复\u300c总结\u300d生成研究报告。"
 
-    response = await ask_user.ainvoke({
-        "summary": f"子问题 {step_idx}/{total} 完成。\n\n{latest_finding}",
-        "question": question,
-    })
+    response = await ask_user.ainvoke(
+        {
+            "summary": f"子问题 {step_idx}/{total} 完成。\n\n{latest_finding}",
+            "question": question,
+        }
+    )
     return {"messages": [HumanMessage(content=response)]}
 
 
@@ -178,18 +192,26 @@ def build_research_subgraph() -> StateGraph:
     graph.add_node("report", report_node)
 
     graph.set_entry_point("clarify")
-    graph.add_conditional_edges("clarify", should_continue_clarify, {
-        "plan": "plan",
-        "ask_clarify": "ask_clarify",
-    })
+    graph.add_conditional_edges(
+        "clarify",
+        should_continue_clarify,
+        {
+            "plan": "plan",
+            "ask_clarify": "ask_clarify",
+        },
+    )
     graph.add_edge("ask_clarify", "clarify")
     graph.add_edge("plan", "ask_plan_confirm")
     graph.add_edge("ask_plan_confirm", "research_step")
     graph.add_edge("research_step", "ask_step_confirm")
-    graph.add_conditional_edges("ask_step_confirm", should_continue_research, {
-        "research_step": "research_step",
-        "report": "report",
-    })
+    graph.add_conditional_edges(
+        "ask_step_confirm",
+        should_continue_research,
+        {
+            "research_step": "research_step",
+            "report": "report",
+        },
+    )
     graph.add_edge("report", END)
 
     return graph.compile()

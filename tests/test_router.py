@@ -28,6 +28,7 @@ class TestClassifyQuestion:
     @patch("deep_paper_qa.pipelines.router._get_router_llm")
     async def test_general_question(self, mock_get_llm: AsyncMock) -> None:
         from deep_paper_qa.models import RouterOutput
+
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value = RouterOutput(category=RouteCategory.GENERAL)
         mock_get_llm.return_value = mock_llm
@@ -38,6 +39,7 @@ class TestClassifyQuestion:
     @patch("deep_paper_qa.pipelines.router._get_router_llm")
     async def test_reject_question(self, mock_get_llm: AsyncMock) -> None:
         from deep_paper_qa.models import RouterOutput
+
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value = RouterOutput(category=RouteCategory.REJECT)
         mock_get_llm.return_value = mock_llm
@@ -48,6 +50,7 @@ class TestClassifyQuestion:
     @patch("deep_paper_qa.pipelines.router._get_router_llm")
     async def test_research_question(self, mock_get_llm: AsyncMock) -> None:
         from deep_paper_qa.models import RouterOutput
+
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value = RouterOutput(category=RouteCategory.RESEARCH)
         mock_get_llm.return_value = mock_llm
@@ -58,6 +61,7 @@ class TestClassifyQuestion:
     @patch("deep_paper_qa.pipelines.router._get_router_llm")
     async def test_trend_question(self, mock_get_llm: AsyncMock) -> None:
         from deep_paper_qa.models import RouterOutput
+
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value = RouterOutput(category=RouteCategory.TREND)
         mock_get_llm.return_value = mock_llm

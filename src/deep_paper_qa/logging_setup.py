@@ -18,11 +18,7 @@ def setup_logging() -> None:
     logger.add(
         sys.stderr,
         level="INFO",
-        format=(
-            "<green>{time:HH:mm:ss}</green> | "
-            "<level>{level:<8}</level> | "
-            "{message}"
-        ),
+        format=("<green>{time:HH:mm:ss}</green> | <level>{level:<8}</level> | {message}"),
     )
 
     # 文件：按天轮转，完整格式
@@ -33,10 +29,7 @@ def setup_logging() -> None:
         retention=None,
         encoding="utf-8",
         format=(
-            "{time:YYYY-MM-DD HH:mm:ss.SSS} | "
-            "{level:<8} | "
-            "{name}:{function}:{line} | "
-            "{message}"
+            "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {name}:{function}:{line} | {message}"
         ),
     )
 
