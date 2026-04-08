@@ -46,6 +46,10 @@ async def on_chat_start() -> None:
 @cl.on_message
 async def on_message(message: cl.Message) -> None:
     """处理用户消息，记录完整事件链"""
+    # 如果有 ask_user 正在等待回复，跳过新的 graph 调用（让 AskUserMessage 接收回复）
+    if cl.user_session.get("waiting_for_ask_user"):
+        return
+
     thread_id = cl.user_session.get("thread_id")
 
     config = {
@@ -119,7 +123,9 @@ async def on_message(message: cl.Message) -> None:
                 if tool_name not in tools_used:
                     tools_used.append(tool_name)
 
-                if tool_name != "ask_user":
+                if tool_name == "ask_user":
+                    cl.user_session.set("waiting_for_ask_user", True)
+                else:
                     step = cl.Step(name=tool_name, type="tool")
                     step.input = str(tool_input)
                     await step.send()
@@ -127,6 +133,8 @@ async def on_message(message: cl.Message) -> None:
 
             # 工具调用结束
             elif kind == "on_tool_end":
+                if name == "ask_user":
+                    cl.user_session.set("waiting_for_ask_user", False)
                 run_id = event.get("run_id", "")
                 output = event.get("data", {}).get("output", "")
                 if hasattr(output, "content"):
