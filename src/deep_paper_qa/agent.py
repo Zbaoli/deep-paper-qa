@@ -22,11 +22,23 @@ class MainState(MessagesState):
     category: str
 
 
+# 路由分类标签映射
+CATEGORY_LABELS = {
+    "reject": "拒答",
+    "general": "普通问答",
+    "research": "深度研究",
+    "reading": "论文精读",
+    "compare": "论文对比",
+    "trend": "趋势分析",
+}
+
+
 async def router_node(state: MainState) -> dict:
     """路由节点：提取用户最新消息并分类"""
     last_msg = state["messages"][-1].content
     category = await classify_question(last_msg)
-    logger.info("路由决策 | category={}", category.value)
+    label = CATEGORY_LABELS.get(category.value, category.value)
+    logger.info("路由决策 | category={} | label={}", category.value, label)
     return {"category": category.value}
 
 

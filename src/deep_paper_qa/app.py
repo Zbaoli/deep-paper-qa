@@ -63,6 +63,17 @@ async def on_message(message: cl.Message) -> None:
     tools_used: list[str] = []
     tool_timings: dict[str, tuple[str, float]] = {}
 
+    # 路由分类标签映射
+    category_labels = {
+        "reject": "拒答",
+        "general": "普通问答",
+        "research": "深度研究",
+        "reading": "论文精读",
+        "compare": "论文对比",
+        "trend": "趋势分析",
+    }
+    router_shown = False
+
     final_msg = cl.Message(content="")
     await final_msg.send()
 
@@ -74,6 +85,20 @@ async def on_message(message: cl.Message) -> None:
         ):
             kind = event.get("event", "")
             name = event.get("name", "")
+
+            # 路由节点完成时展示分类结果
+            if kind == "on_chain_end" and name == "router" and not router_shown:
+                try:
+                    output = event.get("data", {}).get("output", {})
+                    cat = output.get("category", "")
+                    if cat:
+                        label = category_labels.get(cat, cat)
+                        step = cl.Step(name="路由分类", type="tool")
+                        step.output = f"问题类型：{label}"
+                        await step.send()
+                        router_shown = True
+                except Exception:
+                    pass
 
             # 工具调用开始
             if kind == "on_tool_start":
