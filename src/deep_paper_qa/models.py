@@ -1,9 +1,5 @@
 """Pydantic 数据模型"""
 
-from enum import Enum
-from typing import Any
-
-from langgraph.graph import MessagesState
 from pydantic import BaseModel
 
 
@@ -37,32 +33,3 @@ class SearchResult(BaseModel):
 
     query: str
     chunks: list[SearchChunk] = []
-
-
-class RouteCategory(str, Enum):
-    """路由分类枚举"""
-
-    REJECT = "reject"
-    GENERAL = "general"
-    RESEARCH = "research"
-    READING = "reading"
-    COMPARE = "compare"
-    TREND = "trend"
-
-
-class ResearchState(MessagesState):
-    """深度研究 pipeline 状态"""
-
-    plan: list[str] = []
-    current_step: int = 0
-    findings: list[str] = []
-    clarify_count: int = 0
-
-
-class TrendState(MessagesState):
-    """趋势分析 pipeline 状态"""
-
-    query_topic: str = ""
-    stats_data: str = ""
-    phases: list[dict[str, Any]] = []
-    representative_papers: list[str] = []
