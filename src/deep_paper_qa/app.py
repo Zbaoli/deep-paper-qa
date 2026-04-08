@@ -180,14 +180,17 @@ async def on_message(message: cl.Message) -> None:
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
 
-        # 非流式 pipeline：从 state 获取最终消息
+        # 非流式 pipeline：从 state 获取最终消息，用新消息展示
         if routed_category not in _STREAMING_CATEGORIES:
             try:
                 state = _graph.get_state(config)
                 msgs = state.values.get("messages", [])
                 for m in reversed(msgs):
                     if isinstance(m, AIMessage) and m.content:
-                        final_msg.content = m.content
+                        # 删除初始空消息，发送新消息展示完整内容
+                        await final_msg.remove()
+                        final_msg = cl.Message(content=m.content)
+                        await final_msg.send()
                         break
             except Exception as state_err:
                 logger.warning("获取最终状态失败: {}", state_err)
