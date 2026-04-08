@@ -7,15 +7,15 @@ import chainlit as cl
 from langchain_core.messages import HumanMessage
 from loguru import logger
 
-from deep_paper_qa.agent import build_agent
+from deep_paper_qa.agent import build_graph
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.logging_setup import setup_logging
 
 # 初始化日志
 setup_logging()
 
-# 全局 Agent 实例
-_agent, _checkpointer = build_agent()
+# 全局 Graph 实例
+_graph, _checkpointer = build_graph()
 
 # 结构化事件记录器
 _conv_logger = ConversationLogger()
@@ -48,43 +48,27 @@ async def on_message(message: cl.Message) -> None:
     """处理用户消息，记录完整事件链"""
     thread_id = cl.user_session.get("thread_id")
 
-    # 检测深度研究模式
-    user_content = message.content
-    is_research = user_content.startswith("/research")
-    if is_research:
-        user_content = user_content[len("/research"):].strip()
-        if not user_content:
-            await cl.Message(content="请在 /research 后输入您的研究问题。").send()
-            return
-        await cl.Message(
-            content="🔬 已进入深度研究模式，将分阶段进行多轮检索。"
-        ).send()
-
     config = {
         "configurable": {"thread_id": thread_id},
-        "recursion_limit": 50 if is_research else 30,
+        "recursion_limit": 50,
     }
 
     # 记录用户消息
-    logger.info(
-        "用户消息 | thread_id={} | research={} | content={}",
-        thread_id, is_research, user_content,
-    )
+    logger.info("用户消息 | thread_id={} | content={}", thread_id, message.content)
     _conv_logger.log_user_message(thread_id, message.content)
 
     # 会话级统计
     msg_start = time.monotonic()
     tool_call_count = 0
     tools_used: list[str] = []
-    # tool 调用计时：run_id -> (tool_name, start_time)
     tool_timings: dict[str, tuple[str, float]] = {}
 
     final_msg = cl.Message(content="")
     await final_msg.send()
 
     try:
-        async for event in _agent.astream_events(
-            {"messages": [HumanMessage(content=user_content)]},
+        async for event in _graph.astream_events(
+            {"messages": [HumanMessage(content=message.content)]},
             config=config,
             version="v2",
         ):
@@ -97,21 +81,17 @@ async def on_message(message: cl.Message) -> None:
                 tool_input = event.get("data", {}).get("input", {})
                 run_id = event.get("run_id", "")
 
-                # loguru 详细日志
                 logger.info(
                     "Tool调用 | thread_id={} | tool={} | input={}",
                     thread_id, tool_name, tool_input,
                 )
-                # JSONL 事件
                 _conv_logger.log_tool_start(thread_id, tool_name, tool_input)
 
-                # 记录开始时间
                 tool_timings[run_id] = (tool_name, time.monotonic())
                 tool_call_count += 1
                 if tool_name not in tools_used:
                     tools_used.append(tool_name)
 
-                # ask_user 工具通过 AskUserMessage 自行展示，不创建 Step
                 if tool_name != "ask_user":
                     step = cl.Step(name=tool_name, type="tool")
                     step.input = str(tool_input)
@@ -126,26 +106,22 @@ async def on_message(message: cl.Message) -> None:
                     output = output.content
                 output_str = str(output)
 
-                # 计算耗时
                 duration_ms = 0
                 tool_name = "unknown"
                 if run_id in tool_timings:
                     tool_name, start_t = tool_timings.pop(run_id)
                     duration_ms = int((time.monotonic() - start_t) * 1000)
 
-                # loguru 详细日志
                 logger.info(
                     "Tool返回 | thread_id={} | tool={} | duration_ms={} | "
                     "output_len={} | output={}",
                     thread_id, tool_name, duration_ms,
                     len(output_str), output_str[:1000],
                 )
-                # JSONL 事件
                 _conv_logger.log_tool_end(
                     thread_id, tool_name, duration_ms, output_str
                 )
 
-                # Chainlit 更新步骤
                 step = cl.user_session.get(f"step_{run_id}")
                 if step:
                     step.output = (
@@ -167,7 +143,6 @@ async def on_message(message: cl.Message) -> None:
             "会话统计 | thread_id={} | total_ms={} | tool_calls={} | tools_used={}",
             thread_id, total_ms, tool_call_count, tools_used,
         )
-        # JSONL 汇总事件
         _conv_logger.log_agent_reply(
             thread_id,
             final_msg.content,
