@@ -1,26 +1,24 @@
-"""Agent 构建和数据模型测试"""
+"""主图构建测试"""
 
 
+class TestBuildGraph:
+    """主图构建测试"""
 
-class TestBuildAgent:
-    """Agent 构建测试"""
+    def test_graph_builds_successfully(self) -> None:
+        """主图能正常构建"""
+        from deep_paper_qa.agent import build_graph
 
-    def test_agent_builds_successfully(self) -> None:
-        """Agent 能正常构建"""
-        from deep_paper_qa.agent import build_agent
-
-        agent, checkpointer = build_agent()
-        assert agent is not None
+        graph, checkpointer = build_graph()
+        assert graph is not None
         assert checkpointer is not None
 
-    def test_agent_has_correct_structure(self) -> None:
-        """Agent 应包含正确的图结构"""
-        from deep_paper_qa.agent import build_agent
+    def test_graph_has_correct_structure(self) -> None:
+        """主图应包含正确的图结构"""
+        from deep_paper_qa.agent import build_graph
 
-        agent, _ = build_agent()
-        # 验证 agent 是一个可运行的 CompiledGraph
-        assert hasattr(agent, "invoke")
-        assert hasattr(agent, "ainvoke")
+        graph, _ = build_graph()
+        assert hasattr(graph, "invoke")
+        assert hasattr(graph, "ainvoke")
 
 
 class TestModels:
