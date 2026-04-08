@@ -48,31 +48,43 @@ def analyze() -> None:
     capabilities = {
         "execute_sql": {
             "简单聚合 (COUNT/AVG/MAX)": lambda q: any(
-                kw in q.get("expected_sql_pattern", "")
-                for kw in ["COUNT", "AVG", "MAX", "MIN"]
+                kw in q.get("expected_sql_pattern", "") for kw in ["COUNT", "AVG", "MAX", "MIN"]
             ),
             "GROUP BY 分组统计": lambda q: "GROUP BY" in q.get("expected_sql_pattern", ""),
-            "ORDER BY + LIMIT 排名": lambda q: "ORDER BY" in q.get("expected_sql_pattern", "")
-            or "LIMIT" in q.get("expected_sql_pattern", ""),
-            "数组 ANY() 查询": lambda q: "ANY" in q.get("expected_sql_pattern", "")
-            or "作者" in q["question"],
-            "SQL 内全文检索 to_tsquery": lambda q: "to_tsquery" in q.get("expected_sql_pattern", "")
-            or "to_tsvector" in q.get("expected_sql_pattern", ""),
-            "WITH CTE 子查询": lambda q: "WITH" in q.get("expected_sql_pattern", "")
-            or "CASE" in q.get("expected_sql_pattern", ""),
-            "时间范围 BETWEEN": lambda q: "year" in q.get("expected_sql_pattern", "").lower()
-            and ("BETWEEN" in q["question"] or "到" in q["question"] or "趋势" in q["question"]),
+            "ORDER BY + LIMIT 排名": lambda q: (
+                "ORDER BY" in q.get("expected_sql_pattern", "")
+                or "LIMIT" in q.get("expected_sql_pattern", "")
+            ),
+            "数组 ANY() 查询": lambda q: (
+                "ANY" in q.get("expected_sql_pattern", "") or "作者" in q["question"]
+            ),
+            "SQL 内全文检索 to_tsquery": lambda q: (
+                "to_tsquery" in q.get("expected_sql_pattern", "")
+                or "to_tsvector" in q.get("expected_sql_pattern", "")
+            ),
+            "WITH CTE 子查询": lambda q: (
+                "WITH" in q.get("expected_sql_pattern", "")
+                or "CASE" in q.get("expected_sql_pattern", "")
+            ),
+            "时间范围 BETWEEN": lambda q: (
+                "year" in q.get("expected_sql_pattern", "").lower()
+                and ("BETWEEN" in q["question"] or "到" in q["question"] or "趋势" in q["question"])
+            ),
         },
         "search_abstracts": {
             "基础关键词搜索": lambda q: q.get("expected_tool") == "search_abstracts",
-            "where 参数过滤": lambda q: q.get("expected_tool") == "search_abstracts"
-            and any(kw in q["question"] for kw in ["会议", "年", "引用"]),
+            "where 参数过滤": lambda q: (
+                q.get("expected_tool") == "search_abstracts"
+                and any(kw in q["question"] for kw in ["会议", "年", "引用"])
+            ),
         },
         "vector_search": {
             "概念性/模糊查询": lambda q: q.get("expected_tool") == "vector_search",
-            "where 参数过滤": lambda q: "expected_tools" in q
-            and "vector_search" in q.get("expected_tools", [])
-            and any(kw in q["question"] for kw in ["会议", "年", "引用"]),
+            "where 参数过滤": lambda q: (
+                "expected_tools" in q
+                and "vector_search" in q.get("expected_tools", [])
+                and any(kw in q["question"] for kw in ["会议", "年", "引用"])
+            ),
         },
     }
 
@@ -80,8 +92,11 @@ def analyze() -> None:
     uncovered: list[str] = []
     for tool_name, caps in capabilities.items():
         print(f"\n  [{tool_name}]")
-        sql_questions = [q for q in questions if q.get("expected_tool") == tool_name
-                         or tool_name in q.get("expected_tools", [])]
+        sql_questions = [
+            q
+            for q in questions
+            if q.get("expected_tool") == tool_name or tool_name in q.get("expected_tools", [])
+        ]
         for cap_name, check_fn in caps.items():
             matched = [q for q in sql_questions if check_fn(q)]
             status = f"✓ {len(matched)} 题" if matched else "✗ 未覆盖"
@@ -94,11 +109,10 @@ def analyze() -> None:
     print("=== 边界场景 ===")
     edge_cases = {
         "空结果处理": lambda q: "CVPR" in q["question"] and "2026" in q["question"],
-        "中英文混合": lambda q: any(
-            kw in q["question"] for kw in ["思维链", "知识蒸馏", "多模态"]
+        "中英文混合": lambda q: any(kw in q["question"] for kw in ["思维链", "知识蒸馏", "多模态"]),
+        "不存在的实体": lambda q: (
+            "CVPR 2026" in q["question"] or "quantum" in q["question"].lower()
         ),
-        "不存在的实体": lambda q: "CVPR 2026" in q["question"]
-        or "quantum" in q["question"].lower(),
     }
     for case_name, check_fn in edge_cases.items():
         matched = [q for q in questions if check_fn(q)]

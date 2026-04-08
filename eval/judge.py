@@ -70,6 +70,8 @@ async def judge_answer(
     question_type: str,
     answer: str,
     tool_outputs: str,
+    tool_call_count: int = 0,
+    tool_call_summary: str = "",
 ) -> dict[str, Any] | None:
     """对 agent 回答进行 LLM-as-Judge 质量评分。
 
@@ -78,17 +80,19 @@ async def judge_answer(
         question_type: 问题类型（sql/content/mixed）
         answer: agent 的完整回答
         tool_outputs: 工具返回的原始输出（拼接后的文本）
+        tool_call_count: 工具调用总次数
+        tool_call_summary: 工具调用序列摘要（如 "1. execute_sql(sql=...) 2. search_abstracts(query=...)"）
 
     Returns:
-        评分字典（含 accuracy/completeness/citation/clarity/overall/summary），
+        评分字典（含 accuracy/completeness/citation/clarity/efficiency/overall/summary），
         或 None（评分失败时）
     """
     # agent 执行报错时直接返回低分
     if answer.startswith("ERROR:"):
-        return {
-            dim: {"score": 1, "reason": "Agent 执行报错"}
-            for dim in SCORE_DIMENSIONS
-        } | {"overall": 1.0, "summary": f"Agent 执行报错: {answer[:100]}"}
+        return {dim: {"score": 1, "reason": "Agent 执行报错"} for dim in SCORE_DIMENSIONS} | {
+            "overall": 1.0,
+            "summary": f"Agent 执行报错: {answer[:100]}",
+        }
 
     client = _build_client()
     user_msg = JUDGE_USER_TEMPLATE.format(
@@ -96,6 +100,8 @@ async def judge_answer(
         question_type=question_type,
         tool_outputs=tool_outputs,
         answer=answer,
+        tool_call_count=tool_call_count,
+        tool_call_summary=tool_call_summary or "无工具调用",
     )
 
     try:

@@ -46,10 +46,12 @@ async def eval_one(agent, q: dict) -> dict:
             if kind == "on_tool_start":
                 tools_called.append(name)
                 tool_input = event.get("data", {}).get("input", {})
-                tool_details.append({
-                    "name": name,
-                    "input": str(tool_input),
-                })
+                tool_details.append(
+                    {
+                        "name": name,
+                        "input": str(tool_input),
+                    }
+                )
             elif kind == "on_tool_end":
                 output = event.get("data", {}).get("output", "")
                 if hasattr(output, "content"):
@@ -74,16 +76,13 @@ async def eval_one(agent, q: dict) -> dict:
     called_set = set(tools_called)
     # Agent 直接回答（0 次调用）且回答合理也视为正确
     no_tool_but_reasonable = (
-        len(called_set) == 0
-        and not final_answer.startswith("ERROR:")
-        and len(final_answer) > 20
+        len(called_set) == 0 and not final_answer.startswith("ERROR:") and len(final_answer) > 20
     )
     if q_type == "sql":
         tool_correct = "execute_sql" in called_set or no_tool_but_reasonable
     elif q_type == "content":
         tool_correct = (
-            bool(called_set & {"vector_search", "search_abstracts"})
-            or no_tool_but_reasonable
+            bool(called_set & {"vector_search", "search_abstracts"}) or no_tool_but_reasonable
         )
     elif q_type == "mixed":
         expected = set(q.get("expected_tools", []))
@@ -97,8 +96,10 @@ async def eval_one(agent, q: dict) -> dict:
             for td in tool_details
         )
         has_sql = (
-            "execute_sql" in called_set or content_with_where
-        ) if "execute_sql" in expected else True
+            ("execute_sql" in called_set or content_with_where)
+            if "execute_sql" in expected
+            else True
+        )
         has_content = bool(called_set & content_tools) if expected & content_tools else True
         tool_correct = has_sql and has_content
     elif q_type == "trend":
@@ -139,7 +140,7 @@ async def judge_results(results: list[dict], semaphore: asyncio.Semaphore) -> No
         async with semaphore:
             # 生成工具调用摘要供 Judge 评估效率
             call_summary = "\n".join(
-                f"{i+1}. {td['name']}({td['input'][:150]})"
+                f"{i + 1}. {td['name']}({td['input'][:150]})"
                 for i, td in enumerate(r["tool_details"])
             )
             scores = await judge_answer(
@@ -168,10 +169,12 @@ def _generate_report(results: list[dict], total: int) -> str:
 
     # --- 路由统计 ---
     correct_routing = sum(1 for r in results if r["tool_routing_correct"])
-    lines.append(f"**工具路由正确率**: {correct_routing}/{total} ({correct_routing/total*100:.1f}%)")
+    lines.append(
+        f"**工具路由正确率**: {correct_routing}/{total} ({correct_routing / total * 100:.1f}%)"
+    )
 
     completed = sum(1 for r in results if not r.get("_full_answer", "").startswith("ERROR:"))
-    lines.append(f"**完成率**: {completed}/{total} ({completed/total*100:.1f}%)")
+    lines.append(f"**完成率**: {completed}/{total} ({completed / total * 100:.1f}%)")
 
     avg_tools = statistics.mean(r["tool_call_count"] for r in results) if results else 0
     lines.append(f"**平均工具调用**: {avg_tools:.1f} 次/题")
@@ -196,14 +199,17 @@ def _generate_report(results: list[dict], total: int) -> str:
         for dim in dims:
             scores = [r["quality_scores"][dim]["score"] for r in scored_results]
             lines.append(
-                f"| {dim} | {statistics.mean(scores):.2f} "
-                f"| {min(scores)} | {max(scores)} |"
+                f"| {dim} | {statistics.mean(scores):.2f} | {min(scores)} | {max(scores)} |"
             )
 
         # 按题型分组
         lines.append("\n### 按题型质量分布\n")
-        lines.append("| 题型 | 题数 | overall | accuracy | completeness | citation | clarity | efficiency |")
-        lines.append("|------|------|---------|----------|--------------|----------|---------|------------|")
+        lines.append(
+            "| 题型 | 题数 | overall | accuracy | completeness | citation | clarity | efficiency |"
+        )
+        lines.append(
+            "|------|------|---------|----------|--------------|----------|---------|------------|"
+        )
         by_type: dict[str, list[dict]] = {}
         for r in scored_results:
             by_type.setdefault(r["type"], []).append(r)
@@ -213,7 +219,9 @@ def _generate_report(results: list[dict], total: int) -> str:
                 continue
             o = statistics.mean(r["quality_scores"]["overall"] for r in type_results)
             a = statistics.mean(r["quality_scores"]["accuracy"]["score"] for r in type_results)
-            comp = statistics.mean(r["quality_scores"]["completeness"]["score"] for r in type_results)
+            comp = statistics.mean(
+                r["quality_scores"]["completeness"]["score"] for r in type_results
+            )
             c = statistics.mean(r["quality_scores"]["citation"]["score"] for r in type_results)
             cl = statistics.mean(r["quality_scores"]["clarity"]["score"] for r in type_results)
             ef = statistics.mean(r["quality_scores"]["efficiency"]["score"] for r in type_results)
@@ -251,7 +259,7 @@ def _generate_report(results: list[dict], total: int) -> str:
         avg_tc = statistics.mean(r["tool_call_count"] for r in type_results)
         lines.append(
             f"| {t} | {len(type_results)} | {correct}/{len(type_results)} "
-            f"({correct/len(type_results)*100:.1f}%) | {avg_tc:.1f} |"
+            f"({correct / len(type_results) * 100:.1f}%) | {avg_tc:.1f} |"
         )
 
     return "\n".join(lines)
@@ -284,14 +292,18 @@ async def run_eval() -> None:
     logger.info("=" * 60)
     logger.info(
         "评测完成: {}/{} 工具路由正确 ({:.1f}%)",
-        correct_tool_routing, total, correct_tool_routing / total * 100,
+        correct_tool_routing,
+        total,
+        correct_tool_routing / total * 100,
     )
 
     # 质量评分统计
     scored = [r for r in results if r.get("quality_scores")]
     if scored:
         avg_overall = statistics.mean(r["quality_scores"]["overall"] for r in scored)
-        logger.info("质量评分: {}/{} 题, 平均 overall: {:.2f}/5.00", len(scored), total, avg_overall)
+        logger.info(
+            "质量评分: {}/{} 题, 平均 overall: {:.2f}/5.00", len(scored), total, avg_overall
+        )
 
     # 生成报告
     report = _generate_report(results, total)

@@ -142,7 +142,11 @@ async def research_step_node(state: ResearchState) -> dict:
     return {
         "findings": new_findings,
         "current_step": step_idx + 1,
-        "messages": [AIMessage(content=f"**[子问题 {step_idx + 1}/{total}]** {current_question}\n\n{finding}")],
+        "messages": [
+            AIMessage(
+                content=f"**[子问题 {step_idx + 1}/{total}]** {current_question}\n\n{finding}"
+            )
+        ],
     }
 
 
