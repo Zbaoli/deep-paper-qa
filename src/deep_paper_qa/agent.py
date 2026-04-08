@@ -14,6 +14,15 @@ from deep_paper_qa.tools.search_arxiv import search_arxiv
 from deep_paper_qa.tools.search_semantic_scholar import search_semantic_scholar
 from deep_paper_qa.tools.search_web import search_web
 
+# 路由分类标签（category → 中文说明）
+CATEGORY_LABELS: dict[str, str] = {
+    "sql": "元数据统计（SQL）",
+    "fulltext": "全文检索",
+    "vector": "语义检索",
+    "deep_research": "深度研究",
+    "general": "通用回答",
+}
+
 # 全部工具
 ALL_TOOLS = [
     execute_sql,
@@ -27,6 +36,11 @@ ALL_TOOLS = [
 
 # eval 用的工具列表（排除 ask_user，避免 eval 时阻塞）
 EVAL_TOOLS = [t for t in ALL_TOOLS if t.name != "ask_user"]
+
+
+def build_graph(*, include_ask_user: bool = True):
+    """build_agent 的别名，供 API 路由使用"""
+    return build_agent(include_ask_user=include_ask_user)
 
 
 def build_agent(*, include_ask_user: bool = True):
