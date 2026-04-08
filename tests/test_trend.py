@@ -11,7 +11,7 @@ class TestGenerateSqlNode:
     """SQL 生成节点测试"""
 
     @pytest.mark.asyncio
-    @patch("deep_paper_qa.pipelines.trend._get_trend_llm")
+    @patch("deep_paper_qa.pipelines.trend.get_llm")
     async def test_generates_sql(self, mock_get_llm: AsyncMock) -> None:
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value.content = (
@@ -41,7 +41,7 @@ class TestSynthesizeNode:
     """报告生成节点测试"""
 
     @pytest.mark.asyncio
-    @patch("deep_paper_qa.pipelines.trend._get_trend_llm")
+    @patch("deep_paper_qa.pipelines.trend.get_llm")
     async def test_generates_report(self, mock_get_llm: AsyncMock) -> None:
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value.content = "# RAG 趋势分析报告\n\n..."
@@ -55,8 +55,7 @@ class TestSynthesizeNode:
             "stats_data": "2022: 50\n2023: 120\n2024: 300",
             "phases": [{"phase": "增长期", "years": "2022-2024", "description": "快速增长"}],
             "representative_papers": ["论文A (NeurIPS 2023)", "论文B (ICML 2024)"],
-            "report": "",
         }
         result = await synthesize_node(state)
-        assert "report" in result
-        assert result["report"] != ""
+        assert "messages" in result
+        assert len(result["messages"]) > 0

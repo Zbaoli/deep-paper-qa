@@ -34,3 +34,15 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_llm(temperature: float = 0):
+    """获取 LLM 客户端（全局复用配置）"""
+    from langchain_openai import ChatOpenAI
+
+    return ChatOpenAI(
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key,
+        model=settings.llm_model,
+        temperature=temperature,
+    )

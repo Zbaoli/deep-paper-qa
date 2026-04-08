@@ -50,12 +50,6 @@ class RouteCategory(str, Enum):
     TREND = "trend"
 
 
-class RouterOutput(BaseModel):
-    """路由节点的 LLM structured output"""
-
-    category: RouteCategory
-
-
 class ResearchState(MessagesState):
     """深度研究 pipeline 状态"""
 
@@ -72,4 +66,3 @@ class TrendState(MessagesState):
     stats_data: str = ""
     phases: list[dict[str, Any]] = []
     representative_papers: list[str] = []
-    report: str = ""

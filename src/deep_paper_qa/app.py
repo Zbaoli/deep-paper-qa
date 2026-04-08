@@ -1,37 +1,25 @@
 """Chainlit 入口：Agent 流式输出 + 中间步骤展示 + 日志记录"""
 
+import re
 import time
 import uuid
 
 import chainlit as cl
+import plotly.io as pio
 from langchain_core.messages import AIMessage, HumanMessage
 from loguru import logger
 
-from deep_paper_qa.agent import build_graph
+from deep_paper_qa.agent import CATEGORY_LABELS, build_graph
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.logging_setup import setup_logging
 
-# 初始化日志
 setup_logging()
 
-# 全局 Graph 实例
 _graph, _checkpointer = build_graph()
-
-# 结构化事件记录器
 _conv_logger = ConversationLogger()
 
-# 只有 general pipeline 支持流式输出，其他 pipeline 从 state 获取最终消息
+# 只有 general pipeline 支持流式输出
 _STREAMING_CATEGORIES = {"general"}
-
-# 路由分类标签映射
-_CATEGORY_LABELS = {
-    "reject": "拒答",
-    "general": "普通问答",
-    "research": "深度研究",
-    "reading": "论文精读",
-    "compare": "论文对比",
-    "trend": "趋势分析",
-}
 
 
 @cl.set_starters
@@ -103,7 +91,7 @@ async def on_message(message: cl.Message) -> None:
                     cat = output.get("category", "")
                     if cat:
                         routed_category = cat
-                        label = _CATEGORY_LABELS.get(cat, cat)
+                        label = CATEGORY_LABELS.get(cat, cat)
                         step = cl.Step(name="路由分类", type="tool")
                         step.output = f"问题类型：{label}"
                         await step.send()
@@ -197,17 +185,13 @@ async def on_message(message: cl.Message) -> None:
 
         # 处理趋势分析图表
         if "<!--plotly:" in final_msg.content:
-            import re as _re
-
-            plotly_match = _re.search(r"<!--plotly:(.*?)-->", final_msg.content, _re.DOTALL)
+            plotly_match = re.search(r"<!--plotly:(.*?)-->", final_msg.content, re.DOTALL)
             if plotly_match:
                 chart_json = plotly_match.group(1)
-                final_msg.content = _re.sub(
-                    r"<!--plotly:.*?-->\n*", "", final_msg.content, flags=_re.DOTALL
+                final_msg.content = re.sub(
+                    r"<!--plotly:.*?-->\n*", "", final_msg.content, flags=re.DOTALL
                 )
                 try:
-                    import plotly.io as pio
-
                     fig = pio.from_json(chart_json)
                     elements = [cl.Plotly(name="趋势图", figure=fig, display="inline")]
                     final_msg.elements = elements

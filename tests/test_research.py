@@ -13,7 +13,7 @@ class TestClarifyNode:
     """澄清节点测试"""
 
     @pytest.mark.asyncio
-    @patch("deep_paper_qa.pipelines.research._get_research_llm")
+    @patch("deep_paper_qa.pipelines.research.get_llm")
     async def test_increments_clarify_count(self, mock_get_llm: AsyncMock) -> None:
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value.content = "问题已明确，可以制定研究计划。"
@@ -59,7 +59,7 @@ class TestPlanNode:
     """研究计划节点测试"""
 
     @pytest.mark.asyncio
-    @patch("deep_paper_qa.pipelines.research._get_research_llm")
+    @patch("deep_paper_qa.pipelines.research.get_llm")
     async def test_generates_plan(self, mock_get_llm: AsyncMock) -> None:
         mock_llm = AsyncMock()
         mock_llm.ainvoke.return_value.content = json.dumps(

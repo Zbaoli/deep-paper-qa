@@ -5,6 +5,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, MessagesState, StateGraph
 from loguru import logger
 
+from deep_paper_qa.models import RouteCategory
 from deep_paper_qa.pipelines.compare import paper_compare_node
 from deep_paper_qa.pipelines.general import build_general_subgraph
 from deep_paper_qa.pipelines.reading import paper_reading_node
@@ -58,7 +59,6 @@ def build_graph():
 
     graph = StateGraph(MainState)
 
-    # 添加节点
     graph.add_node("router", router_node)
     graph.add_node("reject", reject_node)
     graph.add_node("general", build_general_subgraph())
@@ -67,30 +67,14 @@ def build_graph():
     graph.add_node("compare", paper_compare_node)
     graph.add_node("trend", build_trend_subgraph())
 
-    # 设置入口
     graph.set_entry_point("router")
-
-    # 路由条件边
     graph.add_conditional_edges(
         "router",
         route_by_category,
-        {
-            "reject": "reject",
-            "general": "general",
-            "research": "research",
-            "reading": "reading",
-            "compare": "compare",
-            "trend": "trend",
-        },
+        {c.value: c.value for c in RouteCategory},
     )
-
-    # 所有终端节点连接到 END
-    graph.add_edge("reject", END)
-    graph.add_edge("general", END)
-    graph.add_edge("research", END)
-    graph.add_edge("reading", END)
-    graph.add_edge("compare", END)
-    graph.add_edge("trend", END)
+    for node in RouteCategory:
+        graph.add_edge(node.value, END)
 
     compiled = graph.compile(checkpointer=checkpointer)
     return compiled, checkpointer
