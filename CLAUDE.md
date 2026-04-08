@@ -10,7 +10,8 @@ AI 科研论文智能问答助手（81,913 篇 AI 会议论文，2020-2025）。
 
 ```bash
 uv sync --all-extras          # 安装所有依赖（含 dev）
-uv run chainlit run src/deep_paper_qa/app.py   # 启动应用 (http://localhost:8000)
+uv run chainlit run src/deep_paper_qa/app.py   # 启动 Chainlit (http://localhost:8000)
+uv run uvicorn deep_paper_qa.api:app --reload  # 启动 FastAPI 后端 (http://localhost:8000)
 uv run pytest tests/ -v       # 运行全部测试
 uv run pytest tests/test_execute_sql.py -v     # 运行单个测试文件
 uv run pytest tests/ -v -k "test_name"         # 运行单个测试用例
@@ -37,7 +38,10 @@ Chainlit UI (app.py)
 - **agent.py**: 多管线路由（general/research/trend/reading/compare），各子图绑定工具，system prompt 来自 prompts.py
 - **prompts.py**: 各管线 system prompt，包含工具选择策略（本地优先、联网补充）、SQL 模式、关键词扩展规则
 - **config.py**: `pydantic-settings` 加载 `.env`，所有配置项集中管理
-- **app.py**: Chainlit 入口，处理消息流式输出、tool call 展示、loguru + JSONL 双日志
+- **app.py**: Chainlit 入口（旧），与 FastAPI 并存
+- **api.py**: FastAPI 入口（新），SSE 事件流，REST API
+- **routers/**: chat.py（聊天 SSE + 历史会话）、papers.py（论文浏览）、stats.py（统计数据）
+- **sse_events.py**: SSE 事件类型定义（route/tool_start/tool_end/token/chart/ask_user/done/error）
 - **conversation_logger.py**: 每个对话写独立 JSONL 文件到 `logs/`
 
 ## 数据库
