@@ -161,6 +161,25 @@ async def on_message(message: cl.Message) -> None:
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
 
+        # 处理趋势分析图表
+        if "<!--plotly:" in final_msg.content:
+            import re as _re
+
+            plotly_match = _re.search(r"<!--plotly:(.*?)-->", final_msg.content, _re.DOTALL)
+            if plotly_match:
+                chart_json = plotly_match.group(1)
+                final_msg.content = _re.sub(
+                    r"<!--plotly:.*?-->\n*", "", final_msg.content, flags=_re.DOTALL
+                )
+                try:
+                    import plotly.io as pio
+
+                    fig = pio.from_json(chart_json)
+                    elements = [cl.Plotly(name="趋势图", figure=fig, display="inline")]
+                    final_msg.elements = elements
+                except Exception as plot_err:
+                    logger.warning("Plotly 图表渲染失败: {}", plot_err)
+
         await final_msg.update()
 
         # 会话统计

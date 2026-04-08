@@ -1,6 +1,7 @@
 """趋势分析 Pipeline：固定流程 subgraph"""
 
 import json
+import re
 
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_openai import ChatOpenAI
@@ -50,6 +51,16 @@ async def execute_stats_node(state: TrendState) -> dict:
     result = await execute_sql.ainvoke({"sql": sql})
     logger.info("趋势分析 | 统计结果: {}", result[:200])
     return {"stats_data": result}
+
+
+def _parse_year_counts(stats_text: str) -> list[tuple[int, int]]:
+    """从统计结果文本中提取 (年份, 数量) 列表"""
+    pairs: list[tuple[int, int]] = []
+    for line in stats_text.split("\n"):
+        match = re.match(r"\s*(\d{4})\s*\|\s*(\d+)", line)
+        if match:
+            pairs.append((int(match.group(1)), int(match.group(2))))
+    return sorted(pairs)
 
 
 async def identify_phases_node(state: TrendState) -> dict:
@@ -109,8 +120,29 @@ async def synthesize_node(state: TrendState) -> dict:
     result = await llm.ainvoke([SystemMessage(content=prompt)])
     report = result.content
 
-    logger.info("趋势分析 | 报告生成完成，长度={}", len(report))
-    return {"report": report, "messages": [AIMessage(content=report)]}
+    # 生成 plotly 图表 JSON
+    chart_json = ""
+    year_counts = _parse_year_counts(state["stats_data"])
+    if year_counts:
+        import plotly.graph_objects as go
+
+        years = [str(y) for y, _ in year_counts]
+        counts = [c for _, c in year_counts]
+        fig = go.Figure(data=[go.Bar(x=years, y=counts, marker_color="#3b82f6")])
+        fig.update_layout(
+            title=f"{state['query_topic']} — 论文数量趋势",
+            xaxis_title="年份",
+            yaxis_title="论文数量",
+            template="plotly_dark",
+            height=400,
+        )
+        chart_json = fig.to_json()
+
+    logger.info("趋势分析 | 报告生成完成，长度={} | 含图表={}", len(report), bool(chart_json))
+    content = report
+    if chart_json:
+        content = f"<!--plotly:{chart_json}-->\n\n{report}"
+    return {"report": report, "messages": [AIMessage(content=content)]}
 
 
 def build_trend_subgraph() -> StateGraph:

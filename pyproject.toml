@@ -15,6 +15,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "asyncpg>=0.30",
     "aiohttp>=3.9",
+    "plotly>=6.0",
 ]
 
 [project.optional-dependencies]
