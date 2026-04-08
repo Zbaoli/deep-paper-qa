@@ -42,7 +42,7 @@ async def clarify_node(state: ResearchState) -> dict:
         ]
     )
 
-    new_count = state["clarify_count"] + 1
+    new_count = state.get("clarify_count", 0) + 1
     logger.info("深度研究 | 澄清第{}轮: {}", new_count, result.content[:100])
     return {
         "messages": [AIMessage(content=f"**[澄清问题 {new_count}/3]**\n\n{result.content}")],
@@ -65,7 +65,7 @@ async def ask_clarify_node(state: ResearchState) -> dict:
 def should_continue_clarify(state: ResearchState) -> str:
     """判断是否继续澄清"""
     last_msg = state["messages"][-1].content
-    if "问题已明确" in last_msg or state["clarify_count"] >= 3:
+    if "问题已明确" in last_msg or state.get("clarify_count", 0) >= 3:
         return "plan"
     return "ask_clarify"
 
@@ -100,7 +100,7 @@ async def plan_node(state: ResearchState) -> dict:
 
 async def ask_plan_confirm_node(state: ResearchState) -> dict:
     """向用户展示研究计划并等待确认"""
-    plan_text = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(state["plan"]))
+    plan_text = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(state.get("plan", [])))
     response = await ask_user.ainvoke(
         {
             "summary": f"已制定研究计划，共 {len(state['plan'])} 个子问题：\n\n{plan_text}",
@@ -112,13 +112,13 @@ async def ask_plan_confirm_node(state: ResearchState) -> dict:
 
 async def research_step_node(state: ResearchState) -> dict:
     """执行当前子问题的检索"""
-    step_idx = state["current_step"]
-    if step_idx >= len(state["plan"]):
+    step_idx = state.get("current_step", 0)
+    if step_idx >= len(state.get("plan", [])):
         return {}
 
-    current_question = state["plan"][step_idx]
+    current_question = state.get("plan", [])[step_idx]
     logger.info(
-        "深度研究 | 执行子问题 {}/{}: {}", step_idx + 1, len(state["plan"]), current_question
+        "深度研究 | 执行子问题 {}/{}: {}", step_idx + 1, len(state.get("plan", [])), current_question
     )
 
     llm = _get_research_llm()
@@ -134,11 +134,11 @@ async def research_step_node(state: ResearchState) -> dict:
     ai_messages = [m for m in result["messages"] if isinstance(m, AIMessage) and m.content]
     finding = ai_messages[-1].content if ai_messages else "未找到相关结果"
 
-    new_findings = list(state["findings"]) + [
+    new_findings = list(state.get("findings", [])) + [
         f"### 子问题 {step_idx + 1}: {current_question}\n\n{finding}"
     ]
 
-    total = len(state["plan"])
+    total = len(state.get("plan", []))
     return {
         "findings": new_findings,
         "current_step": step_idx + 1,
@@ -152,9 +152,9 @@ async def research_step_node(state: ResearchState) -> dict:
 
 async def ask_step_confirm_node(state: ResearchState) -> dict:
     """子问题执行后，向用户展示发现并等待指令"""
-    latest_finding = state["findings"][-1] if state["findings"] else "无"
-    step_idx = state["current_step"]
-    total = len(state["plan"])
+    latest_finding = state.get("findings", [])[-1] if state.get("findings", []) else "无"
+    step_idx = state.get("current_step", 0)
+    total = len(state.get("plan", []))
 
     question = "请选择：继续下一个子问题 / 调整方向（请说明）/ 直接生成总结"
     if step_idx >= total:
@@ -172,7 +172,7 @@ async def ask_step_confirm_node(state: ResearchState) -> dict:
 def should_continue_research(state: ResearchState) -> str:
     """判断是否继续执行子问题"""
     last_msg = state["messages"][-1].content if state["messages"] else ""
-    if "总结" in last_msg or state["current_step"] >= len(state["plan"]):
+    if "总结" in last_msg or state.get("current_step", 0) >= len(state.get("plan", [])):
         return "report"
     return "research_step"
 
@@ -180,7 +180,7 @@ def should_continue_research(state: ResearchState) -> str:
 async def report_node(state: ResearchState) -> dict:
     """生成最终研究报告"""
     llm = _get_research_llm()
-    findings_text = "\n\n".join(state["findings"])
+    findings_text = "\n\n".join(state.get("findings", []))
     prompt = RESEARCH_REPORT_PROMPT.format(findings=findings_text)
 
     result = await llm.ainvoke([SystemMessage(content=prompt)])

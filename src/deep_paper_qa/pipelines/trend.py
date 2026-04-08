@@ -47,7 +47,7 @@ async def generate_sql_node(state: TrendState) -> dict:
 
 async def execute_stats_node(state: TrendState) -> dict:
     """执行统计 SQL"""
-    sql = state["stats_data"]  # 上一步存的是 SQL
+    sql = state.get("stats_data", "")  # 上一步存的是 SQL
     result = await execute_sql.ainvoke({"sql": sql})
     logger.info("趋势分析 | 统计结果: {}", result[:200])
     return {"stats_data": result}
