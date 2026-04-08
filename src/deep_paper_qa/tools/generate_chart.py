@@ -1,7 +1,5 @@
 """通用数据可视化工具：根据数据和图表类型生成 Plotly 图表"""
 
-import json
-
 import plotly.graph_objects as go
 from langchain_core.tools import tool
 from loguru import logger

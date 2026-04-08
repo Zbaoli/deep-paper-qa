@@ -2,8 +2,6 @@
 
 import json
 
-import pytest
-
 
 class TestGenerateChart:
     """通用图表生成工具测试"""

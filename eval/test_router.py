@@ -25,7 +25,6 @@ TEST_QUESTIONS = [
     {"q": "给我讲个笑话", "expected": "reject"},
     {"q": "2024年奥运会在哪举办？", "expected": "reject"},
     {"q": "帮我算一下 123 * 456", "expected": "reject"},
-
     # ── general（30 题）──
     {"q": "ACL 2025 有多少篇论文？", "expected": "general"},
     {"q": "2024年NeurIPS收录了多少篇论文？", "expected": "general"},
@@ -57,7 +56,6 @@ TEST_QUESTIONS = [
     {"q": "哪些论文讨论了 LLM 的幻觉问题？", "expected": "general"},
     {"q": "NAACL 2024 有多少篇论文？", "expected": "general"},
     {"q": "关于 diffusion model 的高引论文有哪些？", "expected": "general"},
-
     # ── research（20 题）──
     {"q": "调研 AI for Science 在蛋白质结构预测方向的最新进展", "expected": "research"},
     {"q": "总结 2023-2025 年 LLM Agent 的研究脉络", "expected": "research"},
@@ -79,7 +77,6 @@ TEST_QUESTIONS = [
     {"q": "梳理视觉语言模型从 CLIP 到 GPT-4V 的技术路线", "expected": "research"},
     {"q": "调研低资源语言 NLP 的最新研究方法", "expected": "research"},
     {"q": "综述强化学习在机器人控制中的应用进展", "expected": "research"},
-
     # ── trend（15 题）──
     {"q": "RAG 近三年的发展趋势怎么样？", "expected": "trend"},
     {"q": "知识蒸馏这个方向是在升温还是降温？", "expected": "trend"},
@@ -96,7 +93,6 @@ TEST_QUESTIONS = [
     {"q": "模型量化这个方向近三年热不热？", "expected": "trend"},
     {"q": "注意力机制优化的研究趋势如何？", "expected": "trend"},
     {"q": "数据增强方法的论文数量变化趋势", "expected": "trend"},
-
     # ── reading（10 题）──
     {"q": "帮我精读 Attention Is All You Need", "expected": "reading"},
     {"q": "详细解读 FlashAttention 论文的方法部分", "expected": "reading"},
@@ -108,7 +104,6 @@ TEST_QUESTIONS = [
     {"q": "详细分析 InstructGPT 这篇论文的训练流程", "expected": "reading"},
     {"q": "精读 Chain-of-Thought Prompting 的原始论文", "expected": "reading"},
     {"q": "帮我读一下 Mixtral 8x7B 的技术报告", "expected": "reading"},
-
     # ── compare（10 题）──
     {"q": "对比 DPO 和 RLHF 这两篇论文的方法差异", "expected": "compare"},
     {"q": "FlashAttention v1 和 v2 有什么改进？", "expected": "compare"},
@@ -140,22 +135,24 @@ async def run_test():
             actual_val = f"ERROR: {e}"
 
         correct = actual_val == expected
-        results.append({
-            "id": i + 1,
-            "question": q,
-            "expected": expected,
-            "actual": actual_val,
-            "correct": correct,
-        })
+        results.append(
+            {
+                "id": i + 1,
+                "question": q,
+                "expected": expected,
+                "actual": actual_val,
+                "correct": correct,
+            }
+        )
 
         status = "✓" if correct else "✗"
         if not correct:
-            print(f"  {status} #{i+1} [{expected}→{actual_val}] {q}")
+            print(f"  {status} #{i + 1} [{expected}→{actual_val}] {q}")
 
     # 统计
     total_correct = sum(1 for r in results if r["correct"])
-    print(f"\n{'='*60}")
-    print(f"总体准确率: {total_correct}/{total} ({total_correct/total*100:.1f}%)\n")
+    print(f"\n{'=' * 60}")
+    print(f"总体准确率: {total_correct}/{total} ({total_correct / total * 100:.1f}%)\n")
 
     # 按类别统计
     by_expected = {}
@@ -171,7 +168,7 @@ async def run_test():
         print(f"{cat:<12} {len(items):>4} {correct_count:>4} {acc:>7.1f}%")
 
     # 混淆分析：被误分到哪里
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("误分类详情：\n")
     wrong = [r for r in results if not r["correct"]]
     if not wrong:
@@ -193,7 +190,7 @@ async def run_test():
     }
     with open("eval/router_test_results.json", "w") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print(f"\n详细结果已保存到 eval/router_test_results.json")
+    print("\n详细结果已保存到 eval/router_test_results.json")
 
 
 if __name__ == "__main__":

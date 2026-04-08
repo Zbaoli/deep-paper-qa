@@ -155,9 +155,7 @@ async def on_message(message: cl.Message) -> None:
                 )
                 try:
                     fig = pio.from_json(chart_json)
-                    final_msg.elements = [
-                        cl.Plotly(name="数据图表", figure=fig, display="inline")
-                    ]
+                    final_msg.elements = [cl.Plotly(name="数据图表", figure=fig, display="inline")]
                 except Exception as plot_err:
                     logger.warning("Plotly 图表渲染失败: {}", plot_err)
 
