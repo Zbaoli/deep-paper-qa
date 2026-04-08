@@ -155,8 +155,8 @@ async def on_message(message: cl.Message) -> None:
                     step.output = output_str[:500] if len(output_str) > 500 else output_str
                     await step.update()
 
-            # LLM 流式输出
-            elif kind == "on_chat_model_stream":
+            # LLM 流式输出（跳过路由节点的 LLM 输出）
+            elif kind == "on_chat_model_stream" and router_shown:
                 chunk = event.get("data", {}).get("chunk", None)
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
