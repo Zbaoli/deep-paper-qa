@@ -26,9 +26,9 @@ async def set_starters() -> list[cl.Starter]:
     """提供示例问题，引导新用户快速上手"""
     return [
         cl.Starter(label="会议论文统计", message="各会议论文数量是多少？"),
-        cl.Starter(label="RAG 研究趋势", message="RAG 最近几年的研究趋势怎么样？"),
+        cl.Starter(label="RAG 研究趋势", message="RAG 近三年的发展趋势怎么样？"),
+        cl.Starter(label="深度调研", message="总结 2023-2025 年 LLM Agent 的研究脉络"),
         cl.Starter(label="高引论文推荐", message="推荐一些高引用的大语言模型论文"),
-        cl.Starter(label="作者论文查询", message="Yann LeCun 发了哪些论文？"),
     ]
 
 
@@ -39,7 +39,7 @@ async def on_chat_start() -> None:
     cl.user_session.set("thread_id", thread_id)
     logger.info("新会话启动 | thread_id={}", thread_id)
     await cl.Message(
-        content="你好！我是 AI 科研论文问答助手。可以问我关于论文的统计信息或内容问题。"
+        content="你好！我是 AI 科研论文问答助手，支持论文统计查询、内容检索、研究趋势分析和深度调研。"
     ).send()
 
 
