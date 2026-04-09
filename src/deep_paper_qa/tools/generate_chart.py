@@ -7,16 +7,22 @@ from loguru import logger
 # 支持的图表类型
 SUPPORTED_TYPES = {"bar", "line", "scatter", "pie", "heatmap", "area", "box"}
 
-# 中文友好默认布局
+# 与前端 Academic Observatory 主题一致的配色方案
 _DEFAULT_LAYOUT = {
     "template": "plotly_dark",
-    "height": 400,
-    "font": {"size": 14},
-    "margin": {"l": 60, "r": 40, "t": 60, "b": 60},
+    "height": 320,
+    "font": {"size": 13, "color": "#e8eaf0", "family": "system-ui, sans-serif"},
+    "margin": {"l": 50, "r": 30, "t": 50, "b": 50},
+    "paper_bgcolor": "rgba(0,0,0,0)",
+    "plot_bgcolor": "rgba(0,0,0,0)",
+    "title_font": {"size": 15, "color": "#e8eaf0"},
+    "xaxis": {"gridcolor": "rgba(255,255,255,0.06)", "zerolinecolor": "rgba(255,255,255,0.06)"},
+    "yaxis": {"gridcolor": "rgba(255,255,255,0.06)", "zerolinecolor": "rgba(255,255,255,0.06)"},
+    "legend": {"font": {"color": "#8a92a8"}},
 }
 
-# 默认配色
-_COLORS = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4"]
+# 与前端 accent 配色对齐
+_COLORS = ["#f0a030", "#4ecdc4", "#e8637a", "#8b5cf6", "#3b82f6", "#10b981", "#06b6d4"]
 
 
 @tool(response_format="content_and_artifact")

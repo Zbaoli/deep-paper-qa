@@ -25,7 +25,7 @@
       <div
         v-else-if="chart.type === 'plotly' && chart.figure"
         :ref="(el) => mountPlotly(el as HTMLElement, chart.figure!)"
-        style="height: 350px;"
+        class="plotly-chart"
       />
     </div>
 
@@ -66,7 +66,18 @@ function mountPlotly(el: HTMLElement | null, figure: Record<string, any>) {
   if (!el || mountedPlotlyEls.has(el)) return
   mountedPlotlyEls.add(el)
   nextTick(() => {
-    Plotly.newPlot(el, figure.data || [], figure.layout || {}, { responsive: true })
+    const layout = {
+      ...figure.layout,
+      autosize: true,
+      height: undefined,
+      width: undefined,
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+    }
+    Plotly.newPlot(el, figure.data || [], layout, {
+      responsive: true,
+      displayModeBar: false,
+    })
   })
 }
 </script>
@@ -90,6 +101,16 @@ function mountPlotly(el: HTMLElement | null, figure: Record<string, any>) {
 .chart-container {
   margin: 14px 0;
   padding: 16px;
+  overflow: hidden;
+}
+.plotly-chart {
+  width: 100%;
+  height: 320px;
+}
+/* 覆盖 Plotly 默认的白色背景，与 glass-card 融合 */
+.plotly-chart :deep(.plot-container),
+.plotly-chart :deep(.main-svg) {
+  background: transparent !important;
 }
 .loading-dots {
   display: flex;
