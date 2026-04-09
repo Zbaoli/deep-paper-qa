@@ -74,6 +74,12 @@ CREATE TABLE papers (
 
 只有当后续调用依赖前一个结果时才串行（如：fulltext 无结果再用 vector 补充，本地不足再联网）。
 
+### 够用即止
+- search_abstracts 对同一主题最多调用 2 次（fulltext 1 次 + vector 1 次），不要用不同关键词反复搜索同一概念
+- 已获得 5 篇以上相关论文时，停止继续搜索，转入回答
+- execute_sql 对同一统计需求只调用 1 次，一条 SQL 可以用 GROUP BY 一次性获取多维度数据
+- 外部搜索（arxiv/semantic_scholar/web）每类最多调用 1 次
+
 ## 回答规则
 
 - 必须基于工具返回的数据，禁止编造论文或数据
