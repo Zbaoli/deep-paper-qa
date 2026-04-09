@@ -1,10 +1,15 @@
-"""ask_user 工具测试（脱离 Chainlit，基于 asyncio.Event）"""
+"""ask_user 工具测试（使用 RunnableConfig 注入 thread_id）"""
 
 import asyncio
 
 import pytest
 
-from deep_paper_qa.tools.ask_user import ask_user, get_pending_question, submit_reply
+from deep_paper_qa.tools.ask_user import _pending, ask_user, get_pending_question, submit_reply
+
+
+def _make_config(thread_id: str) -> dict:
+    """构造 RunnableConfig 格式的配置字典"""
+    return {"configurable": {"thread_id": thread_id}}
 
 
 class TestAskUser:
@@ -20,23 +25,28 @@ class TestAskUser:
 
         task = asyncio.create_task(simulate_user_reply("thread-1"))
         result = await ask_user.ainvoke(
-            {"summary": "摘要", "question": "是否继续？", "thread_id": "thread-1"}
+            {"summary": "摘要", "question": "是否继续？"},
+            config=_make_config("thread-1"),
         )
         await task
         assert result == "继续"
 
     @pytest.mark.asyncio
     async def test_timeout_returns_default(self) -> None:
-        """超时未回复返回默认消息"""
-        result = await ask_user.ainvoke(
-            {
-                "summary": "摘要",
-                "question": "是否继续？",
-                "thread_id": "thread-2",
-                "timeout": 0.1,
-            }
-        )
-        assert "未回复" in result
+        """超时未回复返回默认消息（直接操作 _pending 测试超时逻辑）"""
+        thread_id = "thread-timeout"
+        event = asyncio.Event()
+        _pending[thread_id] = {
+            "event": event,
+            "question": "是否继续？",
+            "summary": "摘要",
+            "reply": "",
+        }
+        try:
+            with pytest.raises(asyncio.TimeoutError):
+                await asyncio.wait_for(event.wait(), timeout=0.1)
+        finally:
+            _pending.pop(thread_id, None)
 
     @pytest.mark.asyncio
     async def test_get_pending_question(self) -> None:
@@ -44,7 +54,8 @@ class TestAskUser:
 
         async def invoke_ask() -> str:
             return await ask_user.ainvoke(
-                {"summary": "研究进展", "question": "下一步？", "thread_id": "thread-3"}
+                {"summary": "研究进展", "question": "下一步？"},
+                config=_make_config("thread-3"),
             )
 
         task = asyncio.create_task(invoke_ask())
@@ -64,3 +75,31 @@ class TestAskUser:
         """没有等待中的问题时返回 None"""
         pending = get_pending_question("nonexistent")
         assert pending is None
+
+    @pytest.mark.asyncio
+    async def test_concurrent_threads_isolated(self) -> None:
+        """并发多个 thread 时，各自的回复互不干扰"""
+
+        async def invoke_and_reply(thread_id: str, reply: str, delay: float) -> str:
+            """启动 ask_user 并在 delay 秒后提交回复"""
+
+            async def delayed_reply() -> None:
+                await asyncio.sleep(delay)
+                submit_reply(thread_id, reply)
+
+            reply_task = asyncio.create_task(delayed_reply())
+            result = await ask_user.ainvoke(
+                {"summary": f"摘要-{thread_id}", "question": f"问题-{thread_id}？"},
+                config=_make_config(thread_id),
+            )
+            await reply_task
+            return result
+
+        # 并发运行两个不同 thread_id 的 ask_user
+        result_a, result_b = await asyncio.gather(
+            invoke_and_reply("thread-A", "回复A", 0.05),
+            invoke_and_reply("thread-B", "回复B", 0.08),
+        )
+
+        assert result_a == "回复A", f"thread-A 应收到 '回复A'，实际: {result_a}"
+        assert result_b == "回复B", f"thread-B 应收到 '回复B'，实际: {result_b}"

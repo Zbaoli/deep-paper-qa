@@ -1,9 +1,10 @@
 """ask_user 工具：暂停等待用户输入（基于 asyncio.Event，脱离 Chainlit）"""
 
 import asyncio
-from typing import Annotated, Any
+from typing import Any
 
-from langchain_core.tools import InjectedToolArg, tool
+from langchain_core.runnables import RunnableConfig
+from langchain_core.tools import tool
 from loguru import logger
 
 # thread_id → (Event, 回复内容) 映射
@@ -37,8 +38,7 @@ def submit_reply(thread_id: str, reply: str) -> bool:
 async def ask_user(
     summary: str,
     question: str,
-    thread_id: Annotated[str, InjectedToolArg] = "",
-    timeout: Annotated[float, InjectedToolArg] = 0,
+    config: RunnableConfig,
 ) -> str:
     """暂停研究流程，向用户展示当前发现并等待指令。仅在深度研究模式中使用。
 
@@ -49,7 +49,8 @@ async def ask_user(
         summary: 当前阶段的发现摘要，展示给用户
         question: 向用户提的问题（如"是否继续下一个子问题？"）
     """
-    effective_timeout = timeout if timeout > 0 else _DEFAULT_TIMEOUT
+    # 从 RunnableConfig 中提取 thread_id，LangGraph ToolNode 会自动注入
+    thread_id: str = config.get("configurable", {}).get("thread_id", "")
     logger.info(
         "ask_user | thread={} | summary_len={} | question={}",
         thread_id,
@@ -66,7 +67,7 @@ async def ask_user(
     }
 
     try:
-        await asyncio.wait_for(event.wait(), timeout=effective_timeout)
+        await asyncio.wait_for(event.wait(), timeout=_DEFAULT_TIMEOUT)
         reply = _pending[thread_id]["reply"]
         logger.info("ask_user | thread={} | 用户回复: {}", thread_id, reply[:200])
         return reply
