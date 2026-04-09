@@ -14,15 +14,6 @@ from deep_paper_qa.tools.search_arxiv import search_arxiv
 from deep_paper_qa.tools.search_semantic_scholar import search_semantic_scholar
 from deep_paper_qa.tools.search_web import search_web
 
-# 路由分类标签（category → 中文说明）
-CATEGORY_LABELS: dict[str, str] = {
-    "sql": "元数据统计（SQL）",
-    "fulltext": "全文检索",
-    "vector": "语义检索",
-    "deep_research": "深度研究",
-    "general": "通用回答",
-}
-
 # 全部工具
 ALL_TOOLS = [
     execute_sql,
@@ -57,6 +48,7 @@ def build_agent(*, include_ask_user: bool = True):
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
         checkpointer=checkpointer,
+        name="paper-qa",
     )
 
     logger.info("DeepAgent 构建完成 | tools={}", [t.name for t in tools])

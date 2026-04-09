@@ -8,14 +8,13 @@ from loguru import logger
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from deep_paper_qa.agent import CATEGORY_LABELS, build_graph
+from deep_paper_qa.agent import build_graph
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.sse_events import (
     sse_ask_user,
     sse_chart_plotly,
     sse_done,
     sse_error,
-    sse_route,
     sse_token,
     sse_tool_end,
     sse_tool_start,
@@ -67,7 +66,6 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
         tool_call_count = 0
         tools_used: list[str] = []
         tool_timings: dict[str, tuple[str, float]] = {}
-        router_shown = False
 
         try:
             async for event in graph.astream_events(
@@ -78,20 +76,8 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                 kind = event.get("event", "")
                 name = event.get("name", "")
 
-                # 路由分类
-                if kind == "on_chain_end" and name == "router" and not router_shown:
-                    try:
-                        output = event.get("data", {}).get("output", {})
-                        cat = output.get("category", "")
-                        if cat:
-                            label = CATEGORY_LABELS.get(cat, cat)
-                            yield sse_route(cat, label)
-                            router_shown = True
-                    except Exception:
-                        pass
-
                 # 工具开始
-                elif kind == "on_tool_start":
+                if kind == "on_tool_start":
                     run_id = event.get("run_id", "")
                     tool_input = event.get("data", {}).get("input", {})
                     tool_timings[run_id] = (name, time.monotonic())
