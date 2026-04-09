@@ -1,13 +1,11 @@
 """generate_chart 工具测试"""
 
-import json
-
 
 class TestGenerateChart:
     """通用图表生成工具测试"""
 
     async def test_bar_chart(self) -> None:
-        """生成柱状图"""
+        """生成柱状图：返回简短确认文本（content_and_artifact 格式）"""
         from deep_paper_qa.tools.generate_chart import generate_chart
 
         result = await generate_chart.ainvoke(
@@ -19,15 +17,12 @@ class TestGenerateChart:
                 "y_label": "数量",
             }
         )
-        assert "<!--plotly:" in result
-        assert "-->" in result
-        chart_json = result.split("<!--plotly:")[1].split("-->")[0]
-        fig_data = json.loads(chart_json)
-        assert "data" in fig_data
-        assert "layout" in fig_data
+        # content_and_artifact 格式：ainvoke 返回 content 字符串
+        assert "已生成" in result
+        assert "bar" in result
 
     async def test_line_chart(self) -> None:
-        """生成折线图"""
+        """生成折线图：返回简短确认文本"""
         from deep_paper_qa.tools.generate_chart import generate_chart
 
         result = await generate_chart.ainvoke(
@@ -37,10 +32,10 @@ class TestGenerateChart:
                 "title": "增长趋势",
             }
         )
-        assert "<!--plotly:" in result
+        assert "已生成" in result
 
     async def test_pie_chart(self) -> None:
-        """生成饼图"""
+        """生成饼图：返回简短确认文本"""
         from deep_paper_qa.tools.generate_chart import generate_chart
 
         result = await generate_chart.ainvoke(
@@ -50,7 +45,7 @@ class TestGenerateChart:
                 "title": "会议分布",
             }
         )
-        assert "<!--plotly:" in result
+        assert "已生成" in result
 
     async def test_invalid_chart_type(self) -> None:
         """不支持的图表类型返回错误信息"""
@@ -63,7 +58,7 @@ class TestGenerateChart:
                 "title": "test",
             }
         )
-        assert "不支持" in result or "error" in result.lower()
+        assert "不支持" in result or "错误" in result
 
     async def test_mismatched_data_lengths(self) -> None:
         """x/y 长度不一致返回错误信息"""
@@ -76,4 +71,4 @@ class TestGenerateChart:
                 "title": "test",
             }
         )
-        assert "长度" in result or "mismatch" in result.lower() or "error" in result.lower()
+        assert "长度" in result or "错误" in result

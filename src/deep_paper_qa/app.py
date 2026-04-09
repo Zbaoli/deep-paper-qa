@@ -1,6 +1,5 @@
 """Chainlit 入口：DeepAgent 流式输出 + 中间步骤展示 + 日志记录"""
 
-import re
 import time
 import uuid
 
@@ -113,6 +112,8 @@ async def on_message(message: cl.Message) -> None:
                     cl.user_session.set("waiting_for_ask_user", False)
                 run_id = event.get("run_id", "")
                 output = event.get("data", {}).get("output", "")
+                # 先提取 artifact（content_and_artifact 格式），再转为字符串
+                artifact = getattr(output, "artifact", None)
                 if hasattr(output, "content"):
                     output = output.content
                 output_str = str(output)
@@ -139,25 +140,23 @@ async def on_message(message: cl.Message) -> None:
                     step.output = output_str[:500] if len(output_str) > 500 else output_str
                     await step.update()
 
+                # generate_chart 通过 artifact 传递 Plotly JSON，避免污染 LLM 上下文
+                if tool_name == "generate_chart" and artifact:
+                    try:
+                        fig = pio.from_json(artifact)
+                        await final_msg.stream_token("")  # 确保消息已初始化
+                        final_msg.elements = [
+                            cl.Plotly(name="数据图表", figure=fig, display="inline")
+                        ]
+                        await final_msg.update()
+                    except Exception as chart_err:
+                        logger.warning("Plotly artifact 渲染失败: {}", chart_err)
+
             # LLM 流式输出（统一流式，不再区分管线）
             elif kind == "on_chat_model_stream":
                 chunk = event.get("data", {}).get("chunk", None)
                 if chunk and hasattr(chunk, "content") and chunk.content:
                     await final_msg.stream_token(chunk.content)
-
-        # 处理图表（generate_chart 输出嵌入在最终消息中）
-        if "<!--plotly:" in final_msg.content:
-            plotly_match = re.search(r"<!--plotly:(.*?)-->", final_msg.content, re.DOTALL)
-            if plotly_match:
-                chart_json = plotly_match.group(1)
-                final_msg.content = re.sub(
-                    r"<!--plotly:.*?-->\n*", "", final_msg.content, flags=re.DOTALL
-                )
-                try:
-                    fig = pio.from_json(chart_json)
-                    final_msg.elements = [cl.Plotly(name="数据图表", figure=fig, display="inline")]
-                except Exception as plot_err:
-                    logger.warning("Plotly 图表渲染失败: {}", plot_err)
 
         await final_msg.update()
 

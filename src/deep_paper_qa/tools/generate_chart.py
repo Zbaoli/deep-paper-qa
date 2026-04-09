@@ -19,14 +19,14 @@ _DEFAULT_LAYOUT = {
 _COLORS = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4"]
 
 
-@tool
+@tool(response_format="content_and_artifact")
 async def generate_chart(
     chart_type: str,
     data: dict,
     title: str,
     x_label: str = "",
     y_label: str = "",
-) -> str:
+) -> tuple[str, str]:
     """根据数据生成 Plotly 图表。
 
     支持的图表类型：bar（柱状图）、line（折线图）、scatter（散点图）、
@@ -42,16 +42,20 @@ async def generate_chart(
         y_label: Y 轴标签（可选）
 
     Returns:
-        包含 Plotly JSON 的字符串，格式为 <!--plotly:{json}-->
+        (content, artifact) 元组：content 为简短确认文本（LLM 可见），
+        artifact 为完整 Plotly JSON 字符串（仅前端使用）
     """
     chart_type = chart_type.lower().strip()
     if chart_type not in SUPPORTED_TYPES:
-        return f"错误：不支持的图表类型 '{chart_type}'，支持的类型：{', '.join(sorted(SUPPORTED_TYPES))}"
+        return (
+            f"错误：不支持的图表类型 '{chart_type}'，支持的类型：{', '.join(sorted(SUPPORTED_TYPES))}",
+            "",
+        )
 
     try:
         fig = _build_figure(chart_type, data)
     except ValueError as e:
-        return f"错误：{e}"
+        return (f"错误：{e}", "")
 
     fig.update_layout(
         title=title,
@@ -62,7 +66,8 @@ async def generate_chart(
 
     chart_json = fig.to_json()
     logger.info("generate_chart | type={} | title={}", chart_type, title)
-    return f"<!--plotly:{chart_json}-->"
+    # content 仅返回简短确认，避免 LLM 上下文浪费 token；artifact 携带完整 JSON 供前端渲染
+    return (f"已生成 {chart_type} 图表：{title}", chart_json)
 
 
 def _build_figure(chart_type: str, data: dict) -> go.Figure:

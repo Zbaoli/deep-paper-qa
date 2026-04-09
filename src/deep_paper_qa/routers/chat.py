@@ -1,10 +1,9 @@
 """聊天 API 路由：SSE 事件流 + ask_user 回复"""
 
-import re
 import time
 
 from fastapi import APIRouter, HTTPException
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from loguru import logger
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
@@ -113,6 +112,8 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                 elif kind == "on_tool_end":
                     run_id = event.get("run_id", "")
                     output = event.get("data", {}).get("output", "")
+                    # 先提取 artifact（content_and_artifact 格式），再转为字符串
+                    artifact = getattr(output, "artifact", None)
                     if hasattr(output, "content"):
                         output = output.content
                     output_str = str(output)
@@ -133,36 +134,21 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                             run_id,
                         )
 
+                    # generate_chart 通过 artifact 传递 Plotly JSON，避免污染 LLM 上下文
+                    if tool_name == "generate_chart" and artifact:
+                        try:
+                            import plotly.io as pio
+
+                            fig = pio.from_json(artifact)
+                            yield sse_chart_plotly(fig.to_dict())
+                        except Exception as chart_err:
+                            logger.warning("Plotly artifact 解析失败: {}", chart_err)
+
                 # LLM 流式 token
                 elif kind == "on_chat_model_stream":
                     chunk = event.get("data", {}).get("chunk", None)
                     if chunk and hasattr(chunk, "content") and chunk.content:
                         yield sse_token(chunk.content)
-
-            # 非流式 pipeline：从 state 获取最终消息
-            try:
-                state = _get_graph().get_state(config)
-                msgs = state.values.get("messages", [])
-                for m in reversed(msgs):
-                    if isinstance(m, AIMessage) and m.content:
-                        content = m.content
-                        # 提取 plotly 图表转为 chart 事件
-                        plotly_match = re.search(r"<!--plotly:(.*?)-->", content, re.DOTALL)
-                        if plotly_match:
-                            import json as json_mod  # noqa: F401
-                            import plotly.io as pio
-
-                            chart_json = plotly_match.group(1)
-                            content = re.sub(r"<!--plotly:.*?-->\n*", "", content, flags=re.DOTALL)
-                            try:
-                                fig = pio.from_json(chart_json)
-                                yield sse_token(content)
-                                yield sse_chart_plotly(fig.to_dict())
-                            except Exception:
-                                yield sse_token(content)
-                        break
-            except Exception as e:
-                logger.warning("获取最终状态失败: {}", e)
 
             total_ms = int((time.monotonic() - msg_start) * 1000)
             _conv_logger.log_agent_reply(req.thread_id, "", total_ms, tool_call_count, tools_used)
