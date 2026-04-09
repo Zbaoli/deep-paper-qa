@@ -58,7 +58,7 @@ export const useChatStore = defineStore('chat', () => {
       loading: true,
     }
     messages.value.push(msg)
-    return msg
+    return messages.value[messages.value.length - 1]
   }
 
   function currentAssistantMessage(): ChatMessage | undefined {
