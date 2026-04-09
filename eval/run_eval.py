@@ -3,10 +3,12 @@
 import asyncio
 import json
 import statistics
+import time
 from datetime import datetime
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage
+from langgraph.types import Command
 from loguru import logger
 
 from deep_paper_qa.agent import build_agent
@@ -15,9 +17,16 @@ from eval.judge import judge_answer
 # 并发数
 MAX_CONCURRENCY = 10
 
+# Agent 可用的内容检索工具
+CONTENT_TOOLS = {"search_abstracts"}
+# Agent 可用的外部搜索工具
+EXTERNAL_TOOLS = {"search_arxiv", "search_semantic_scholar", "search_web"}
+# 全部搜索类工具
+ALL_SEARCH_TOOLS = CONTENT_TOOLS | EXTERNAL_TOOLS
+
 
 async def eval_one(agent, q: dict) -> dict:
-    """评测单个问题，返回结果字典（含完整回答和工具输出）"""
+    """评测单个问题，返回结果字典（含完整回答、工具输出和延迟）"""
     qid = q["id"]
     question = q["question"]
     q_type = q["type"]
@@ -25,15 +34,19 @@ async def eval_one(agent, q: dict) -> dict:
 
     config = {
         "configurable": {"thread_id": f"eval_{qid}"},
-        "recursion_limit": 30,
+        "recursion_limit": 50,
     }
 
     tools_called: list[str] = []
     tool_details: list[dict] = []
     # 完整工具输出（传给 judge）
     tool_outputs_full: list[str] = []
+    # 完整中间过程：每一步的 LLM 推理 + 工具调用 + 工具输出
+    trace_steps: list[dict] = []
     final_answer = ""
+    step_counter = 0
 
+    t_start = time.monotonic()
     try:
         async for event in agent.astream_events(
             {"messages": [HumanMessage(content=question)]},
@@ -52,9 +65,23 @@ async def eval_one(agent, q: dict) -> dict:
                         "input": str(tool_input),
                     }
                 )
+                step_counter += 1
+                trace_steps.append(
+                    {
+                        "step": step_counter,
+                        "type": "tool_call",
+                        "tool": name,
+                        "input": str(tool_input),
+                        "elapsed_s": round(time.monotonic() - t_start, 2),
+                    }
+                )
             elif kind == "on_tool_end":
                 output = event.get("data", {}).get("output", "")
-                if hasattr(output, "content"):
+                # Command 对象：subagent (task 工具) 通过 Command 返回结果
+                if isinstance(output, Command):
+                    msgs = (output.update or {}).get("messages", [])
+                    output = msgs[-1].content if msgs else ""
+                elif hasattr(output, "content"):
                     output = output.content
                 output_str = str(output)
                 # 完整输出给 judge
@@ -62,59 +89,46 @@ async def eval_one(agent, q: dict) -> dict:
                 # 截断版存入 eval_results.json
                 if tool_details:
                     tool_details[-1]["output"] = output_str
+                # 记录工具输出到 trace
+                trace_steps.append(
+                    {
+                        "step": step_counter,
+                        "type": "tool_result",
+                        "tool": tool_details[-1]["name"] if tool_details else name,
+                        "output_preview": output_str[:500],
+                        "output_length": len(output_str),
+                        "elapsed_s": round(time.monotonic() - t_start, 2),
+                    }
+                )
             elif kind == "on_chat_model_end":
                 chunk = event.get("data", {}).get("output", None)
                 if chunk and hasattr(chunk, "content"):
-                    final_answer = chunk.content
+                    content = chunk.content
+                    final_answer = content
+                    # 记录 LLM 每一轮的推理输出
+                    step_counter += 1
+                    trace_steps.append(
+                        {
+                            "step": step_counter,
+                            "type": "llm_output",
+                            "content_preview": content[:500],
+                            "content_length": len(content),
+                            "elapsed_s": round(time.monotonic() - t_start, 2),
+                        }
+                    )
 
     except Exception as e:
         logger.error("评测 #{} 执行失败: {}", qid, e)
         final_answer = f"ERROR: {e}"
 
-    # 评估工具路由正确性
-    tool_correct = False
-    called_set = set(tools_called)
-    # Agent 直接回答（0 次调用）且回答合理也视为正确
-    no_tool_but_reasonable = (
-        len(called_set) == 0 and not final_answer.startswith("ERROR:") and len(final_answer) > 20
-    )
-    if q_type == "sql":
-        tool_correct = "execute_sql" in called_set or no_tool_but_reasonable
-    elif q_type == "content":
-        tool_correct = (
-            bool(called_set & {"vector_search", "search_abstracts"}) or no_tool_but_reasonable
-        )
-    elif q_type == "mixed":
-        expected = set(q.get("expected_tools", []))
-        content_tools = {"vector_search", "search_abstracts"}
-        # search_abstracts/vector_search 带非空 where 参数也视为完成了筛选意图
-        content_with_where = any(
-            td["name"] in content_tools
-            and "'where':" in td["input"]
-            and "'where': ''" not in td["input"]
-            and "'where': \"\"" not in td["input"]
-            for td in tool_details
-        )
-        has_sql = (
-            ("execute_sql" in called_set or content_with_where)
-            if "execute_sql" in expected
-            else True
-        )
-        has_content = bool(called_set & content_tools) if expected & content_tools else True
-        tool_correct = has_sql and has_content
-    elif q_type == "trend":
-        # 趋势分析需要同时用 SQL 统计和内容检索
-        tool_correct = "execute_sql" in called_set and bool(
-            called_set & {"search_abstracts", "vector_search"}
-        )
-    elif q_type == "research":
-        # 深度研究需要多次工具调用
-        tool_correct = len(tools_called) >= 3
-    elif q_type == "reject":
-        # 拒答不应调用任何工具
-        tool_correct = len(called_set) == 0
+    duration_s = round(time.monotonic() - t_start, 2)
 
-    logger.info("  #{} 工具调用: {} | 路由正确: {}", qid, tools_called, tool_correct)
+    # 评估工具路由正确性
+    tool_correct = _check_routing(q_type, q, tools_called, tool_details, final_answer)
+
+    logger.info(
+        "  #{} 工具调用: {} | 路由正确: {} | 耗时: {}s", qid, tools_called, tool_correct, duration_s
+    )
 
     return {
         "id": qid,
@@ -124,12 +138,93 @@ async def eval_one(agent, q: dict) -> dict:
         "tool_details": tool_details,
         "tool_call_count": len(tools_called),
         "tool_routing_correct": tool_correct,
+        "duration_s": duration_s,
         "answer_length": len(final_answer),
         "answer_preview": final_answer[:200],
+        "trace_steps": trace_steps,
         # 完整数据（用于 judge，不写入最终 JSON）
         "_full_answer": final_answer,
         "_tool_outputs_full": "\n\n".join(tool_outputs_full),
     }
+
+
+def _check_routing(
+    q_type: str,
+    q: dict,
+    tools_called: list[str],
+    tool_details: list[dict],
+    final_answer: str,
+) -> bool:
+    """根据题型检查工具路由是否正确"""
+    called_set = set(tools_called)
+    # Agent 直接回答（0 次调用）且回答合理也视为正确
+    no_tool_but_reasonable = (
+        len(called_set) == 0 and not final_answer.startswith("ERROR:") and len(final_answer) > 20
+    )
+
+    if q_type == "sql":
+        return "execute_sql" in called_set or no_tool_but_reasonable
+
+    elif q_type == "content":
+        return bool(called_set & CONTENT_TOOLS) or no_tool_but_reasonable
+
+    elif q_type == "mixed":
+        expected = set(q.get("expected_tools", []))
+        # search_abstracts 带非空 where 参数也视为完成了筛选意图
+        content_with_where = any(
+            td["name"] in CONTENT_TOOLS
+            and "'where':" in td["input"]
+            and "'where': ''" not in td["input"]
+            and "'where': \"\"" not in td["input"]
+            for td in tool_details
+        )
+        # 检查是否满足 SQL 需求
+        has_sql = (
+            ("execute_sql" in called_set or content_with_where)
+            if "execute_sql" in expected
+            else True
+        )
+        # 检查是否满足内容检索需求
+        has_content = (
+            bool(called_set & CONTENT_TOOLS) if expected & CONTENT_TOOLS else True
+        )
+        # 检查是否满足外部搜索需求（expected_tools 中有外部工具时）
+        expected_external = expected & EXTERNAL_TOOLS
+        has_external = (
+            bool(called_set & EXTERNAL_TOOLS) if expected_external else True
+        )
+        return has_sql and has_content and has_external
+
+    elif q_type == "trend":
+        # 趋势分析需要 SQL 统计；如果 expected_tools 含 generate_chart 则还需生成图表
+        expected = set(q.get("expected_tools", []))
+        has_sql = "execute_sql" in called_set
+        has_content = bool(called_set & CONTENT_TOOLS) or "generate_chart" in expected
+        has_chart = "generate_chart" in called_set if "generate_chart" in expected else True
+        return has_sql and has_content and has_chart
+
+    elif q_type == "chart":
+        # 图表类必须调用 generate_chart，通常还需要 execute_sql 提供数据
+        return "generate_chart" in called_set and "execute_sql" in called_set
+
+    elif q_type == "external":
+        # 外部搜索类：必须调用至少一个外部工具
+        expected = set(q.get("expected_tools", []))
+        expected_external = expected & EXTERNAL_TOOLS
+        if expected_external:
+            return bool(called_set & expected_external)
+        # 无明确预期时，只要调用了任意外部工具即可
+        return bool(called_set & EXTERNAL_TOOLS)
+
+    elif q_type == "research":
+        # 深度研究需要多次工具调用（≥3），且应覆盖多种工具
+        return len(tools_called) >= 3
+
+    elif q_type == "reject":
+        # 拒答不应调用任何工具
+        return len(called_set) == 0 or no_tool_but_reasonable
+
+    return False
 
 
 async def judge_results(results: list[dict], semaphore: asyncio.Semaphore) -> None:
@@ -179,6 +274,17 @@ def _generate_report(results: list[dict], total: int) -> str:
     avg_tools = statistics.mean(r["tool_call_count"] for r in results) if results else 0
     lines.append(f"**平均工具调用**: {avg_tools:.1f} 次/题")
 
+    # --- 性能指标 ---
+    durations = [r["duration_s"] for r in results if "duration_s" in r]
+    if durations:
+        avg_dur = statistics.mean(durations)
+        p50 = sorted(durations)[len(durations) // 2]
+        p90 = sorted(durations)[int(len(durations) * 0.9)]
+        max_dur = max(durations)
+        total_dur = sum(durations)
+        lines.append(f"**平均耗时**: {avg_dur:.1f}s（P50: {p50:.1f}s, P90: {p90:.1f}s, Max: {max_dur:.1f}s）")
+        lines.append(f"**总耗时**: {total_dur:.0f}s（墙钟时间，含并发）")
+
     # --- 质量评分汇总 ---
     scored_results = [r for r in results if r.get("quality_scores")]
     if scored_results:
@@ -213,7 +319,7 @@ def _generate_report(results: list[dict], total: int) -> str:
         by_type: dict[str, list[dict]] = {}
         for r in scored_results:
             by_type.setdefault(r["type"], []).append(r)
-        for t in ["sql", "content", "mixed", "trend", "research", "reject"]:
+        for t in ["sql", "content", "mixed", "trend", "research", "chart", "external", "reject"]:
             type_results = by_type.get(t, [])
             if not type_results:
                 continue
@@ -246,20 +352,21 @@ def _generate_report(results: list[dict], total: int) -> str:
     lines.append("\n---\n")
     lines.append("## 路由评测详情\n")
 
-    lines.append("| 题型 | 总数 | 路由正确 | 平均工具调用数 |")
-    lines.append("|------|------|----------|--------------|")
+    lines.append("| 题型 | 总数 | 路由正确 | 平均工具调用数 | 平均耗时 |")
+    lines.append("|------|------|----------|--------------|----------|")
     routing_by_type: dict[str, list[dict]] = {}
     for r in results:
         routing_by_type.setdefault(r["type"], []).append(r)
-    for t in ["sql", "content", "mixed", "trend", "research", "reject"]:
+    for t in ["sql", "content", "mixed", "trend", "research", "chart", "external", "reject"]:
         type_results = routing_by_type.get(t, [])
         if not type_results:
             continue
         correct = sum(1 for r in type_results if r["tool_routing_correct"])
         avg_tc = statistics.mean(r["tool_call_count"] for r in type_results)
+        avg_dur = statistics.mean(r["duration_s"] for r in type_results if "duration_s" in r)
         lines.append(
             f"| {t} | {len(type_results)} | {correct}/{len(type_results)} "
-            f"({correct / len(type_results) * 100:.1f}%) | {avg_tc:.1f} |"
+            f"({correct / len(type_results) * 100:.1f}%) | {avg_tc:.1f} | {avg_dur:.1f}s |"
         )
 
     return "\n".join(lines)
