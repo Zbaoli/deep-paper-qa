@@ -22,6 +22,11 @@
         style="height: 350px;"
         autoresize
       />
+      <div
+        v-else-if="chart.type === 'plotly' && chart.figure"
+        :ref="(el) => mountPlotly(el as HTMLElement, chart.figure!)"
+        style="height: 350px;"
+      />
     </div>
 
     <!-- ask_user 卡片 -->
@@ -39,8 +44,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import MarkdownIt from 'markdown-it'
+import Plotly from 'plotly.js-dist-min'
 import 'echarts'
 import VChart from 'vue-echarts'
 import type { ChatMessage } from '../../stores/chat'
@@ -53,6 +59,16 @@ defineEmits<{ reply: [text: string] }>()
 const md = new MarkdownIt({ html: false, linkify: true, breaks: true })
 
 const renderedContent = computed(() => md.render(props.message.content))
+
+const mountedPlotlyEls = new WeakSet<HTMLElement>()
+
+function mountPlotly(el: HTMLElement | null, figure: Record<string, any>) {
+  if (!el || mountedPlotlyEls.has(el)) return
+  mountedPlotlyEls.add(el)
+  nextTick(() => {
+    Plotly.newPlot(el, figure.data || [], figure.layout || {}, { responsive: true })
+  })
+}
 </script>
 
 <style scoped>
