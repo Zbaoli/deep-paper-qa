@@ -9,6 +9,7 @@ from langchain_core.messages import HumanMessage
 from loguru import logger
 
 from deep_paper_qa.agent import build_agent
+from deep_paper_qa.config import settings
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.logging_setup import setup_logging
 
@@ -55,7 +56,7 @@ async def on_message(message: cl.Message) -> None:
     thread_id = cl.user_session.get("thread_id")
     config = {
         "configurable": {"thread_id": thread_id},
-        "recursion_limit": 50,
+        "recursion_limit": settings.agent_recursion_limit,
     }
 
     logger.info("用户消息 | thread_id={} | content={}", thread_id, message.content)

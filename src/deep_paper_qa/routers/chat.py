@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from deep_paper_qa.agent import build_graph
+from deep_paper_qa.config import settings
 from deep_paper_qa.conversation_logger import ConversationLogger
 from deep_paper_qa.sse_events import (
     sse_ask_user,
@@ -56,7 +57,7 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
         graph = _get_graph()
         config = {
             "configurable": {"thread_id": req.thread_id},
-            "recursion_limit": 50,
+            "recursion_limit": settings.agent_recursion_limit,
         }
 
         logger.info("API chat | thread={} | message={}", req.thread_id, req.message[:200])

@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     abstract_max_chars: int = 800
 
     # Agent
-    max_conversation_turns: int = 6
+    agent_recursion_limit: int = 50
 
     # 外部搜索 API
     semantic_scholar_api_key: str = ""
