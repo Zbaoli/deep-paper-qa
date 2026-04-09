@@ -37,7 +37,7 @@ const stats = ref<StatsData>({
 const yearRange = computed(() => {
   const years = stats.value.by_year.map(d => d.year)
   if (years.length === 0) return '-'
-  return `${Math.min(...years)} - ${Math.max(...years)}`
+  return `${Math.min(...years)} — ${Math.max(...years)}`
 })
 
 onMounted(async () => {
