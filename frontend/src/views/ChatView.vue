@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100%;">
-    <MessageList :messages="store.messages" @reply="handleReply" />
+    <MessageList :messages="store.messages" @reply="handleReply" @send="handleSend" />
     <ChatInput @send="handleSend" />
   </div>
 </template>
