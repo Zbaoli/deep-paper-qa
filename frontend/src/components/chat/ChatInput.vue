@@ -6,7 +6,7 @@
         type="textarea"
         :autosize="{ minRows: 1, maxRows: 4 }"
         placeholder="输入你的研究问题..."
-        @keydown.enter.exact.prevent="handleSend"
+        @keydown.enter.exact="handleKeydown"
         :disabled="isStreaming"
       />
       <button
@@ -31,6 +31,12 @@ const inputText = ref('')
 const isStreaming = computed(() => store.isStreaming)
 
 const emit = defineEmits<{ send: [content: string] }>()
+
+function handleKeydown(e: KeyboardEvent) {
+  if (e.isComposing) return
+  e.preventDefault()
+  handleSend()
+}
 
 function handleSend() {
   const text = inputText.value.trim()
