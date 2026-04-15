@@ -27,6 +27,31 @@ class TestBuildAgent:
         agent, _ = build_agent()
         assert hasattr(agent, "astream_events")
 
+    def test_agent_without_ask_user(self) -> None:
+        """eval 模式不含 ask_user"""
+        from deep_paper_qa.agent import build_agent
+
+        agent, _ = build_agent(include_ask_user=False)
+        assert agent is not None
+
+
+class TestSearchSubAgent:
+    """Search SubAgent 构建测试"""
+
+    def test_search_subagent_builds(self) -> None:
+        """search subagent 能正常构建"""
+        from deep_paper_qa.agent import _build_search_subagent
+
+        subagent = _build_search_subagent()
+        assert subagent["name"] == "search-agent"
+
+    def test_search_subagent_has_description(self) -> None:
+        """search subagent 有描述"""
+        from deep_paper_qa.agent import _build_search_subagent
+
+        subagent = _build_search_subagent()
+        assert "研究" in subagent["description"]
+
 
 class TestModels:
     """数据模型测试"""
