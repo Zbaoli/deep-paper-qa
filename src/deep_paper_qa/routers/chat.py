@@ -79,13 +79,7 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                         tools_used.append(name)
 
                     _conv_logger.log_tool_start(req.thread_id, name, tool_input)
-
-                    if name == "ask_user":
-                        summary = tool_input.get("summary", "")
-                        question = tool_input.get("question", "")
-                        yield sse("ask_user", {"question": question, "summary": summary})
-                    else:
-                        yield sse("tool_start", {"tool": name, "input": tool_input, "run_id": run_id})
+                    yield sse("tool_start", {"tool": name, "input": tool_input, "run_id": run_id})
 
                 # 工具结束
                 elif kind == "on_tool_end":
@@ -103,8 +97,7 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
 
                     _conv_logger.log_tool_end(req.thread_id, tool_name, duration_ms, output_str)
 
-                    if tool_name != "ask_user":
-                        yield sse("tool_end", {"tool": tool_name, "output": output_str[:500], "duration_ms": duration_ms, "run_id": run_id})
+                    yield sse("tool_end", {"tool": tool_name, "output": output_str[:500], "duration_ms": duration_ms, "run_id": run_id})
 
                 # LLM 流式 token
                 elif kind == "on_chat_model_stream":

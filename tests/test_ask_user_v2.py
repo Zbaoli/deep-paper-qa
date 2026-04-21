@@ -1,6 +1,7 @@
 """ask_user 工具测试（使用 RunnableConfig 注入 thread_id）"""
 
 import asyncio
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -15,8 +16,9 @@ def _make_config(thread_id: str) -> dict:
 class TestAskUser:
     """ask_user 异步交互测试"""
 
+    @patch("deep_paper_qa.tools.ask_user.adispatch_custom_event", new_callable=AsyncMock)
     @pytest.mark.asyncio
-    async def test_submit_reply_wakes_up_ask_user(self) -> None:
+    async def test_submit_reply_wakes_up_ask_user(self, mock_dispatch) -> None:
         """submit_reply 能唤醒等待中的 ask_user"""
 
         async def simulate_user_reply(thread_id: str) -> None:
@@ -48,8 +50,9 @@ class TestAskUser:
         finally:
             _pending.pop(thread_id, None)
 
+    @patch("deep_paper_qa.tools.ask_user.adispatch_custom_event", new_callable=AsyncMock)
     @pytest.mark.asyncio
-    async def test_get_pending_question(self) -> None:
+    async def test_get_pending_question(self, mock_dispatch) -> None:
         """get_pending_question 返回当前等待中的问题"""
 
         async def invoke_ask() -> str:
@@ -76,8 +79,9 @@ class TestAskUser:
         pending = get_pending_question("nonexistent")
         assert pending is None
 
+    @patch("deep_paper_qa.tools.ask_user.adispatch_custom_event", new_callable=AsyncMock)
     @pytest.mark.asyncio
-    async def test_concurrent_threads_isolated(self) -> None:
+    async def test_concurrent_threads_isolated(self, mock_dispatch) -> None:
         """并发多个 thread 时，各自的回复互不干扰"""
 
         async def invoke_and_reply(thread_id: str, reply: str, delay: float) -> str:
@@ -103,3 +107,25 @@ class TestAskUser:
 
         assert result_a == "回复A", f"thread-A 应收到 '回复A'，实际: {result_a}"
         assert result_b == "回复B", f"thread-B 应收到 '回复B'，实际: {result_b}"
+
+    @patch("deep_paper_qa.tools.ask_user.adispatch_custom_event", new_callable=AsyncMock)
+    @pytest.mark.asyncio
+    async def test_ask_user_dispatches_custom_event(self, mock_dispatch) -> None:
+        """ask_user 通过 adispatch_custom_event 发送 ask_user 自定义事件"""
+
+        async def simulate_user_reply() -> None:
+            await asyncio.sleep(0.05)
+            submit_reply("thread-event", "OK")
+
+        task = asyncio.create_task(simulate_user_reply())
+        await ask_user.ainvoke(
+            {"summary": "阶段摘要", "question": "是否继续？"},
+            config=_make_config("thread-event"),
+        )
+        await task
+
+        assert mock_dispatch.await_count == 1
+        args, _ = mock_dispatch.call_args
+        assert args[0] == "ask_user"
+        assert args[1]["question"] == "是否继续？"
+        assert args[1]["summary"] == "阶段摘要"

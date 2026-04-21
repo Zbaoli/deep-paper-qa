@@ -3,6 +3,7 @@
 import asyncio
 from typing import Any
 
+from langchain_core.callbacks import adispatch_custom_event
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from loguru import logger
@@ -56,6 +57,12 @@ async def ask_user(
         thread_id,
         len(summary),
         question[:100],
+    )
+
+    # 通知前端显示问答卡片（通过 LangChain custom event，astream_events(v2) 下可见）
+    await adispatch_custom_event(
+        "ask_user",
+        {"question": question, "summary": summary},
     )
 
     event = asyncio.Event()
