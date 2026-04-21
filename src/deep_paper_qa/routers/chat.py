@@ -124,6 +124,12 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                     if chunk and hasattr(chunk, "content") and chunk.content:
                         yield sse("token", {"content": chunk.content})
 
+                # 工具内部通过 get_stream_writer() 发的 UI 事件
+                elif kind == "on_custom_event":
+                    payload = event.get("data", {})
+                    if isinstance(payload, dict) and "event" in payload:
+                        yield sse(payload["event"], payload.get("data", {}))
+
             total_ms = int((time.monotonic() - msg_start) * 1000)
             _conv_logger.log_agent_reply(req.thread_id, "", total_ms, tool_call_count, tools_used)
             yield sse("done", {"total_ms": total_ms, "tool_calls": tool_call_count})
