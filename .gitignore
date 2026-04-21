@@ -21,9 +21,6 @@ venv/
 .mypy_cache/
 .python-version
 
-# Chainlit
-.chainlit/
-
 # Logs
 logs/
 

@@ -108,10 +108,10 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                 # 工具通过 langchain_core.callbacks.adispatch_custom_event 发的 UI 事件
                 # astream_events(v2) 的事件结构：event["name"] = 事件名，event["data"] = payload
                 elif kind == "on_custom_event":
-                    name = event.get("name")
+                    custom_event_name = event.get("name")
                     data = event.get("data", {})
-                    if name and isinstance(data, dict):
-                        yield sse(name, data)
+                    if custom_event_name and isinstance(data, dict):
+                        yield sse(custom_event_name, data)
 
             total_ms = int((time.monotonic() - msg_start) * 1000)
             _conv_logger.log_agent_reply(req.thread_id, "", total_ms, tool_call_count, tools_used)
