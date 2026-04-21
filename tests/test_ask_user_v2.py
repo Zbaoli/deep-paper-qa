@@ -1,6 +1,7 @@
 """ask_user 工具测试（使用 RunnableConfig 注入 thread_id）"""
 
 import asyncio
+from typing import TypedDict
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -129,3 +130,44 @@ class TestAskUser:
         assert args[0] == "ask_user"
         assert args[1]["question"] == "是否继续？"
         assert args[1]["summary"] == "阶段摘要"
+
+
+class TestAskUserIntegration:
+    """集成测试：验证 adispatch_custom_event 在 astream_events(v2) 下能被正确捕获"""
+
+    @pytest.mark.asyncio
+    async def test_ask_user_event_surfaces_via_astream_events(self) -> None:
+        """ask_user 在 StateGraph 中执行时，astream_events(v2) 能捕获到 ask_user 自定义事件"""
+        from langgraph.graph import END, START, StateGraph
+
+        class State(TypedDict):
+            reply: str
+
+        async def call_tool(state: State) -> dict:
+            # 模拟用户在极短时间内回复，避免超时
+            async def reply_soon() -> None:
+                await asyncio.sleep(0.05)
+                submit_reply("thread-integration", "继续")
+
+            asyncio.create_task(reply_soon())
+            reply = await ask_user.ainvoke(
+                {"summary": "阶段摘要", "question": "下一步？"},
+                config=_make_config("thread-integration"),
+            )
+            return {"reply": reply}
+
+        graph = StateGraph(State)
+        graph.add_node("tool", call_tool)
+        graph.add_edge(START, "tool")
+        graph.add_edge("tool", END)
+        compiled = graph.compile()
+
+        custom_events = []
+        async for event in compiled.astream_events({"reply": ""}, version="v2"):
+            if event.get("event") == "on_custom_event" and event.get("name") == "ask_user":
+                custom_events.append(event)
+
+        assert len(custom_events) == 1
+        payload = custom_events[0]["data"]
+        assert payload["question"] == "下一步？"
+        assert payload["summary"] == "阶段摘要"

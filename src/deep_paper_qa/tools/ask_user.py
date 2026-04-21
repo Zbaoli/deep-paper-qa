@@ -59,12 +59,6 @@ async def ask_user(
         question[:100],
     )
 
-    # 通知前端显示问答卡片（通过 LangChain custom event，astream_events(v2) 下可见）
-    await adispatch_custom_event(
-        "ask_user",
-        {"question": question, "summary": summary},
-    )
-
     event = asyncio.Event()
     _pending[thread_id] = {
         "event": event,
@@ -74,6 +68,20 @@ async def ask_user(
     }
 
     try:
+        # 通知前端显示问答卡片（通过 LangChain custom event，astream_events(v2) 下可见）。
+        # dispatch 失败只影响 UI 提示，不影响工具等待回复的正确性
+        try:
+            await adispatch_custom_event(
+                "ask_user",
+                {"question": question, "summary": summary},
+            )
+        except Exception as dispatch_err:
+            logger.warning(
+                "ask_user | thread={} | 自定义事件分发失败: {}",
+                thread_id,
+                dispatch_err,
+            )
+
         await asyncio.wait_for(event.wait(), timeout=_DEFAULT_TIMEOUT)
         reply = _pending[thread_id]["reply"]
         logger.info("ask_user | thread={} | 用户回复: {}", thread_id, reply[:200])
