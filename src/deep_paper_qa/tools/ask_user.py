@@ -1,4 +1,4 @@
-"""ask_user 工具：暂停等待用户输入（基于 asyncio.Event，脱离 Chainlit）"""
+"""ask_user 工具：暂停等待用户输入（基于 asyncio.Event）"""
 
 import asyncio
 from typing import Any
