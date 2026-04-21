@@ -1,8 +1,8 @@
 """通用数据可视化工具：根据数据和图表类型生成 Plotly 图表"""
 
 import plotly.graph_objects as go
+from langchain_core.callbacks import adispatch_custom_event
 from langchain_core.tools import tool
-from langgraph.config import get_stream_writer
 from loguru import logger
 
 # 支持的图表类型
@@ -49,7 +49,7 @@ async def generate_chart(
         y_label: Y 轴标签（可选）
 
     Returns:
-        简短确认文本（LLM 可见）。figure 通过 get_stream_writer() 直接推给前端，
+        简短确认文本（LLM 可见）。figure 通过 adispatch_custom_event 推给前端，
         不进入 LLM 上下文。
     """
     chart_type = chart_type.lower().strip()
@@ -68,9 +68,12 @@ async def generate_chart(
         **_DEFAULT_LAYOUT,
     )
 
-    # figure 通过 SSE custom 事件推给前端，避免污染 LLM 上下文
-    writer = get_stream_writer()
-    writer({"event": "chart", "data": {"type": "plotly", "figure": fig.to_dict()}})
+    # figure 通过 LangChain custom event 推给前端，避免污染 LLM 上下文
+    # adispatch_custom_event 会被 astream_events(v2) 的 on_custom_event 捕获
+    await adispatch_custom_event(
+        "chart",
+        {"type": "plotly", "figure": fig.to_dict()},
+    )
 
     logger.info("generate_chart | type={} | title={}", chart_type, title)
     return f"已生成 {chart_type} 图表：{title}"

@@ -112,11 +112,13 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                     if chunk and hasattr(chunk, "content") and chunk.content:
                         yield sse("token", {"content": chunk.content})
 
-                # 工具内部通过 get_stream_writer() 发的 UI 事件
+                # 工具通过 langchain_core.callbacks.adispatch_custom_event 发的 UI 事件
+                # astream_events(v2) 的事件结构：event["name"] = 事件名，event["data"] = payload
                 elif kind == "on_custom_event":
-                    payload = event.get("data", {})
-                    if isinstance(payload, dict) and "event" in payload:
-                        yield sse(payload["event"], payload.get("data", {}))
+                    name = event.get("name")
+                    data = event.get("data", {})
+                    if name and isinstance(data, dict):
+                        yield sse(name, data)
 
             total_ms = int((time.monotonic() - msg_start) * 1000)
             _conv_logger.log_agent_reply(req.thread_id, "", total_ms, tool_call_count, tools_used)

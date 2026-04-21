@@ -1,12 +1,12 @@
 """generate_chart 工具测试"""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import plotly.graph_objects as go
 
 
 class TestBuildFigure:
-    """纯函数 _build_figure 单元测试（不经过 get_stream_writer）"""
+    """纯函数 _build_figure 单元测试（不经过 adispatch_custom_event）"""
 
     def test_bar_figure(self) -> None:
         from deep_paper_qa.tools.generate_chart import _build_figure
@@ -31,15 +31,12 @@ class TestBuildFigure:
 
 
 class TestGenerateChartTool:
-    """tool 入口测试：mock get_stream_writer"""
+    """tool 入口测试：mock adispatch_custom_event"""
 
-    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
-    async def test_bar_chart_returns_str_and_writes_event(self, mock_writer_factory) -> None:
-        """生成柱状图：返回 str，通过 writer 发 chart 事件"""
+    @patch("deep_paper_qa.tools.generate_chart.adispatch_custom_event", new_callable=AsyncMock)
+    async def test_bar_chart_returns_str_and_dispatches_event(self, mock_dispatch) -> None:
+        """生成柱状图：返回 str，通过 adispatch_custom_event 发 chart 事件"""
         from deep_paper_qa.tools.generate_chart import generate_chart
-
-        writer = MagicMock()
-        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
@@ -51,20 +48,17 @@ class TestGenerateChartTool:
 
         assert isinstance(result, str)
         assert "已生成" in result and "bar" in result
-        # writer 被调用一次，payload 结构符合约定
-        assert writer.call_count == 1
-        (payload,), _ = writer.call_args
-        assert payload["event"] == "chart"
-        assert payload["data"]["type"] == "plotly"
-        assert "figure" in payload["data"]
+        # adispatch_custom_event 被调用一次，位置参数为 (name, data)
+        assert mock_dispatch.await_count == 1
+        args, _ = mock_dispatch.call_args
+        assert args[0] == "chart"
+        assert args[1]["type"] == "plotly"
+        assert "figure" in args[1]
 
-    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
-    async def test_invalid_chart_type_returns_error_str(self, mock_writer_factory) -> None:
-        """不支持的图表类型返回错误字符串，不调用 writer"""
+    @patch("deep_paper_qa.tools.generate_chart.adispatch_custom_event", new_callable=AsyncMock)
+    async def test_invalid_chart_type_returns_error_str(self, mock_dispatch) -> None:
+        """不支持的图表类型返回错误字符串，不调用 adispatch_custom_event"""
         from deep_paper_qa.tools.generate_chart import generate_chart
-
-        writer = MagicMock()
-        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
@@ -76,15 +70,12 @@ class TestGenerateChartTool:
 
         assert isinstance(result, str)
         assert "不支持" in result
-        assert writer.call_count == 0
+        assert mock_dispatch.await_count == 0
 
-    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
-    async def test_mismatched_lengths_returns_error_str(self, mock_writer_factory) -> None:
-        """x/y 长度不一致返回错误字符串，不调用 writer"""
+    @patch("deep_paper_qa.tools.generate_chart.adispatch_custom_event", new_callable=AsyncMock)
+    async def test_mismatched_lengths_returns_error_str(self, mock_dispatch) -> None:
+        """x/y 长度不一致返回错误字符串，不调用 adispatch_custom_event"""
         from deep_paper_qa.tools.generate_chart import generate_chart
-
-        writer = MagicMock()
-        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
@@ -96,4 +87,44 @@ class TestGenerateChartTool:
 
         assert isinstance(result, str)
         assert "错误" in result or "长度" in result
-        assert writer.call_count == 0
+        assert mock_dispatch.await_count == 0
+
+
+class TestGenerateChartIntegration:
+    """集成测试：验证 adispatch_custom_event 在 astream_events(v2) 下能被正确捕获"""
+
+    async def test_chart_event_surfaces_via_astream_events(self) -> None:
+        """工具在 StateGraph 中执行时，astream_events(v2) 能捕获到 chart 自定义事件"""
+        from typing import TypedDict
+        from langgraph.graph import END, START, StateGraph
+        from deep_paper_qa.tools.generate_chart import generate_chart
+
+        class State(TypedDict):
+            result: str
+
+        async def call_tool(state: State) -> dict:
+            result = await generate_chart.ainvoke(
+                {
+                    "chart_type": "bar",
+                    "data": {"x": ["2020", "2021"], "y": [10, 25]},
+                    "title": "集成测试",
+                }
+            )
+            return {"result": result}
+
+        graph = StateGraph(State)
+        graph.add_node("tool", call_tool)
+        graph.add_edge(START, "tool")
+        graph.add_edge("tool", END)
+        compiled = graph.compile()
+
+        custom_events = []
+        async for event in compiled.astream_events({"result": ""}, version="v2"):
+            if event.get("event") == "on_custom_event":
+                custom_events.append(event)
+
+        assert len(custom_events) == 1
+        assert custom_events[0]["name"] == "chart"
+        payload = custom_events[0]["data"]
+        assert payload["type"] == "plotly"
+        assert "figure" in payload
