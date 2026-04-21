@@ -1,75 +1,29 @@
-"""SSE 事件转换测试"""
+"""SSE 事件构造器测试"""
 
 import json
 
-from deep_paper_qa.sse_events import (
-    sse_ask_user,
-    sse_chart,
-    sse_done,
-    sse_error,
-    sse_route,
-    sse_token,
-    sse_tool_end,
-    sse_tool_start,
-)
+from deep_paper_qa.sse_events import sse
 
 
-class TestSseEventBuilders:
-    """SSE 事件构造函数测试"""
+class TestSseBuilder:
+    """sse() 通用构造器测试"""
 
-    def test_route_event(self) -> None:
-        event = sse_route("general", "普通问答")
-        assert event.event == "route"
-        data = json.loads(event.data)
-        assert data["category"] == "general"
-        assert data["label"] == "普通问答"
-
-    def test_tool_start_event(self) -> None:
-        event = sse_tool_start("execute_sql", {"sql": "SELECT 1"}, "run-123")
-        assert event.event == "tool_start"
-        data = json.loads(event.data)
-        assert data["tool"] == "execute_sql"
-        assert data["input"]["sql"] == "SELECT 1"
-        assert data["run_id"] == "run-123"
-
-    def test_tool_end_event(self) -> None:
-        event = sse_tool_end("execute_sql", "result", 120, "run-123")
-        assert event.event == "tool_end"
-        data = json.loads(event.data)
-        assert data["tool"] == "execute_sql"
-        assert data["output"] == "result"
-        assert data["duration_ms"] == 120
-
-    def test_token_event(self) -> None:
-        event = sse_token("根据")
+    def test_event_name_set(self) -> None:
+        event = sse("token", {"content": "hi"})
         assert event.event == "token"
-        data = json.loads(event.data)
-        assert data["content"] == "根据"
 
-    def test_chart_event(self) -> None:
-        option = {"xAxis": {"data": ["2020", "2021"]}}
-        event = sse_chart(option)
-        assert event.event == "chart"
+    def test_data_is_json(self) -> None:
+        event = sse("tool_start", {"tool": "execute_sql", "run_id": "abc"})
         data = json.loads(event.data)
-        assert data["type"] == "echarts"
-        assert data["option"]["xAxis"]["data"][0] == "2020"
+        assert data["tool"] == "execute_sql"
+        assert data["run_id"] == "abc"
 
-    def test_ask_user_event(self) -> None:
-        event = sse_ask_user("请确认", "摘要内容")
-        assert event.event == "ask_user"
+    def test_none_data_becomes_empty_object(self) -> None:
+        event = sse("done")
         data = json.loads(event.data)
-        assert data["question"] == "请确认"
-        assert data["summary"] == "摘要内容"
+        assert data == {}
 
-    def test_done_event(self) -> None:
-        event = sse_done(3200, 2)
-        assert event.event == "done"
-        data = json.loads(event.data)
-        assert data["total_ms"] == 3200
-        assert data["tool_calls"] == 2
-
-    def test_error_event(self) -> None:
-        event = sse_error("处理失败")
-        assert event.event == "error"
-        data = json.loads(event.data)
-        assert data["message"] == "处理失败"
+    def test_ensure_ascii_false_for_chinese(self) -> None:
+        event = sse("token", {"content": "论文"})
+        # data 字符串应保留中文，不应是 \u escaped
+        assert "论文" in event.data

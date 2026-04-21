@@ -11,15 +11,7 @@ from sse_starlette.sse import EventSourceResponse
 from deep_paper_qa.agent import build_graph
 from deep_paper_qa.config import settings
 from deep_paper_qa.conversation_logger import ConversationLogger
-from deep_paper_qa.sse_events import (
-    sse_ask_user,
-    sse_chart_plotly,
-    sse_done,
-    sse_error,
-    sse_token,
-    sse_tool_end,
-    sse_tool_start,
-)
+from deep_paper_qa.sse_events import sse
 from deep_paper_qa.tools.ask_user import get_pending_question, submit_reply
 
 router = APIRouter(tags=["chat"])
@@ -54,21 +46,21 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
     """聊天 SSE 流"""
 
     async def event_stream():
-        graph = _get_graph()
-        config = {
-            "configurable": {"thread_id": req.thread_id},
-            "recursion_limit": settings.agent_recursion_limit,
-        }
-
-        logger.info("API chat | thread={} | message={}", req.thread_id, req.message[:200])
-        _conv_logger.log_user_message(req.thread_id, req.message)
-
         msg_start = time.monotonic()
         tool_call_count = 0
         tools_used: list[str] = []
         tool_timings: dict[str, tuple[str, float]] = {}
 
         try:
+            graph = _get_graph()
+            config = {
+                "configurable": {"thread_id": req.thread_id},
+                "recursion_limit": settings.agent_recursion_limit,
+            }
+
+            logger.info("API chat | thread={} | message={}", req.thread_id, req.message[:200])
+            _conv_logger.log_user_message(req.thread_id, req.message)
+
             async for event in graph.astream_events(
                 {"messages": [HumanMessage(content=req.message)]},
                 config=config,
@@ -91,9 +83,9 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                     if name == "ask_user":
                         summary = tool_input.get("summary", "")
                         question = tool_input.get("question", "")
-                        yield sse_ask_user(question, summary)
+                        yield sse("ask_user", {"question": question, "summary": summary})
                     else:
-                        yield sse_tool_start(name, tool_input, run_id)
+                        yield sse("tool_start", {"tool": name, "input": tool_input, "run_id": run_id})
 
                 # 工具结束
                 elif kind == "on_tool_end":
@@ -114,12 +106,7 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                     _conv_logger.log_tool_end(req.thread_id, tool_name, duration_ms, output_str)
 
                     if tool_name != "ask_user":
-                        yield sse_tool_end(
-                            tool_name,
-                            output_str[:500] if len(output_str) > 500 else output_str,
-                            duration_ms,
-                            run_id,
-                        )
+                        yield sse("tool_end", {"tool": tool_name, "output": output_str[:500], "duration_ms": duration_ms, "run_id": run_id})
 
                     # generate_chart 通过 artifact 传递 Plotly JSON，避免污染 LLM 上下文
                     if tool_name == "generate_chart" and artifact:
@@ -127,7 +114,7 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                             import plotly.io as pio
 
                             fig = pio.from_json(artifact)
-                            yield sse_chart_plotly(fig.to_dict())
+                            yield sse("chart", {"type": "plotly", "figure": fig.to_dict()})
                         except Exception as chart_err:
                             logger.warning("Plotly artifact 解析失败: {}", chart_err)
 
@@ -135,15 +122,16 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                 elif kind == "on_chat_model_stream":
                     chunk = event.get("data", {}).get("chunk", None)
                     if chunk and hasattr(chunk, "content") and chunk.content:
-                        yield sse_token(chunk.content)
+                        yield sse("token", {"content": chunk.content})
 
             total_ms = int((time.monotonic() - msg_start) * 1000)
             _conv_logger.log_agent_reply(req.thread_id, "", total_ms, tool_call_count, tools_used)
-            yield sse_done(total_ms, tool_call_count)
+            yield sse("done", {"total_ms": total_ms, "tool_calls": tool_call_count})
 
         except Exception as e:
-            logger.error("API chat 异常 | thread={} | error={}", req.thread_id, e)
-            yield sse_error(str(e))
+            logger.exception("API chat 异常 | thread={} | error={}", req.thread_id, e)
+            yield sse("error", {"message": f"{type(e).__name__}: {e}"})
+            yield sse("done", {"total_ms": int((time.monotonic() - msg_start) * 1000), "tool_calls": tool_call_count})
 
     return EventSourceResponse(event_stream())
 
