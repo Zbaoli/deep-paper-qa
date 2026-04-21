@@ -91,8 +91,6 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
                 elif kind == "on_tool_end":
                     run_id = event.get("run_id", "")
                     output = event.get("data", {}).get("output", "")
-                    # 先提取 artifact（content_and_artifact 格式），再转为字符串
-                    artifact = getattr(output, "artifact", None)
                     if hasattr(output, "content"):
                         output = output.content
                     output_str = str(output)
@@ -107,16 +105,6 @@ async def chat(req: ChatRequest) -> EventSourceResponse:
 
                     if tool_name != "ask_user":
                         yield sse("tool_end", {"tool": tool_name, "output": output_str[:500], "duration_ms": duration_ms, "run_id": run_id})
-
-                    # generate_chart 通过 artifact 传递 Plotly JSON，避免污染 LLM 上下文
-                    if tool_name == "generate_chart" and artifact:
-                        try:
-                            import plotly.io as pio
-
-                            fig = pio.from_json(artifact)
-                            yield sse("chart", {"type": "plotly", "figure": fig.to_dict()})
-                        except Exception as chart_err:
-                            logger.warning("Plotly artifact 解析失败: {}", chart_err)
 
                 # LLM 流式 token
                 elif kind == "on_chat_model_stream":

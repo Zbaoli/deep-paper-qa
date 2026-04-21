@@ -1,55 +1,70 @@
 """generate_chart 工具测试"""
 
+from unittest.mock import MagicMock, patch
 
-class TestGenerateChart:
-    """通用图表生成工具测试"""
+import plotly.graph_objects as go
 
-    async def test_bar_chart(self) -> None:
-        """生成柱状图：返回简短确认文本（content_and_artifact 格式）"""
+
+class TestBuildFigure:
+    """纯函数 _build_figure 单元测试（不经过 get_stream_writer）"""
+
+    def test_bar_figure(self) -> None:
+        from deep_paper_qa.tools.generate_chart import _build_figure
+
+        fig = _build_figure("bar", {"x": ["2020", "2021"], "y": [10, 25]})
+        assert isinstance(fig, go.Figure)
+        assert fig.data[0].type == "bar"
+
+    def test_pie_figure(self) -> None:
+        from deep_paper_qa.tools.generate_chart import _build_figure
+
+        fig = _build_figure("pie", {"labels": ["ACL", "NeurIPS"], "values": [100, 200]})
+        assert fig.data[0].type == "pie"
+
+    def test_mismatched_lengths_raises(self) -> None:
+        """x/y 长度不一致应抛 ValueError"""
+        import pytest
+        from deep_paper_qa.tools.generate_chart import _build_figure
+
+        with pytest.raises(ValueError, match="长度不一致"):
+            _build_figure("bar", {"x": ["a"], "y": [1, 2]})
+
+
+class TestGenerateChartTool:
+    """tool 入口测试：mock get_stream_writer"""
+
+    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
+    async def test_bar_chart_returns_str_and_writes_event(self, mock_writer_factory) -> None:
+        """生成柱状图：返回 str，通过 writer 发 chart 事件"""
         from deep_paper_qa.tools.generate_chart import generate_chart
+
+        writer = MagicMock()
+        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
                 "chart_type": "bar",
-                "data": {"x": ["2020", "2021", "2022"], "y": [10, 25, 40]},
-                "title": "论文数量趋势",
-                "x_label": "年份",
-                "y_label": "数量",
+                "data": {"x": ["2020", "2021"], "y": [10, 25]},
+                "title": "论文趋势",
             }
         )
-        # content_and_artifact 格式：ainvoke 返回 content 字符串
-        assert "已生成" in result
-        assert "bar" in result
 
-    async def test_line_chart(self) -> None:
-        """生成折线图：返回简短确认文本"""
+        assert isinstance(result, str)
+        assert "已生成" in result and "bar" in result
+        # writer 被调用一次，payload 结构符合约定
+        assert writer.call_count == 1
+        (payload,), _ = writer.call_args
+        assert payload["event"] == "chart"
+        assert payload["data"]["type"] == "plotly"
+        assert "figure" in payload["data"]
+
+    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
+    async def test_invalid_chart_type_returns_error_str(self, mock_writer_factory) -> None:
+        """不支持的图表类型返回错误字符串，不调用 writer"""
         from deep_paper_qa.tools.generate_chart import generate_chart
 
-        result = await generate_chart.ainvoke(
-            {
-                "chart_type": "line",
-                "data": {"x": ["2020", "2021", "2022"], "y": [10, 25, 40]},
-                "title": "增长趋势",
-            }
-        )
-        assert "已生成" in result
-
-    async def test_pie_chart(self) -> None:
-        """生成饼图：返回简短确认文本"""
-        from deep_paper_qa.tools.generate_chart import generate_chart
-
-        result = await generate_chart.ainvoke(
-            {
-                "chart_type": "pie",
-                "data": {"labels": ["ACL", "NeurIPS", "ICLR"], "values": [100, 200, 150]},
-                "title": "会议分布",
-            }
-        )
-        assert "已生成" in result
-
-    async def test_invalid_chart_type(self) -> None:
-        """不支持的图表类型返回错误信息"""
-        from deep_paper_qa.tools.generate_chart import generate_chart
+        writer = MagicMock()
+        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
@@ -58,11 +73,18 @@ class TestGenerateChart:
                 "title": "test",
             }
         )
-        assert "不支持" in result or "错误" in result
 
-    async def test_mismatched_data_lengths(self) -> None:
-        """x/y 长度不一致返回错误信息"""
+        assert isinstance(result, str)
+        assert "不支持" in result
+        assert writer.call_count == 0
+
+    @patch("deep_paper_qa.tools.generate_chart.get_stream_writer")
+    async def test_mismatched_lengths_returns_error_str(self, mock_writer_factory) -> None:
+        """x/y 长度不一致返回错误字符串，不调用 writer"""
         from deep_paper_qa.tools.generate_chart import generate_chart
+
+        writer = MagicMock()
+        mock_writer_factory.return_value = writer
 
         result = await generate_chart.ainvoke(
             {
@@ -71,4 +93,7 @@ class TestGenerateChart:
                 "title": "test",
             }
         )
-        assert "长度" in result or "错误" in result
+
+        assert isinstance(result, str)
+        assert "错误" in result or "长度" in result
+        assert writer.call_count == 0

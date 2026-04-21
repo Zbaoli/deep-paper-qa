@@ -2,6 +2,7 @@
 
 import plotly.graph_objects as go
 from langchain_core.tools import tool
+from langgraph.config import get_stream_writer
 from loguru import logger
 
 # 支持的图表类型
@@ -25,14 +26,14 @@ _DEFAULT_LAYOUT = {
 _COLORS = ["#f0a030", "#4ecdc4", "#e8637a", "#8b5cf6", "#3b82f6", "#10b981", "#06b6d4"]
 
 
-@tool(response_format="content_and_artifact")
+@tool
 async def generate_chart(
     chart_type: str,
     data: dict,
     title: str,
     x_label: str = "",
     y_label: str = "",
-) -> tuple[str, str]:
+) -> str:
     """根据数据生成 Plotly 图表。
 
     支持的图表类型：bar（柱状图）、line（折线图）、scatter（散点图）、
@@ -48,20 +49,17 @@ async def generate_chart(
         y_label: Y 轴标签（可选）
 
     Returns:
-        (content, artifact) 元组：content 为简短确认文本（LLM 可见），
-        artifact 为完整 Plotly JSON 字符串（仅前端使用）
+        简短确认文本（LLM 可见）。figure 通过 get_stream_writer() 直接推给前端，
+        不进入 LLM 上下文。
     """
     chart_type = chart_type.lower().strip()
     if chart_type not in SUPPORTED_TYPES:
-        return (
-            f"错误：不支持的图表类型 '{chart_type}'，支持的类型：{', '.join(sorted(SUPPORTED_TYPES))}",
-            "",
-        )
+        return f"错误：不支持的图表类型 '{chart_type}'，支持的类型：{', '.join(sorted(SUPPORTED_TYPES))}"
 
     try:
         fig = _build_figure(chart_type, data)
     except ValueError as e:
-        return (f"错误：{e}", "")
+        return f"错误：{e}"
 
     fig.update_layout(
         title=title,
@@ -70,10 +68,12 @@ async def generate_chart(
         **_DEFAULT_LAYOUT,
     )
 
-    chart_json = fig.to_json()
+    # figure 通过 SSE custom 事件推给前端，避免污染 LLM 上下文
+    writer = get_stream_writer()
+    writer({"event": "chart", "data": {"type": "plotly", "figure": fig.to_dict()}})
+
     logger.info("generate_chart | type={} | title={}", chart_type, title)
-    # content 仅返回简短确认，避免 LLM 上下文浪费 token；artifact 携带完整 JSON 供前端渲染
-    return (f"已生成 {chart_type} 图表：{title}", chart_json)
+    return f"已生成 {chart_type} 图表：{title}"
 
 
 def _build_figure(chart_type: str, data: dict) -> go.Figure:
